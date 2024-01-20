@@ -1,9 +1,12 @@
-*** TODO: work on this
+* Set the path to the Source folder if we're not running an app.
 
-*** TODO: remove this
-set path to Source
+lnStack = astackinfo(laStack)
+if justext(laStack[lnStack, 2]) <> 'app'
+	set path to 'Source' additive
+endif justext(laStack[lnStack, 2]) <> 'app'
+
+* Create and display the DeployFoxForm form.
 
 public poDeployFoxForm
 poDeployFoxForm = newobject('DeployFoxForm', 'DeployFoxUI.vcx')
 poDeployFoxForm.Show()
-*** TODO: need READ EVENTS and CLEAR EVENTS

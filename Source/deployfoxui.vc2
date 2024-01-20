@@ -81,7 +81,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		BoundColumn = 2, ;
 		ControlSource = "curProject.Task", ;
 		Height = 24, ;
-		Left = 761, ;
+		Left = 760, ;
 		Name = "cboTaskType", ;
 		TabIndex = 10, ;
 		Top = 45, ;
@@ -177,11 +177,11 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 
 	ADD OBJECT 'cmdSave' AS vfpxbasecommandbutton WITH ;
 		Caption = "", ;
-		Left = 705, ;
+		Left = 1038, ;
 		Name = "cmdSave", ;
 		Picture = save.bmp, ;
 		TabIndex = 17, ;
-		Top = 161, ;
+		Top = 45, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
@@ -200,7 +200,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Anchor = 10, ;
 		ControlSource = "curProject.Comments", ;
 		Height = 114, ;
-		Left = 761, ;
+		Left = 760, ;
 		Name = "edtComments", ;
 		TabIndex = 16, ;
 		Top = 131, ;
@@ -349,10 +349,10 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ADD OBJECT 'lblProject' AS vfpxbaselabel WITH ;
 		Anchor = 4, ;
 		Caption = "Project", ;
-		Left = 15, ;
+		Left = 10, ;
 		Name = "lblProject", ;
 		TabIndex = 19, ;
-		Top = 410
+		Top = 412
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSettings' AS vfpxbaselabel WITH ;
@@ -386,7 +386,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Anchor = 10, ;
 		ControlSource = "curProject.Name", ;
 		Height = 23, ;
-		Left = 761, ;
+		Left = 760, ;
 		Name = "txtName", ;
 		TabIndex = 12, ;
 		Top = 75, ;
@@ -410,14 +410,14 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 				.Left        = This.shpSettings.Left + 10
 				.Top         = This.shpSettings.Top  + 10
 				.lSaveAnchor = .F.
-				.oTask       = newobject(This.cTaskType, lcFile)
+				.oTask       = newobject(This.cTaskType, lcFile, '', This.oEngine.oVariables)
 				.LoadSettings()
 			endwith
 		endif type(lcControl) <> 'O'
 		*** TODO: doesn't resize controls if not visible
 		with &lcControl
 			if not empty(Settings)
-				.oTask.GetSettings(Settings)
+				.oTask.GetSettings(Settings, .T.)
 			endif not empty(Settings)
 			.Visible = .T.
 		endwith
@@ -485,14 +485,18 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 
 	PROCEDURE updaterun		&& Updates the status of running the project
 		lparameters tcID, ;
+			tcStatus, ;
 			tcMessage
 		local lnSelect
 		lnSelect = select()
 		select curProject
 		locate for ID = tcID
-		replace Status with tcMessage
+		replace Status with tcStatus
 		select (lnSelect)
 		This.grdTasks.Refresh()
+		if not empty(tcMessage)
+			messagebox(tcMessage, 16, 'DeployFox')
+		endif not empty(tcMessage)
 		
 	ENDPROC
 
@@ -591,6 +595,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	PROCEDURE cmdOpenProject.Click
 		lcProject = getfile('DBF', 'Project', '', 0, 'Select DeployFox Project')
 		if not empty(lcProject)
+			lcProject = GetProperFileCase(lcProject)
 			Thisform.grdTasks.RecordSource = ''
 			Thisform.oEngine.OpenProject(lcProject)
 			Thisform.grdTasks.RecordSource = 'curProject'
@@ -606,6 +611,9 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE cmdRun.Click
+		*** TODO: support debug mode? RunEXE always uses cWindowMode NOR. What else?
+		*** TODO: option to just run all SetVariables and then the current task
+		*** TODO: always run all SetVariables tasks first regardless of order
 		select curProject
 		replace all Status with ''
 		go top
@@ -614,7 +622,6 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Thisform.oEngine.Run()
 		unbindevent(Thisform.oEngine)
 		messagebox('Run complete', MB_ICONINFORMATION, 'DeployFox')
-		*** TODO: show status and error messages
 		
 	ENDPROC
 
@@ -624,7 +631,6 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE cmdSave.Click
-		*** TODO: where to put this button
 		local lcControl, ;
 			lcSettings
 		if empty(curProject.Name)
@@ -688,7 +694,6 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE lblProject.Refresh
-		*** TODO: proper case
 		This.Caption = iif(empty(Thisform.oEngine.cProjectFile), '', ;
 			'Project: ' + strtran(Thisform.oEngine.cProjectFile, '.dbf', '', -1, -1, 1))
 		

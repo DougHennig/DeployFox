@@ -1,8 +1,12 @@
 #include DeployFox.h
 
 define class DeployFoxEngine as Custom
-	cProjectFile = ''
+	cProjectFile  = ''
 		&& the path to the project file
+	cErrorMessage = ''
+		&& the text of an error
+	oVariables    = .NULL.
+		&& a reference to an object containing variables
 
 	function Init
 		local laStack[1], ;
@@ -23,33 +27,29 @@ define class DeployFoxEngine as Custom
 		if lower(substr(lcPath, rat('\', lcPath) + 1)) = 'source'
 			lcPath = fullpath('..\', addbs(lcPath))
 		endif lower(substr(lcPath ...
-*** TODO: not public variable
-		release AppPath
-		public AppPath
-		AppPath = addbs(lcPath)
+		lcPath = addbs(lcPath)
 
 * Open the encryption library.
 
 *** TODO: use FoxCrypto_NG?
 		if not 'vfpencryption71' $ set('LIBRARY')
-			set library to (AppPath + 'VFPEncryption71.fll')
+			set library to (lcPath + 'VFPEncryption71.fll')
 		endif not 'vfpencryption71' $ set('LIBRARY')
 
 * Get the DeployFox settings.
 
+		This.oVariables = newobject('DeployFoxVariables', 'DeployFoxEngine.prg')
 		lcKey = GetKey()
 *** TODO: delete Value for CertPassword before deploying
-		use (AppPath + 'DeployFoxSettings') again shared
+		select 0
+		use (lcPath + 'DeployFoxSettings') again shared
 		scan
 			lcVariable = trim(Setting)
 			lcValue    = Value
 			if Encrypt and left(lcValue, 2) = '0x'
 				lcValue = trim(Decrypt(strconv(substr(lcValue, 3), 16), lcKey))
 			endif Encrypt ...
-*** TODO: don't use public variables
-			release &lcVariable
-			public &lcVariable
-			store lcValue to (lcVariable)
+			This.oVariables.Add(lcVariable, lcValue)
 		endscan
 
 	endfunc
@@ -60,7 +60,7 @@ define class DeployFoxEngine as Custom
 		use in select('curProject')
 		use in select('ProjectFile')
 		This.cProjectFile = tcPath
-		use (This.cProjectFile) alias ProjectFile
+		use (This.cProjectFile) alias ProjectFile in 0
 *** TODO: check structure to ensure it's a project file
 		select *, space(20) as Status ;
 			from (This.cProjectFile) ;
@@ -80,7 +80,7 @@ define class DeployFoxEngine as Custom
 * Run the tasks for the project.
 
 	function Run
-*** TODO: local
+		local llReturn
 		if not used('TaskTypes')
 			use TaskTypes in 0
 		endif not used('TaskTypes')
@@ -90,35 +90,43 @@ define class DeployFoxEngine as Custom
 			order by Order ;
 			into cursor curRun
 		scan
-*** TODO: call a function to run current task. That way, can test single task
-			lcTaskType = trim(Task)
-			select TaskTypes
-			locate for upper(Type) = upper(lcTaskType)
-			lcFile = trim(File)
-			loTask = newobject(lcTaskType, lcFile)
-			if loTask.GetSettings(Settings)
-				select 0
-				llReturn = loTask.Execute()
-				if llReturn
-					raiseevent(This, 'Update', curRun.ID, 'Success')
-				else
-set step on 
-					raiseevent(This, 'Update', curRun.ID, 'Failed')
-					messagebox(loTask.cErrorMessage, 16, 'DeployFox')
-					exit
-				endif llReturn
-*** TODO: what if it closes all data: run in private datasession? Maybe run form and have form instantiate this class into This.oEngine
+			raiseevent(This, 'Update', curRun.ID, 'Running', '')
+			llReturn = This.RunTask(Task, Settings)
+			if llReturn
+				raiseevent(This, 'Update', curRun.ID, 'Success', '')
 			else
-*** TODO: what to do
-set step on 
-				messagebox(loTask.cErrorMessage, 16, 'DeployFox')
+				raiseevent(This, 'Update', curRun.ID, 'Failed', This.cErrorMessage)
 				exit
-			endif loTask.GetSettings(Settings)
+			endif llReturn
 		endscan
+	endfunc
+
+* Run the current task.
+
+	function RunTask(tcTaskType, tcSettings)
+		local lcFile, ;
+			loTask, ;
+			llReturn
+		lcTaskType = trim(tcTaskType)
+		select TaskTypes
+		locate for upper(Type) = upper(lcTaskType)
+		lcFile = trim(File)
+		loTask = newobject(lcTaskType, lcFile, '', This.oVariables)
+		if loTask.GetSettings(tcSettings)
+			llReturn = loTask.Execute()
+		endif loTask.GetSettings(tcSettings)
+		This.cErrorMessage = loTask.cErrorMessage
+		return llReturn
 	endfunc
 
 * This function is here so we can use RAISEEVENT.
 
-	function Update(tcID, tcMessage)
+	function Update(tcID, tcStatus, tcMessage)
+	endfunc
+enddefine
+
+define class DeployFoxVariables as Custom
+	function Add(tcName, tuValue)
+		addproperty(This, tcName, tuValue)
 	endfunc
 enddefine

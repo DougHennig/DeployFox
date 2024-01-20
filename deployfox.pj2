@@ -49,7 +49,6 @@ MODIFY PROJECT 'deployfox.pjx' NOWAIT NOSHOW NOPROJECTHOOK
 loProject = _VFP.Projects('deployfox.pjx')
 
 WITH loProject.FILES
-	.ADD('getkey.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\api_apprun.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\clsheap.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\deployfox.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
@@ -60,6 +59,8 @@ WITH loProject.FILES
 	.ADD('source\evaluateexpression.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\fileoperation.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\format.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
+	.ADD('source\getkey.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
+	.ADD('source\getproperfilecase.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\main.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\newproject.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\newtask.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
@@ -92,7 +93,6 @@ WITH loProject.FILES
 
 	*<ExcludedFiles>
 	.ITEM(lcCurdir + 'source\deployfox.h').Exclude = .T.
-	.ITEM(lcCurdir + 'source\tasktypes.dbf').Exclude = .T.
 	.ITEM(lcCurdir + 'source\vfpxbaselibrary.h').Exclude = .T.
 	.ITEM(lcCurdir + 'source\vfpxlibraryregistry.h').Exclude = .T.
 	.ITEM(lcCurdir + 'vfpencryption71.fll').Exclude = .T.

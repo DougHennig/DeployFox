@@ -325,6 +325,8 @@ DEFINE CLASS executescript AS taskuibase OF "taskui.vcx"
 
 	ADD OBJECT 'lblScript' AS vfpxbaselabel WITH ;
 		Caption = "Script", ;
+		FontUnderline = .T., ;
+		ForeColor = 0,0,255, ;
 		Left = 0, ;
 		Name = "lblScript", ;
 		Top = 2
@@ -332,11 +334,40 @@ DEFINE CLASS executescript AS taskuibase OF "taskui.vcx"
 	
 	PROCEDURE loadsettings
 		This.edtScript.ControlSource = 'This.Parent.oTask.cCode'
-		*** TODO: right-click edit box to display PRG. Need to handle closing it
+		
 	ENDPROC
 
 	PROCEDURE validate
 		return not empty(This.oTask.cCode)
+		
+	ENDPROC
+
+	PROCEDURE lblScript.Click
+		* Use a PRG to edit the code so we get IntelliSense.
+		
+		local lcFile, ;
+			loForm
+		lcFile = addbs(sys(2023)) + 'Script.'
+		strtofile(This.Parent.edtScript.Value, lcFile)
+		loForm = newobject('VFPXBaseForm', 'VFPXBaseLibrary.vcx')
+		with loForm
+			.AlwaysOnTop = .T.
+			.Caption     = 'Script'
+			.Width       = Thisform.Width
+			.Height      = Thisform.Height
+		*	.Top         = max(Thisform.Top - 30,  0)
+		*	.Left        = max(Thisform.Left - 30, 0)
+		.Top = 0
+		.Left = 0
+			.FontName    = 'Courier New'
+			.FontSize    = 10
+		endwith
+		
+		* Modify the code.
+		
+		modify command (lcFile) window (loForm.Name) 
+		This.Parent.edtScript.Value = filetostr(lcFile)
+		erase (lcFile)
 		
 	ENDPROC
 
@@ -885,7 +916,6 @@ DEFINE CLASS setvariable AS taskuibase OF "taskui.vcx"
 	ENDPROC
 
 	PROCEDURE txtVariable.Valid
-		*** TODO: ensure not dupe
 		local lnI, ;
 			lcChar, ;
 			llReturn

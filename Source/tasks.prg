@@ -1,14 +1,22 @@
 #include DeployFox.h
 
-define class TaskBase as Custom
+define class TaskBase as Session
+	DataSession   = 2
+		&& run in a private datasession
 	cErrorMessage = ''
 		&& the text of an error
 	cEncrypt      = ''
 		&& a comma-delimited list of properties to encrypt
+	oVariables    = .NULL.
+		&& a reference to an object containing variables
+
+	function Init(toVariables)
+		This.oVariables = toVariables
+	endfunc
 
 * Get the settings from XML.
 
-	function GetSettings(tcSettings)
+	function GetSettings(tcSettings, tlNoExpandVariables)
 		local loXMLDOM, ;
 			lcEncrypt, ;
 			lcKey, ;
@@ -34,7 +42,9 @@ define class TaskBase as Custom
 					if lower(lcName) $ lcEncrypt and left(lcValue, 2) = '0x'
 						lcValue = Decrypt(strconv(substr(lcValue, 3), 16), lcKey)
 					endif lower(lcName) $ lcEncrypt ...
-					lcValue = EvaluateExpression(lcValue, This)
+					if not tlNoExpandVariables
+						lcValue = EvaluateExpression(lcValue, This)
+					endif not tlNoExpandVariables
 					lcType  = upper(left(lcName, 1))
 					do case
 						case lcType = 'N'
@@ -185,7 +195,6 @@ define class ReadFromRegistry as RegistryBase
 			luValue, ;
 			llReturn
 		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
-*** TODO: what default value to use?
 		luValue    = loRegistry.GetKey(This.cSubKey, This.cSetting, '', ;
 			This.nMainKey)
 		llReturn   = loRegistry.nResult = cnSUCCESS
@@ -395,7 +404,6 @@ define class RunEXE as TaskBase
 		&& the EXE to run
 	cParameters = ''
 		&& the parameters to pass to it
-*** TODO: for debugging, probably want NOR
 	cWindowMode = 'HID'
 		&& the window mode
 *** TODO: option to wait until done or not
@@ -432,34 +440,36 @@ define class RunEXE as TaskBase
 enddefine
 
 define class SignTool as RunEXE
-	cSource      = '{SignEXE}'
+	cSource      = '{$SignEXE}'
 	cDescription = ''
 		&& the description for the EXE
 	cTarget      = ''
 		&& the EXE to sign
 
-	function GetSettings(tcSettings)
+	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn, ;
 			lcParameters
-		llReturn = dodefault(tcSettings)
+		llReturn = dodefault(tcSettings, tlNoExpandVariables)
 		if llReturn
-			lcParameters     = EvaluateExpression('{SignCommand}', This)
+			lcParameters     = EvaluateExpression('{$SignCommand}', This)
 			lcParameters     = substr(lcParameters, at(' sign ', lcParameters))
 			lcParameters     = strtran(lcParameters, '$q', '"')
-			This.cParameters = strtran(lcParameters, '$p') + ' /d "' + This.cDescription + '" "' + This.cTarget + '"'
+			This.cParameters = strtran(lcParameters, '$p') + ;
+				' /d "' + This.cDescription + '" "' + This.cTarget + '"'
 		endif llReturn
 	endfunc
 enddefine
 
 define class BuildSetupInno as RunEXE
-	cSource     = '{BuildEXE}'
+	cSource     = '{$BuildEXE}'
 	cScriptFile = ''
 
-	function GetSettings(tcSettings)
+	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn
-		llReturn = dodefault(tcSettings)
+		llReturn = dodefault(tcSettings, tlNoExpandVariables)
 		if llReturn
-			This.cParameters = '"' + EvaluateExpression(SignCommand, This) + '" "' + This.cScriptFile + '"'
+			This.cParameters = '"' + EvaluateExpression('{$SignCommand}', This) + ;
+				'" "' + This.cScriptFile + '"'
 		endif llReturn
 	endfunc
 enddefine
@@ -500,25 +510,6 @@ enddefine
 define class ExecuteScript as TaskBase
 	cCode = ''
 		&& the code to execute
-
-	function xxGetSettings(tcSettings)
-		local loXMLDOM, ;
-			loNode, ;
-			llReturn, ;
-			loException as Exception
-		try
-			loXMLDOM = This.GetXMLParser(tcSettings)
-			if vartype(loXMLDOM) = 'O'
-				loNode = loXMLDOM.selectSingleNode('/settings/script')
-				This.cCode = loNode.text
-				llReturn = .T.
-			endif vartype(loXMLDOM) = 'O'
-		catch to loException
-			This.cErrorMessage = Format('Error processing XML: {0}', ;
-				loException.Message)
-		endtry
-		return llReturn
-	endfunc
 
 	function Execute
 		local llReturn, ;
@@ -622,10 +613,10 @@ define class SetVariable as TaskBase
 
 * If we're encrypting the value, read the settings again so we decrypt it this time.
 
-	function GetSettings(tcSettings)
-		llReturn = dodefault(tcSettings)
+	function GetSettings(tcSettings, tlNoExpandVariables)
+		llReturn = dodefault(tcSettings, tlNoExpandVariables)
 		if This.lEncrypt
-			llReturn = dodefault(tcSettings)
+			llReturn = dodefault(tcSettings, tlNoExpandVariables)
 		endif This.lEncrypt
 		return llReturn
 	endfunc
@@ -634,11 +625,8 @@ define class SetVariable as TaskBase
 		local lcVariable, ;
 			luValue
 		lcVariable = This.cVariable
-*** TODO: no public vars: in expressions, use $VariableName. Then in GetSettings, change to VarHolderObject.VariableName???
-		release &lcVariable
-		public &lcVariable
 		luValue = EvaluateExpression(This.cValue, This)
-		store luValue to (lcVariable)
+		This.oVariables.Add(This.cVariable, luValue)
 	endfunc
 enddefine
 
