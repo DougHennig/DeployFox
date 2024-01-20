@@ -49,8 +49,10 @@ MODIFY PROJECT 'deployfox.pjx' NOWAIT NOSHOW NOPROJECTHOOK
 loProject = _VFP.Projects('deployfox.pjx')
 
 WITH loProject.FILES
+	.ADD('getkey.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\api_apprun.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\clsheap.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
+	.ADD('source\deployfox.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\deployfox.ico')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\deployfoxengine.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\deployfoxui.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
@@ -74,8 +76,10 @@ WITH loProject.FILES
 	.ADD('source\tasktypes.dbf')		&& *< FileMetadata: Type="D" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\taskui.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\up.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
+	.ADD('source\vfpxbaselibrary.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\vfpxbaselibrary.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\vfpxlibraryfilectrls.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
+	.ADD('source\vfpxlibraryregistry.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\vfpxlibraryregistry.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\writeini.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('vfpencryption71.fll')		&& *< FileMetadata: Type="L" Cpid="0" Timestamp="0" ID="0" ObjRev="0" User="" />
@@ -87,11 +91,17 @@ WITH loProject.FILES
 	*</FileComments>
 
 	*<ExcludedFiles>
+	.ITEM(lcCurdir + 'source\deployfox.h').Exclude = .T.
 	.ITEM(lcCurdir + 'source\tasktypes.dbf').Exclude = .T.
+	.ITEM(lcCurdir + 'source\vfpxbaselibrary.h').Exclude = .T.
+	.ITEM(lcCurdir + 'source\vfpxlibraryregistry.h').Exclude = .T.
 	.ITEM(lcCurdir + 'vfpencryption71.fll').Exclude = .T.
 	*</ExcludedFiles>
 
 	*<TextFiles>
+	.ITEM(lcCurdir + 'source\deployfox.h').Type = 'T'
+	.ITEM(lcCurdir + 'source\vfpxbaselibrary.h').Type = 'T'
+	.ITEM(lcCurdir + 'source\vfpxlibraryregistry.h').Type = 'T'
 	*</TextFiles>
 ENDWITH
 

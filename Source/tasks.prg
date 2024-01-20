@@ -24,7 +24,7 @@ define class TaskBase as Custom
 			loXMLDOM = This.GetXMLParser(tcSettings)
 			if vartype(loXMLDOM) = 'O'
 				lcEncrypt = lower(This.cEncrypt)
-				lcKey     = This.GetKey()
+				lcKey     = GetKey()
 				loNodes   = loXMLDOM.selectNodes('/settings/setting')
 				for each loNode in loNodes foxobject
 					loPNode = loNode.selectSingleNode('name')
@@ -78,7 +78,7 @@ define class TaskBase as Custom
 				loRootNode = loXMLDOM.createElement('settings')
 				loXMLDOM.appendChild(loRootNode)
 				lcEncrypt    = lower(This.cEncrypt)
-				lcKey        = This.GetKey()
+				lcKey        = GetKey()
 				lnProperties = amembers(laProperties, This, 0, 'U')
 				for lnI = 1 to lnProperties
 					lcProperty = lower(laProperties[lnI])
@@ -145,12 +145,6 @@ set step on
 		return loXMLDOM
 	endfunc
 
-* Get the encryption key.
-
-	function GetKey
-		return substr(filetostr('DeployFox.ico'), cnKEY_START, cnKEY_LEN)
-	endfunc
-
 * Execute the task (abstract in this class).
 
 	function Execute
@@ -162,29 +156,8 @@ define class RegistryBase as TaskBase
 		&& the Registry key
 	cSetting = ''
 		&& the setting
-	cSubKey  = ''
-		&& the subkey
-	nMainKey = 0
+	nMainKey = cnHKEY_CURRENT_USER
 		&& the main key
-*** TODO: have a cMainKey so user can choose from combobox
-
-	function GetKey
-		local lnPos, ;
-			lcMainKey
-		lnPos        = at('\', This.cKey)
-		lcMainKey    = left(This.cKey, lnPos - 1)
-		This.cSubKey = substr(This.cKey, lnPos + 1)
-		do case
-			case lcMainKey = 'HKEY_CLASSES_ROOT'
-				This.nMainKey = cnHKEY_CLASSES_ROOT
-			case lcMainKey = 'HKEY_CURRENT_USER'
-				This.nMainKey = cnHKEY_CURRENT_USER
-			case lcMainKey = 'HKEY_LOCAL_MACHINE'
-				This.nMainKey = cnHKEY_LOCAL_MACHINE
-			otherwise
-				This.nMainKey = cnHKEY_USERS
-		endcase
-	endfunc
 enddefine
 
 define class WriteToRegistry as RegistryBase
@@ -196,7 +169,6 @@ define class WriteToRegistry as RegistryBase
 	function Execute
 		local loRegistry, ;
 			llReturn
-		This.GetKey()
 		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
 		llReturn   = loRegistry.SetKey(This.cSubKey, This.cSetting, This.uValue, ;
 			This.nMainKey, This.nType)
@@ -212,7 +184,6 @@ define class ReadFromRegistry as RegistryBase
 		local loRegistry, ;
 			luValue, ;
 			llReturn
-		This.GetKey()
 		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
 *** TODO: what default value to use?
 		luValue    = loRegistry.GetKey(This.cSubKey, This.cSetting, '', ;
@@ -226,7 +197,7 @@ define class ReadFromRegistry as RegistryBase
 enddefine
 
 define class WriteToINI as TaskBase
-	cTarget   = ''
+	cSource   = ''
 		&& the INI file to write to
 	cSection  = ''
 		&& the section to write to
@@ -237,15 +208,14 @@ define class WriteToINI as TaskBase
 
 	function Execute
 		local llReturn
-*** TODO: need to eval cValue?
 *** TODO FUTURE: option to support encryption: need to specify key
-		llReturn = WriteINI(This.cTarget, This.cSection, This.cItem, This.cValue)
+		llReturn = WriteINI(This.cSource, This.cSection, This.cItem, This.cValue)
 		return llReturn
 	endfunc
 enddefine
 
 define class ReadFromINI as TaskBase
-	cTarget   = ''
+	cSource   = ''
 		&& the INI file to read from
 	cSection  = ''
 		&& the section to read from
@@ -256,7 +226,7 @@ define class ReadFromINI as TaskBase
 
 	function Execute
 *** TODO FUTURE: option to support decryption: need to specify key
-		store ReadINI(This.cTarget, This.cSection, This.cItem) to (This.cVariable)
+		store ReadINI(This.cSource, This.cSection, This.cItem) to (This.cVariable)
 		return .T.
 	endfunc
 enddefine
@@ -428,6 +398,7 @@ define class RunEXE as TaskBase
 *** TODO: for debugging, probably want NOR
 	cWindowMode = 'HID'
 		&& the window mode
+*** TODO: option to wait until done or not
 
 	function Execute
 		local lcSource, ;
@@ -602,7 +573,7 @@ define class DownloadFile as RunEXE
 
 	function Execute
 		local llReturn
-		This.cParameters = '-o "' + This.cLocalFile + '" This.cRemoteFile + ;
+		This.cParameters = '-o "' + This.cLocalFile + '" ' + This.cRemoteFile + ;
 			iif(empty(This.cUserName), '', ' -u ' + This.cUserName + ':' + This.cPassword)
 		llReturn = dodefault()
 		return llReturn
@@ -663,6 +634,7 @@ define class SetVariable as TaskBase
 		local lcVariable, ;
 			luValue
 		lcVariable = This.cVariable
+*** TODO: no public vars: in expressions, use $VariableName. Then in GetSettings, change to VarHolderObject.VariableName???
 		release &lcVariable
 		public &lcVariable
 		luValue = EvaluateExpression(This.cValue, This)

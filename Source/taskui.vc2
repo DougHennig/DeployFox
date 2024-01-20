@@ -99,6 +99,11 @@ DEFINE CLASS buildsetupinno AS taskuibase OF "taskui.vcx"
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
 		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+	
+	PROCEDURE validate
+		return not empty(This.oTask.cScriptFile)
+		
+	ENDPROC
 
 ENDDEFINE
 
@@ -139,6 +144,11 @@ DEFINE CLASS copyfile AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 285, ;
 		cmdGetFile.Name = "cmdGetFile"
 		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+	
+	PROCEDURE validate
+		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
+		
+	ENDPROC
 
 ENDDEFINE
 
@@ -165,6 +175,11 @@ DEFINE CLASS deletefile AS taskuibase OF "taskui.vcx"
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
 		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+	
+	PROCEDURE validate
+		return not empty(This.oTask.cSource)
+		
+	ENDPROC
 
 ENDDEFINE
 
@@ -192,6 +207,11 @@ DEFINE CLASS deletefolder AS taskuibase OF "taskui.vcx"
 		cmdGetFolder.Left = 320, ;
 		cmdGetFolder.Name = "cmdGetFolder"
 		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+	
+	PROCEDURE validate
+		return not empty(This.oTask.cSource)
+		
+	ENDPROC
 
 ENDDEFINE
 
@@ -277,6 +297,11 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 		
 	ENDPROC
 
+	PROCEDURE validate
+		return not empty(This.oTask.cRemoteFile) and not empty(This.oTask.cLocalFile)
+		
+	ENDPROC
+
 ENDDEFINE
 
 DEFINE CLASS executescript AS taskuibase OF "taskui.vcx" 
@@ -291,7 +316,7 @@ DEFINE CLASS executescript AS taskuibase OF "taskui.vcx"
 	*</PropValue>
 
 	ADD OBJECT 'edtScript' AS vfpxbaseeditbox WITH ;
-		Height = 245, ;
+		Height = 130, ;
 		Left = 47, ;
 		Name = "edtScript", ;
 		Top = 0, ;
@@ -307,6 +332,11 @@ DEFINE CLASS executescript AS taskuibase OF "taskui.vcx"
 	
 	PROCEDURE loadsettings
 		This.edtScript.ControlSource = 'This.Parent.oTask.cCode'
+		*** TODO: right-click edit box to display PRG. Need to handle closing it
+	ENDPROC
+
+	PROCEDURE validate
+		return not empty(This.oTask.cCode)
 		
 	ENDPROC
 
@@ -368,7 +398,7 @@ DEFINE CLASS readfromini AS taskuibase OF "taskui.vcx"
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oINIFile' AS vfpxlibraryfile WITH ;
-		ccontrolsource = This.Parent.oTask.cTarget, ;
+		ccontrolsource = This.Parent.oTask.cSource, ;
 		cextensions = "INI File (*.ini):ini", ;
 		Left = 0, ;
 		Name = "oINIFile", ;
@@ -402,6 +432,12 @@ DEFINE CLASS readfromini AS taskuibase OF "taskui.vcx"
 	PROCEDURE savesettings
 		This.oTask.cSection = This.cboSection.DisplayValue
 		This.oTask.cItem    = This.cboItem.DisplayValue
+		
+	ENDPROC
+
+	PROCEDURE validate
+		return not empty(This.oTask.cSource) and not empty(This.oTask.cSection) and ;
+			 not empty(This.oTask.cItem) and not empty(This.oTask.cVariable)
 		
 	ENDPROC
 
@@ -454,65 +490,110 @@ DEFINE CLASS readfromregistry AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="txtSetting" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblVariable" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="txtVariable" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cboMainKey" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblMainKey" UniqueID="" Timestamp="" />
 
 	#INCLUDE "vfpxlibraryregistry.h"
 	*<PropValue>
 		Name = "readfromregistry"
 	*</PropValue>
 
+	ADD OBJECT 'cboMainKey' AS vfpxbasecombobox WITH ;
+		BoundColumn = 2, ;
+		Height = 24, ;
+		Left = 50, ;
+		Name = "cboMainKey", ;
+		TabIndex = 1, ;
+		Top = 0, ;
+		Width = 185
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+
 	ADD OBJECT 'lblKey' AS vfpxbaselabel WITH ;
 		Caption = "Key", ;
 		Left = 0, ;
 		Name = "lblKey", ;
-		Top = 3
+		TabIndex = 4, ;
+		Top = 28
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'lblMainKey' AS vfpxbaselabel WITH ;
+		Caption = "Hive", ;
+		Left = 0, ;
+		Name = "lblMainKey", ;
+		TabIndex = 2, ;
+		Top = 4
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSetting' AS vfpxbaselabel WITH ;
 		Caption = "Setting", ;
 		Left = 0, ;
 		Name = "lblSetting", ;
-		Top = 28
+		TabIndex = 6, ;
+		Top = 53
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblVariable' AS vfpxbaselabel WITH ;
 		Caption = "Variable", ;
 		Left = 0, ;
 		Name = "lblVariable", ;
-		Top = 53
+		TabIndex = 8, ;
+		Top = 78
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'txtKey' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
 		Height = 23, ;
-		Left = 51, ;
+		Left = 50, ;
 		Name = "txtKey", ;
-		Top = 0, ;
+		TabIndex = 3, ;
+		Top = 25, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtSetting' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
 		Height = 23, ;
-		Left = 51, ;
+		Left = 50, ;
 		Name = "txtSetting", ;
-		Top = 25, ;
+		TabIndex = 5, ;
+		Top = 50, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtVariable' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
 		Height = 23, ;
-		Left = 51, ;
+		Left = 50, ;
 		Name = "txtVariable", ;
-		Top = 50, ;
+		TabIndex = 7, ;
+		Top = 75, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings
+		This.cboMainKey.ControlSource  = 'This.Parent.oTask.nMainKey'
 		This.txtKey.ControlSource      = 'This.Parent.oTask.cKey'
 		This.txtSetting.ControlSource  = 'This.Parent.oTask.cSetting'
 		This.txtVariable.ControlSource = 'This.Parent.oTask.cVariable'
-		*** TODO: have a combobox for hive?
+		
+	ENDPROC
+
+	PROCEDURE validate
+		return not empty(This.oTask.cKey) and not empty(This.oTask.cSetting) and ;
+			 not empty(This.oTask.cVariable)
+		
+	ENDPROC
+
+	PROCEDURE cboMainKey.Init
+		dimension This.aItems[3, 2]
+		This.aItems[1, 1] = 'HKEY_CLASSES_ROOT'
+		This.aItems[1, 2] = cnHKEY_CLASSES_ROOT
+		This.aItems[2, 1] = 'HKEY_CURRENT_USER'
+		This.aItems[2, 2] = cnHKEY_CURRENT_USER
+		This.aItems[3, 1] = 'HKEY_LOCAL_MACHINE'
+		This.aItems[3, 2] = cnHKEY_LOCAL_MACHINE
+		dodefault()
+		
 	ENDPROC
 
 ENDDEFINE
@@ -554,6 +635,11 @@ DEFINE CLASS renamefile AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 285, ;
 		cmdGetFile.Name = "cmdGetFile"
 		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+	
+	PROCEDURE validate
+		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
+		
+	ENDPROC
 
 ENDDEFINE
 
@@ -583,7 +669,7 @@ DEFINE CLASS runexe AS taskuibase OF "taskui.vcx"
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'edtParameters' AS vfpxbaseeditbox WITH ;
-		Height = 111, ;
+		Height = 105, ;
 		Left = 90, ;
 		Name = "edtParameters", ;
 		Top = 25, ;
@@ -640,6 +726,11 @@ DEFINE CLASS runexe AS taskuibase OF "taskui.vcx"
 		
 	ENDPROC
 
+	PROCEDURE validate
+		return not empty(This.oTask.cSource)
+		
+	ENDPROC
+
 	PROCEDURE cboWindowMode.Init
 		dimension This.aItems[4, 2]
 		This.aItems[1, 1] = 'Normal'
@@ -671,7 +762,7 @@ DEFINE CLASS runprg AS taskuibase OF "taskui.vcx"
 
 	ADD OBJECT 'edtParameters' AS vfpxbaseeditbox WITH ;
 		AddLineFeeds = .T., ;
-		Height = 111, ;
+		Height = 105, ;
 		Left = 90, ;
 		Name = "edtParameters", ;
 		Top = 25, ;
@@ -719,6 +810,11 @@ DEFINE CLASS runprg AS taskuibase OF "taskui.vcx"
 		
 	ENDPROC
 
+	PROCEDURE validate
+		return not empty(This.oTask.cSource)
+		
+	ENDPROC
+
 ENDDEFINE
 
 DEFINE CLASS setvariable AS taskuibase OF "taskui.vcx" 
@@ -731,6 +827,7 @@ DEFINE CLASS setvariable AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="txtValue" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="chkEncrypt" UniqueID="" Timestamp="" />
 
+	#INCLUDE "deployfox.h"
 	*<PropValue>
 		Name = "setvariable"
 	*</PropValue>
@@ -782,8 +879,25 @@ DEFINE CLASS setvariable AS taskuibase OF "taskui.vcx"
 		
 	ENDPROC
 
+	PROCEDURE validate
+		return not empty(This.oTask.cVariable) and not empty(This.oTask.cValue)
+		
+	ENDPROC
+
 	PROCEDURE txtVariable.Valid
-		*** TODO: ensure valid name and not dupe
+		*** TODO: ensure not dupe
+		local lnI, ;
+			lcChar, ;
+			llReturn
+		for lnI = 1 to len(This.Value)
+			lcChar = substr(This.Value, lnI)
+			llReturn = isalpha(lcChar) or (isdigit(lcChar) and lnI > 1)
+			if not llReturn
+				messagebox('That is not a valid variable name.', MB_ICONSTOP, 'DeployFox')
+				exit
+			endif not llReturn
+		next lnI
+		return llReturn
 		
 	ENDPROC
 
@@ -836,6 +950,11 @@ DEFINE CLASS signtool AS taskuibase OF "taskui.vcx"
 		
 	ENDPROC
 
+	PROCEDURE validate
+		return not empty(This.oTask.cTarget)
+		
+	ENDPROC
+
 ENDDEFINE
 
 DEFINE CLASS taskuibase AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
@@ -849,7 +968,7 @@ DEFINE CLASS taskuibase AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 	*</DefinedPropArrayMethod>
 
 	*<PropValue>
-		Height = 250
+		Height = 130
 		Name = "taskuibase"
 		otask = .NULL.
 		Width = 345
@@ -924,6 +1043,11 @@ DEFINE CLASS unzipfile AS taskuibase OF "taskui.vcx"
 		cmdGetFolder.Left = 320, ;
 		cmdGetFolder.Name = "cmdGetFolder"
 		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+	
+	PROCEDURE validate		&& Ensures the values are valid
+		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
+		
+	ENDPROC
 
 ENDDEFINE
 
@@ -1027,6 +1151,13 @@ DEFINE CLASS uploadfile AS taskuibase OF "taskui.vcx"
 		
 	ENDPROC
 
+	PROCEDURE validate		&& Ensures the values are valid
+		return not empty(This.oTask.cRemoteFile) and not empty(This.oTask.cLocalFile) and ;
+			not empty(This.oTask.cServer) and not empty(This.oTask.cUserName) and ;
+			not empty(This.oTask.cPassword)
+		
+	ENDPROC
+
 ENDDEFINE
 
 DEFINE CLASS writetofile AS taskuibase OF "taskui.vcx" 
@@ -1080,6 +1211,11 @@ DEFINE CLASS writetofile AS taskuibase OF "taskui.vcx"
 	PROCEDURE loadsettings		&& Loads the settings
 		This.edtSource.ControlSource    = 'This.Parent.oTask.cSource'
 		This.chkOverwrite.ControlSource = 'This.Parent.oTask.lOverwrite'
+		
+	ENDPROC
+
+	PROCEDURE validate		&& Ensures the values are valid
+		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
 		
 	ENDPROC
 
@@ -1141,7 +1277,7 @@ DEFINE CLASS writetoini AS taskuibase OF "taskui.vcx"
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oINIFile' AS vfpxlibraryfile WITH ;
-		ccontrolsource = This.Parent.oTask.cTarget, ;
+		ccontrolsource = This.Parent.oTask.cSource, ;
 		cextensions = "INI File (*.ini):ini", ;
 		Left = 0, ;
 		Name = "oINIFile", ;
@@ -1175,6 +1311,12 @@ DEFINE CLASS writetoini AS taskuibase OF "taskui.vcx"
 	PROCEDURE savesettings		&& Saves the settings
 		This.oTask.cSection = This.cboSection.DisplayValue
 		This.oTask.cItem    = This.cboItem.DisplayValue
+		
+	ENDPROC
+
+	PROCEDURE validate		&& Ensures the values are valid
+		return not empty(This.oTask.cSource) and not empty(This.oTask.cSection) and ;
+			 not empty(This.oTask.cItem) and not empty(This.oTask.cValue)
 		
 	ENDPROC
 
@@ -1229,18 +1371,32 @@ DEFINE CLASS writetoregistry AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="txtValue" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblType" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cboType" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cboMainKey" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblMainKey" UniqueID="" Timestamp="" />
 
 	#INCLUDE "vfpxlibraryregistry.h"
 	*<PropValue>
 		Name = "writetoregistry"
 	*</PropValue>
 
+	ADD OBJECT 'cboMainKey' AS vfpxbasecombobox WITH ;
+		BoundColumn = 2, ;
+		BoundTo = .F., ;
+		Height = 24, ;
+		Left = 50, ;
+		Name = "cboMainKey", ;
+		TabIndex = 1, ;
+		Top = 0, ;
+		Width = 185
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+
 	ADD OBJECT 'cboType' AS vfpxbasecombobox WITH ;
 		BoundColumn = 2, ;
 		Height = 24, ;
-		Left = 50, ;
+		Left = 49, ;
 		Name = "cboType", ;
-		Top = 76, ;
+		TabIndex = 9, ;
+		Top = 101, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
 
@@ -1248,62 +1404,96 @@ DEFINE CLASS writetoregistry AS taskuibase OF "taskui.vcx"
 		Caption = "Key", ;
 		Left = 0, ;
 		Name = "lblKey", ;
-		Top = 3
+		TabIndex = 4, ;
+		Top = 28
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'lblMainKey' AS vfpxbaselabel WITH ;
+		Caption = "Hive", ;
+		Left = 0, ;
+		Name = "lblMainKey", ;
+		TabIndex = 2, ;
+		Top = 4
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSetting' AS vfpxbaselabel WITH ;
 		Caption = "Setting", ;
 		Left = 0, ;
 		Name = "lblSetting", ;
-		Top = 28
+		TabIndex = 6, ;
+		Top = 53
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblType' AS vfpxbaselabel WITH ;
 		Caption = "Type", ;
 		Left = 0, ;
 		Name = "lblType", ;
-		Top = 80
+		TabIndex = 10, ;
+		Top = 105
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblValue' AS vfpxbaselabel WITH ;
 		Caption = "Value", ;
 		Left = 0, ;
 		Name = "lblValue", ;
-		Top = 53
+		TabIndex = 8, ;
+		Top = 78
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'txtKey' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
 		Height = 23, ;
-		Left = 51, ;
+		Left = 50, ;
 		Name = "txtKey", ;
-		Top = 0, ;
+		TabIndex = 3, ;
+		Top = 25, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtSetting' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
 		Height = 23, ;
-		Left = 51, ;
+		Left = 50, ;
 		Name = "txtSetting", ;
-		Top = 25, ;
+		TabIndex = 5, ;
+		Top = 50, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtValue' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
 		Height = 23, ;
-		Left = 51, ;
+		Left = 50, ;
 		Name = "txtValue", ;
-		Top = 50, ;
+		TabIndex = 7, ;
+		Top = 75, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings		&& Loads the settings
+		This.cboMainKey.ControlSource = 'This.Parent.oTask.nMainKey'
 		This.txtKey.ControlSource     = 'This.Parent.oTask.cKey'
 		This.txtSetting.ControlSource = 'This.Parent.oTask.cSetting'
 		This.txtValue.ControlSource   = 'This.Parent.oTask.uValue'
 		This.cboType.ControlSource    = 'This.Parent.oTask.nType'
+		
+	ENDPROC
+
+	PROCEDURE validate		&& Ensures the values are valid
+		return not empty(This.oTask.cKey) and not empty(This.oTask.cSetting) and ;
+			 not empty(This.oTask.uValue)
+		
+	ENDPROC
+
+	PROCEDURE cboMainKey.Init
+		dimension This.aItems[3, 2]
+		This.aItems[1, 1] = 'HKEY_CURRENT_USER'
+		This.aItems[1, 2] = cnHKEY_CURRENT_USER
+		This.aItems[2, 1] = 'HKEY_LOCAL_MACHINE'
+		This.aItems[2, 2] = cnHKEY_LOCAL_MACHINE
+		This.aItems[3, 1] = 'HKEY_CLASSES_ROOT'
+		This.aItems[3, 2] = cnHKEY_CLASSES_ROOT
+		dodefault()
 		
 	ENDPROC
 

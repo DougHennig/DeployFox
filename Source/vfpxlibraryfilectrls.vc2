@@ -151,9 +151,6 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		
 		* Write the value to our ControlSource.
 		
-		*** TODO:
-		***	if not .CalledFromThisClass() or ;
-				'CDIRECTORY_ASSIGN' $ program(program(-1) - 1)
 			if 'CDIRECTORY_ASSIGN' $ program(program(-1) - 1)
 				lnPos = at('.', .cControlSource)
 				if lnPos > 0 and not lcDirectory == alltrim(evaluate(.cControlSource))
@@ -166,7 +163,7 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 						store lcDirectory to (.cControlSource)
 					endif used(lcAlias)
 				endif lnPos > 0 ...
-			endif not .CalledFromThisClass()
+			endif 'CDIRECTORY_ASSIGN' $ program(program(-1) - 1)
 		
 		* Update the TooltipText.
 		
@@ -456,10 +453,6 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		
 		* Write the value to our ControlSource.
 		
-		*** TODO
-		***	if not .CalledFromThisClass() or ;
-				'SFGETFILE.CLICK' $ program(program(-1) - 2) or ;
-				'CFILENAME_ASSIGN' $ program(program(-1) - 1)
 			if 'CMDGETFILE.CLICK' $ program(program(-1) - 2) or ;
 				'CFILENAME_ASSIGN' $ program(program(-1) - 1)
 				lnPos = at('.', .cControlSource)
@@ -473,7 +466,7 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 					endif used(lcAlias)
 					raiseevent(This, 'FileChanged')
 				endif lnPos > 0 ...
-			endif not .CalledFromThisClass() ...
+			endif 'CMDGETFILE.CLICK' $ program(program(-1) - 2) ...
 		
 		* Update the TooltipText.
 		
@@ -775,15 +768,11 @@ DEFINE CLASS vfpxlibrarygetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx
 	*<DefinedPropArrayMethod>
 		*p: cafterdone		&& An expression to evaluate after the file has been selected
 		*p: ccaption		&& The caption for the dialog
-		*p: cdefault		&& The expression for the default filename for the dialog (ignored if lUseCommonDialog is .F.; surround literal string with quotes)
-		*p: cextensions		&& The extensions parameter for GETFILE() or if lUseCommonDialog, extensions in the format "Descrip,*.EXT;Descrip,*.EXT" (surround literal strings in quotes)
-		*p: cinitialdirectory		&& The initial directory for the file dialog
-		*p: copenbutton		&& The text to use for the Open button (ignored if lUseCommonDialog is .T.)
+		*p: cextensions		&& The extensions parameter for GETFILE() (surround literal strings in quotes)
+		*p: copenbutton		&& The text to use for the Open button
 		*p: cresult		&& The location where to put the return value into
-		*p: ctext		&& The text to appear beside the filename in the dialog (ignored if lUseCommonDialog is .T.)
-		*p: lallowmultiselect		&& .T. to allow multiple files to be selected
+		*p: ctext		&& The text to appear beside the filename in the dialog
 		*p: lsavedialog		&& .T. to use a Save dialog, .F. to use an Open dialog
-		*p: lusecommondialog		&& .T. to use the CommonDialog control (requires SFCommonDialog in SFUtility.vcx)
 		*p: nbuttontype		&& The button type parameter for GETFILE()
 	*</DefinedPropArrayMethod>
 
@@ -791,16 +780,12 @@ DEFINE CLASS vfpxlibrarygetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx
 		cafterdone = 
 		Caption = "..."
 		ccaption = 
-		cdefault = 
 		cextensions = 
-		cinitialdirectory = 
 		copenbutton = 
 		cresult = 
 		ctext = 
 		Height = 23
-		lallowmultiselect = .F.
 		lsavedialog = .F.
-		lusecommondialog = .T.
 		Name = "vfpxlibrarygetfile"
 		nbuttontype = 0
 		StatusBarText = "Select a file and path"
@@ -809,16 +794,12 @@ DEFINE CLASS vfpxlibrarygetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx
 		_memberdata = <VFPData>
 			<memberdata name="cafterdone" type="property" display="cAfterDone" favorites="True"/>
 			<memberdata name="ccaption" type="property" display="cCaption" favorites="True"/>
-			<memberdata name="cdefault" type="property" display="cDefault" favorites="True"/>
 			<memberdata name="cextensions" type="property" display="cExtensions" favorites="True"/>
 			<memberdata name="copenbutton" type="property" display="cOpenButton" favorites="True"/>
 			<memberdata name="cresult" type="property" display="cResult" favorites="True"/>
 			<memberdata name="ctext" type="property" display="cText" favorites="True"/>
-			<memberdata name="lusecommondialog" type="property" display="lUseCommonDialog" favorites="True"/>
 			<memberdata name="nbuttontype" type="property" display="nButtonType" favorites="True"/>
 			<memberdata name="lsavedialog" type="property" display="lSaveDialog"/>
-			<memberdata name="cinitialdirectory" type="property" display="cInitialDirectory"/>
-			<memberdata name="lallowmultiselect" display="lAllowMultiSelect"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -843,82 +824,24 @@ DEFINE CLASS vfpxlibrarygetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx
 			lcOptions
 		with This
 			assert not empty(.cResult) ;
-				message 'SFGetFile: the result container was not defined.'
+				message 'VFPXLibraryGetFile: the result container was not defined.'
 			lcResult = .cResult
 		
-		* If we're using the CommonDialog control, instantiate the SFCommonDialog
-		* class, set its properties, and call the ShowDialog method.
+		* Build a string of parameters from the properties of this object and call either
+		* GETFILE() or PUTFILE().
 		
-		*** TODO: use VFP2C32.fll?
-			lcLibrary = 'SFUtility.vcx'
-			if .lUseCommonDialog and file(lcLibrary)
-				loDialog = newobject('SFCommonDialog', lcLibrary)
-				if not empty(.cDefault)
-					loDialog.cFileName = alltrim(evaluate(.cDefault))
-				endif not empty(.cDefault)
-				if empty(loDialog.cFileName)
-					loDialog.cInitialDirectory = .cInitialDirectory
-				endif empty(loDialog.cFileName)
-		
-		* Extensions are formatted as Description (*.ext), *.ext; Description (*.ext), *.ext
-		* If there are multiple extensions for a given type, format it as:
-		* Description (*.ext1 | *.ext2), *.ext1|*.ext2; Description (*.ext), *.ext
-		* The "|" in the description will be replaced with a ;.
-		
-				if not empty(.cExtensions)
-					lnTypes = alines(laTypes, evaluate(.cExtensions), .T., ';')
-					loDialog.ClearFilters(.T.)
-					for lnI = 1 to lnTypes
-						lcExt = laTypes[lnI]
-						if ',' $ lcExt
-							lnPos     = at(',', lcExt)
-							lcDescrip = alltrim(left(lcExt, lnPos - 1))
-							lcExten   = alltrim(substr(lcExt, lnPos + 1))
-						else
-							lcDescrip = alltrim(lcExt)
-							lcExten   = '*.' + lcExt
-						endif ',' $ lcExt
-		
-		* There may be multiple extensions for this filter type, so handle that.
-		
-						lnExt   = alines(laExt, lcExten, .T., '|')
-						lcExten = ''
-						for lnJ = 1 to lnExt
-							lcExten = lcExten + iif(empty(lcExten), '', ';') + laExt[lnJ]
-						next lnJ
-						if upper(justext(loDialog.cFileName)) $ upper(lcExten)
-							loDialog.nFilterIndex = lnI
-						endif upper(justext(loDialog.cFileName)) $ upper(lcExten)
-						lcDescrip = strtran(lcDescrip, ' |', ';')
-						lcDescrip = strtran(lcDescrip, '|',  ';')
-						loDialog.AddFilter(lcDescrip, lcExten)
-					next lnI
-				endif not empty(.cExtensions)
-				loDialog.cTitleBarText     = .cCaption
-				loDialog.lSaveDialog       = .lSaveDialog
-				loDialog.lAllowMultiSelect = .lAllowMultiSelect
-				loDialog.ShowDialog()
-				if loDialog.lAllowMultiSelect
-					lcFile = ''
-					for lnI = 1 to loDialog.nFileCount
-						lcFile = lcFile + iif(empty(lcFile), '', ',') + ;
-							addbs(loDialog.cFilePath) + loDialog.aFileNames[lnI]
-					next lnI
-				else
-					lcFile = addbs(loDialog.cFilePath) + loDialog.cFileTitle
-				endif loDialog.lAllowMultiSelect
-			else
-		
-		* We're using GETFILE(), so build a string of parameters from the properties
-		* of this object and call GETFILE().
-		
+			if .lSaveDialog
 				lcOptions = iif(empty(.cExtensions), "''", .cExtensions) + ',' + ;
 					iif(empty(.cText), "''", "'" + .cText + "'") + ',' + ;
 					iif(empty(.cOpenButton), "''", "'" + .cOpenButton + "'") + ',' + ;
 					iif(empty(.nButtonType), '0', transform(.nButtonType)) + ;
 					iif(empty(.cCaption), '', ",'" + .cCaption + "'")
+				lcFile = putfile(&lcOptions)
+			else
+				lcOptions = iif(empty(.cText), "''", "'" + .cText + "'") + ",''," + ;
+					iif(empty(.cExtensions), "''", .cExtensions)
 				lcFile = getfile(&lcOptions)
-			endif .lUseCommonDialog ...
+			endif .lSaveDialog
 		
 		* If the user chose a file, store the result in the specified location.
 		

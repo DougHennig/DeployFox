@@ -41,9 +41,11 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	*< OBJECTDATA: ObjPath="cmdNewProject" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdOptions" UniqueID="" Timestamp="" />
 
+	#INCLUDE "deployfox.h"
 	*<DefinedPropArrayMethod>
 		*m: displaytask		&& Displays the settings for the selected task
 		*m: setupgrid		&& Sets up the grid
+		*m: updateproject		&& Updates the selected record in the project
 		*m: updaterun		&& Updates the status of running the project
 		*p: ctasktype		&& The selected task type
 		*p: oengine		&& A reference to a DeployFoxEngine
@@ -56,12 +58,14 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		ctasktype = 
 		DataSession = 2
 		DoCreate = .T.
-		Height = 565
+		Height = 435
 		Icon = deployfox.ico
+		MinHeight = 435
+		MinWidth = 1070
 		Name = "deployfoxform"
 		oengine = .NULL.
 		otask = .NULL.
-		Width = 1073
+		Width = 1070
 		_memberdata = <VFPData>
 			<memberdata name="displaytask" display="DisplayTask"/>
 			<memberdata name="ctasktype" display="cTaskType"/>
@@ -69,6 +73,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 			<memberdata name="setupgrid" display="SetupGrid"/>
 			<memberdata name="updaterun" display="UpdateRun"/>
 			<memberdata name="oengine" display="oEngine"/>
+			<memberdata name="updateproject" display="UpdateProject"/>
 		</VFPData>
 	*</PropValue>
 
@@ -99,6 +104,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "cmdDeleteTask", ;
 		Picture = removetask.bmp, ;
 		TabIndex = 5, ;
+		ToolTipText = "Remove the selected task", ;
 		Top = 10, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -109,6 +115,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "cmdDown", ;
 		Picture = down.bmp, ;
 		TabIndex = 7, ;
+		ToolTipText = "Move the task down", ;
 		Top = 10, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -119,6 +126,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "cmdNewProject", ;
 		Picture = newproject.bmp, ;
 		TabIndex = 2, ;
+		ToolTipText = "Create a new DeployFox project", ;
 		Top = 10, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -129,6 +137,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "cmdNewTask", ;
 		Picture = newtask.bmp, ;
 		TabIndex = 4, ;
+		ToolTipText = "Add a task", ;
 		Top = 10, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -139,6 +148,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "cmdOpenProject", ;
 		Picture = openproject.bmp, ;
 		TabIndex = 1, ;
+		ToolTipText = "Open a DeployFox project", ;
 		Top = 10, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -149,6 +159,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "cmdOptions", ;
 		Picture = options.bmp, ;
 		TabIndex = 8, ;
+		ToolTipText = "Options", ;
 		Top = 10, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -159,6 +170,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "cmdRun", ;
 		Picture = run.bmp, ;
 		TabIndex = 3, ;
+		ToolTipText = "Run", ;
 		Top = 10, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -179,6 +191,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "cmdUp", ;
 		Picture = up.bmp, ;
 		TabIndex = 6, ;
+		ToolTipText = "Move the task up", ;
 		Top = 10, ;
 		Width = 24
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -197,7 +210,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ADD OBJECT 'grdTasks' AS vfpxbasegrid WITH ;
 		Anchor = 5, ;
 		ColumnCount = 5, ;
-		Height = 489, ;
+		Height = 363, ;
 		HighlightStyle = 2, ;
 		Left = 10, ;
 		Name = "grdTasks", ;
@@ -213,7 +226,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Column2.ControlSource = "curProject.Name", ;
 		Column2.FontName = "Segoe UI", ;
 		Column2.Name = "Column2", ;
-		Column2.Width = 307, ;
+		Column2.Width = 337, ;
 		Column3.ControlSource = "curProject.Task", ;
 		Column3.FontName = "Segoe UI", ;
 		Column3.Name = "Column3", ;
@@ -223,6 +236,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Column4.FontName = "Segoe UI", ;
 		Column4.Name = "Column4", ;
 		Column4.Sparse = .F., ;
+		Column4.Width = 45, ;
 		Column5.ControlSource = "curProject.Status", ;
 		Column5.FontName = "Segoe UI", ;
 		Column5.Name = "Column5"
@@ -286,6 +300,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		*< END OBJECT: BaseClass="checkbox" />
 
 	ADD OBJECT 'grdTasks.Column4.Header1' AS header WITH ;
+		Alignment = 2, ;
 		Caption = "Active", ;
 		FontName = "Segoe UI", ;
 		Name = "Header1"
@@ -337,7 +352,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Left = 15, ;
 		Name = "lblProject", ;
 		TabIndex = 19, ;
-		Top = 541
+		Top = 410
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSettings' AS vfpxbaselabel WITH ;
@@ -360,7 +375,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 
 	ADD OBJECT 'shpSettings' AS vfpxbaseshape WITH ;
 		Anchor = 15, ;
-		Height = 279, ;
+		Height = 153, ;
 		Left = 696, ;
 		Name = "shpSettings", ;
 		Top = 256, ;
@@ -381,6 +396,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	PROCEDURE displaytask		&& Displays the settings for the selected task
 		local lcControl, ;
 			lcFile
+		select curProject
 		This.cTaskType = lower(trim(Task))
 		lcControl = 'This.' + This.cTaskType
 		if type(lcControl) <> 'O'
@@ -425,7 +441,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		This.SetupGrid()
 		This.BindControls = .T.
 		
-		*** TODO: set MinWidth/Height
+		*** TODO: persist size/position
 		
 	ENDPROC
 
@@ -441,6 +457,29 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 				"rgb(255, 255, 255))"
 			.Column5.DynamicForeColor = "iif(Status = 'Failed', rgb(255, 255, 255), rgb(0, 0, 0))"
 		endwith
+		
+	ENDPROC
+
+	PROCEDURE updateproject		&& Updates the selected record in the project
+		*** TODO: remove
+		return
+		
+		local llNew, ;
+			lcID, ;
+			loRecord
+		select curProject
+		llNew = empty(ID)
+		if llNew
+			lcID = sys(2015)
+			replace ID with lcID
+			append blank in ProjectFile
+			replace ID with lcID in ProjectFile
+		endif llNew
+		scatter name loRecord memo
+		select ProjectFile
+		locate for ID = loRecord.ID
+		gather name loRecord memo
+		select curProject
 		
 	ENDPROC
 
@@ -481,7 +520,12 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE cmdDeleteTask.Click
-		*** TODO
+		if messagebox('Delete this task?', MB_YESNO + MB_ICONQUESTION, 'DeployFox') = IDYES
+			delete in curProject
+		*** TODO: renumber all tasks? If so, must update all records in ProjectFile too
+			Thisform.UpdateProject()
+			Thisform.Refresh()
+		endif messagebox...
 		
 	ENDPROC
 
@@ -491,12 +535,36 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE cmdDown.Click
-		*** TODO
+		local lcID, ;
+			lnNewOrder, ;
+			lnCurrOrder
+		select curProject
+		skip
+		lcID       = ID
+		lnNewOrder = Order
+		skip -1
+		lnCurrOrder = Order
+		replace Order with lnNewOrder
+		locate for ID = lcID
+		replace Order with lnCurrOrder
+		locate for Order = lnNewOrder
+		Thisform.UpdateProject()
+		Thisform.Refresh()
+		
+	ENDPROC
+
+	PROCEDURE cmdDown.Refresh
+		select max(Order) as Order ;
+			from curProject ;
+			into cursor curMaxOrder
+		This.Enabled = not empty(Thisform.oEngine.cProjectFile) and ;
+			curProject.Order < curMaxOrder.Order
+		use in curMaxOrder
+		select curProject
 		
 	ENDPROC
 
 	PROCEDURE cmdNewProject.Click
-		*** TODO: ToolTipText for all controls
 		lcProject = putfile('', '', 'DBF')
 		if not empty(lcProject)
 			Thisform.oEngine.NewProject(lcProject)
@@ -506,9 +574,10 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE cmdNewTask.Click
+		select curProject
 		calculate max(Order) to lnOrder
 		append blank
-		replace Order with lnOrder + 10, ;
+		replace Order with lnOrder + 1, ;
 			Task with 'SetVariable'
 		Thisform.DisplayTask()
 		
@@ -537,13 +606,14 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE cmdRun.Click
+		select curProject
 		replace all Status with ''
 		go top
 		Thisform.grdTasks.Refresh()
 		bindevent(Thisform.oEngine, 'Update', Thisform, 'UpdateRun')
 		Thisform.oEngine.Run()
 		unbindevent(Thisform.oEngine)
-		messagebox('Run complete', 64, 'DeployFox')
+		messagebox('Run complete', MB_ICONINFORMATION, 'DeployFox')
 		*** TODO: show status and error messages
 		
 	ENDPROC
@@ -555,32 +625,23 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 
 	PROCEDURE cmdSave.Click
 		*** TODO: where to put this button
-		local lnSelect, ;
-			lcControl, ;
-			llNew, ;
-			lcID, ;
-			loRecord
-		
-		*** TODO: call Validate of lcControl to ensure necessary things are entered
+		local lcControl, ;
+			lcSettings
+		if empty(curProject.Name)
+			messagebox('Please enter the name of the task.', MB_ICONEXCLAMATION, ;
+				'DeployFox')
+			return
+		endif empty(curProject.Name)
 		set step on 
-		lnSelect  = select()
 		lcControl = 'Thisform.' + Thisform.cTaskType
-		&lcControl..SaveSettings()
-		replace Settings with evaluate(lcControl + '.oTask.SaveSettings()')
-		llNew = empty(ID)
-		if llNew
-			lcID = sys(2015)
-			replace ID with lcID
-		*** TODO: uncomment
-		*	append blank in (Thisform.oEngine.cProjectFile)
-		*	replace ID with lcID in (Thisform.oEngine.cProjectFile)
-		endif llNew
-		scatter name loRecord memo
-		*** TODO: uncomment
-		*select (Thisform.oEngine.cProjectFile)
-		*locate for ID = loRecord.ID
-		*gather name loRecord memo
-		select (lnSelect)
+		if &lcControl..Validate()
+			&lcControl..SaveSettings()
+			lcSettings = evaluate(lcControl + '.oTask.SaveSettings()')
+			replace Settings with lcSettings
+			Thisform.UpdateProject()
+		else
+			messagebox('The settings for this task are incomplete.', MB_ICONINFORMATION, 'DeployFox')
+		endif &lcControl..Validate()
 		
 	ENDPROC
 
@@ -590,13 +651,39 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE cmdUp.Click
-		*** TODO
+		local lcID, ;
+			lnNewOrder, ;
+			lnCurrOrder
+		select curProject
+		skip -1
+		lcID       = ID
+		lnNewOrder = Order
+		skip
+		lnCurrOrder = Order
+		replace Order with lnNewOrder
+		locate for ID = lcID
+		replace Order with lnCurrOrder
+		locate for Order = lnNewOrder
+		Thisform.UpdateProject()
+		Thisform.Refresh()
+		
+	ENDPROC
+
+	PROCEDURE cmdUp.Refresh
+		This.Enabled = not empty(Thisform.oEngine.cProjectFile) and ;
+			curProject.Order > 1
 		
 	ENDPROC
 
 	PROCEDURE grdTasks.AfterRowColChange
 		lparameters tnColIndex
 		Thisform.DisplayTask()
+		
+	ENDPROC
+
+	PROCEDURE grdTasks.Column4.Check1.Valid
+		Thisform.UpdateProject()
+		Thisform.Refresh()
 		
 	ENDPROC
 

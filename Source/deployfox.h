@@ -1,3 +1,4 @@
+#include FoxPro.h
 #include VFPXLibraryRegistry.h
 
 #define cnKEY_START		7351

@@ -1,38 +1,83 @@
+#include DeployFox.h
+
 define class DeployFoxEngine as Custom
 	cProjectFile = ''
 		&& the path to the project file
 
 	function Init
-		public SignEXE, ;
-			SignCommand, ;
-			BuildEXE
-*** TODO: remove; get from settings file
-		SignEXE = 'C:\Development\SFQuery\Certificate\signtool.exe'
-*** TODO: remove; get from settings file (decrypt it)
-		SignCommand = '/sStandard=$q{SignEXE}$q sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f $qC:\Development\SFQuery\Certificate\mycert.pfx$q /p Cert_4_Me $p'
-*** TODO: remove; get from settings file
-		BuildEXE = 'C:\Program Files (x86)\Inno Setup 6\iscc'
+		local laStack[1], ;
+			lnI, ;
+			lcPath
 
-		set library to VFPEncryption71.fll
+* Get the path we're running from.
+
+		for lnI = 1 to astackinfo(laStack)
+			if laStack[lnI, 3] = 'main'
+				lcPath = justpath(laStack[lnI, 2])
+				exit
+			endif laStack[lnI, 3] = 'main'
+		next lnI
+		if empty(lcPath)
+			lcPath = justpath(substr(sys(16), at(' ', sys(16), 2) + 1))
+		endif empty(lcPath)
+		if lower(substr(lcPath, rat('\', lcPath) + 1)) = 'source'
+			lcPath = fullpath('..\', addbs(lcPath))
+		endif lower(substr(lcPath ...
+*** TODO: not public variable
+		release AppPath
+		public AppPath
+		AppPath = addbs(lcPath)
+
+* Open the encryption library.
+
+*** TODO: use FoxCrypto_NG?
+		if not 'vfpencryption71' $ set('LIBRARY')
+			set library to (AppPath + 'VFPEncryption71.fll')
+		endif not 'vfpencryption71' $ set('LIBRARY')
+
+* Get the DeployFox settings.
+
+		lcKey = GetKey()
+*** TODO: delete Value for CertPassword before deploying
+		use (AppPath + 'DeployFoxSettings') again shared
+		scan
+			lcVariable = trim(Setting)
+			lcValue    = Value
+			if Encrypt and left(lcValue, 2) = '0x'
+				lcValue = trim(Decrypt(strconv(substr(lcValue, 3), 16), lcKey))
+			endif Encrypt ...
+*** TODO: don't use public variables
+			release &lcVariable
+			public &lcVariable
+			store lcValue to (lcVariable)
+		endscan
+
 	endfunc
 
+* Open a project.
+
 	function OpenProject(tcPath)
-		use in select('ProjectFile')
 		use in select('curProject')
+		use in select('ProjectFile')
 		This.cProjectFile = tcPath
 		use (This.cProjectFile) alias ProjectFile
 *** TODO: check structure to ensure it's a project file
 		select *, space(20) as Status ;
 			from (This.cProjectFile) ;
-			order by Order ;
 			into cursor curProject readwrite
+		index on Order tag Order
 	endfunc
 
+* Create a new project.
+
 	function NewProject(tcPath)
-		create table (tcPath) (ID C(10), Order I, Task C(20), Name C(80), Active L, Settings M, Comments M)
+		create table (tcPath) (ID C(10), Order I, Task C(20), Name C(80), Active L, ;
+			Settings M, Comments M)
 		use
 		This.OpenProject(tcPath)
 	endfunc
+
+* Run the tasks for the project.
 
 	function Run
 *** TODO: local
@@ -45,6 +90,7 @@ define class DeployFoxEngine as Custom
 			order by Order ;
 			into cursor curRun
 		scan
+*** TODO: call a function to run current task. That way, can test single task
 			lcTaskType = trim(Task)
 			select TaskTypes
 			locate for upper(Type) = upper(lcTaskType)
