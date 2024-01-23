@@ -7,6 +7,8 @@ define class DeployFoxEngine as Custom
 		&& the text of an error
 	oVariables    = .NULL.
 		&& a reference to an object containing variables
+	cAppPath      = ''
+		&& the path to DeployFox.app
 
 	function Init
 		local laStack[1], ;
@@ -28,6 +30,7 @@ define class DeployFoxEngine as Custom
 			lcPath = fullpath('..\', addbs(lcPath))
 		endif lower(substr(lcPath ...
 		lcPath = addbs(lcPath)
+		This.cAppPath = lcPath
 
 * Open the encryption library.
 
@@ -40,18 +43,30 @@ define class DeployFoxEngine as Custom
 
 		This.oVariables = newobject('DeployFoxVariables', 'DeployFoxEngine.prg')
 		lcKey = GetKey()
-*** TODO: delete Value for CertPassword before deploying
+*** TODO: delete DeployFoxSettings.dbf before deploying
 		select 0
+		if not file(lcPath + 'DeployFoxSettings.dbf')
+			create table (lcPath + 'DeployFoxSettings') (Setting C(20), Value M, Encrypt L)
+			insert into DeployFoxSettings values ('SignEXE', '{$AppPath}signtool.exe', .F.)
+			insert into DeployFoxSettings values ('SignCommand', '', .F.)
+*** TODO: locate InnoSetup and use path
+			insert into DeployFoxSettings values ('BuildEXEWithInno', 'C:\Program Files (x86)\Inno Setup 6\iscc', .F.)
+			insert into DeployFoxSettings values ('CertPassword', '', .T.)
+		endif not file(lcPath + 'DeployFoxSettings.dbf')
 		use (lcPath + 'DeployFoxSettings') again shared
 		scan
 			lcVariable = trim(Setting)
 			lcValue    = Value
 			if Encrypt and left(lcValue, 2) = '0x'
-				lcValue = trim(Decrypt(strconv(substr(lcValue, 3), 16), lcKey))
+				lcValue = trim(strtran(Decrypt(strconv(substr(lcValue, 3), 16), lcKey), ccNULL))
 			endif Encrypt ...
-			This.oVariables.Add(lcVariable, lcValue)
+			This.oVariables.AddVariable(lcVariable, lcValue, .T.)
 		endscan
+		This.oVariables.AddVariable('AppPath', This.cAppPath, .T.)
 
+* Get a task types cursor.
+
+		This.GetTaskTypes()
 	endfunc
 
 * Open a project.
@@ -77,45 +92,122 @@ define class DeployFoxEngine as Custom
 		This.OpenProject(tcPath)
 	endfunc
 
-* Run the tasks for the project.
+* Get a cursor of task types, combining TaskTypes (built-in) and MyTaskTypes (custom).
 
-	function Run
-		local llReturn
-		if not used('TaskTypes')
-			use TaskTypes in 0
-		endif not used('TaskTypes')
+	function GetTaskTypes
+		local lcPath
+		if not used('curTaskTypes')
+			select * ;
+				from TaskTypes ;
+				into cursor curTaskTypes readwrite
+			lcPath = This.cAppPath
+			if not file(lcPath + 'MyTaskTypes.dbf')
+				copy to (lcPath + 'MyTaskTypes.dbf') for .F.
+			endif not file(lcPath + 'MyTaskTypes.dbf')
+			append from (lcPath + 'MyTaskTypes.dbf')
+		endif not used('curTaskTypes')
+	endfunc
+
+* Fill an array with defined variable names.
+
+	function GetVariableNames(taArray, tlIncludeBuiltIn)
+		local lnSelect, ;
+			lnVariables, ;
+			lnI, ;
+			loVariable
+		lnSelect = select()
 		select * ;
 			from (This.cProjectFile) ;
 			where Active ;
 			order by Order ;
 			into cursor curRun
-		scan
-			raiseevent(This, 'Update', curRun.ID, 'Running', '')
-			llReturn = This.RunTask(Task, Settings)
-			if llReturn
-				raiseevent(This, 'Update', curRun.ID, 'Success', '')
-			else
-				raiseevent(This, 'Update', curRun.ID, 'Failed', This.cErrorMessage)
+		This.SetVariables()
+		use in curRun
+		lnVariables = 0
+		for lnI = 1 to This.oVariables.Count
+			loVariable = This.oVariables.Item[lnI]
+			if tlIncludeBuiltIn or not loVariable.BuiltIn
+				lnVariables = lnVariables + 1
+				dimension taArray[lnVariables]
+				taArray[lnVariables] = loVariable.Name
+			endif tlIncludeBuiltIn ....,
+		next lnI
+		select (lnSelect)
+		return lnVariables
+	endfunc
+
+* Run the tasks for the project. First, set all the variables, then run the other tasks.
+
+	function Run(tlDebug)
+		local lnSelect, ;
+			llReturn
+		lnSelect = select()
+		select * ;
+			from (This.cProjectFile) ;
+			where Active ;
+			order by Order ;
+			into cursor curRun
+		llReturn = This.SetVariables()
+		if llReturn
+			scan for Task <> 'SetVariable'
+				llReturn = This.RunTask(ID, Task, Settings, tlDebug)
+				if not llReturn
+					exit
+				endif not llReturn
+			endscan for Task <> 'SetVariable'
+		endif llReturn
+		use in curRun
+		select (lnSelect)
+	endfunc
+
+	function SetVariables
+		local llReturn
+		llReturn = .T.
+		scan for Task = 'SetVariable'
+			llReturn = This.RunTask(ID, Task, Settings)
+			if not llReturn
 				exit
-			endif llReturn
-		endscan
+			endif not llReturn
+		endscan for Task = 'SetVariable'
+		return llReturn
 	endfunc
 
 * Run the current task.
 
-	function RunTask(tcTaskType, tcSettings)
-		local lcFile, ;
+	function RunTask(tcID, tcTaskType, tcSettings, tlDebug)
+		local lnSelect, ;
+			lcTaskType, ;
+			lcFile, ;
 			loTask, ;
-			llReturn
+			llReturn, ;
+			lcMessage, ;
+			loException as Exception
+		lnSelect = select()
+		raiseevent(This, 'Update', tcID, 'Running', '')
 		lcTaskType = trim(tcTaskType)
-		select TaskTypes
+		This.GetTaskTypes()
+		select curTaskTypes
 		locate for upper(Type) = upper(lcTaskType)
 		lcFile = trim(File)
 		loTask = newobject(lcTaskType, lcFile, '', This.oVariables)
+		loTask.lDebugMode = tlDebug
 		if loTask.GetSettings(tcSettings)
-			llReturn = loTask.Execute()
+			try
+				llReturn  = loTask.Execute()
+				lcMessage = loTask.cErrorMessage
+			catch to loException
+				lcMessage = loException.Message
+			endtry
+		else
+			lcMessage = loTask.cErrorMessage
 		endif loTask.GetSettings(tcSettings)
-		This.cErrorMessage = loTask.cErrorMessage
+		This.cErrorMessage = lcMessage
+		if llReturn
+			raiseevent(This, 'Update', tcID, 'Success', '')
+		else
+			raiseevent(This, 'Update', tcID, 'Failed', lcMessage)
+		endif llReturn
+		select (lnSelect)
 		return llReturn
 	endfunc
 
@@ -125,8 +217,46 @@ define class DeployFoxEngine as Custom
 	endfunc
 enddefine
 
-define class DeployFoxVariables as Custom
-	function Add(tcName, tuValue)
-		addproperty(This, tcName, tuValue)
+* A collection of defined variables.
+
+define class DeployFoxVariables as Collection
+	function AddVariable(tcName, tuValue, tlBuiltIn)
+		local loVariable
+		lcName = upper(tcName)
+		if This.GetKey(lcName) = 0
+			loVariable = newobject('DeployFoxVariable', 'DeployFoxEngine.prg')
+			loVariable.Name    = tcName
+			loVariable.Value   = tuValue
+			loVariable.BuiltIn = tlBuiltIn
+			This.Add(loVariable, lcName)
+		endif This.GetKey(lcName) = 0
 	endfunc
+
+* Case-insensitive Item method (keys are upper-cased).
+
+	function Item(tuIndex)
+		local luReturn, ;
+			lcIndex
+		luReturn = .NULL.
+		if vartype(tuIndex) = 'C'
+			lcIndex = upper(alltrim(tuIndex))
+			if This.GetKey(lcIndex) > 0
+				luReturn = dodefault(lcIndex)
+			endif This.GetKey(lcIndex) > 0
+		else
+			try
+				luReturn = dodefault(tuIndex)
+			catch
+			endtry
+		endif vartype(tuIndex) = 'C'
+		nodefault
+		return luReturn
+	endfunc
+enddefine
+
+* A variable.
+
+define class DeployFoxVariable as Custom
+	Value   = .NULL.
+	BuiltIn = .F.
 enddefine

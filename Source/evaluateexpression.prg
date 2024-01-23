@@ -10,9 +10,18 @@ if '{' $ tcExpression and '}' $ tcExpression
 	lcExpression = strtran(tcExpression, '{', '<<')
 	lcExpression = strtran(lcExpression, '}', '>>')
 	lcExpression = strtran(lcExpression, 'This.', 'toObject.')
-	lcExpression = strtran(lcExpression, '$', 'toObject.oVariables.')
+	for each loVariable in toObject.oVariables foxobject
+		if '$' + upper(loVariable.Name) $ upper(lcExpression)
+			lcExpression = strtran(lcExpression, '$' + loVariable.Name, ;
+				"toObject.oVariables.Item['" + loVariable.Name + "'].Value", -1, -1, 1)
+		endif '$' + upper(loVariable.Name) $ upper(lcExpression)
+	next loVariable
 	try
 		lcReturn = textmerge(alltrim(lcExpression))
+		if '{' $ lcReturn and '}' $ lcReturn
+			lcReturn = EvaluateExpression(lcReturn, toObject)
+				&& call ourselves recursively until all expressions are processed
+		endif '{' $ lcReturn and '}' $ lcReturn
 	catch to loException
 		lcReturn = alltrim(tcExpression)
 	endtry

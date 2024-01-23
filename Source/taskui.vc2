@@ -5,7 +5,7 @@
 *< FOXBIN2PRG: Version="1.20" SourceFile="taskui.vcx" CPID="1252" /> (Solo para binarios VFP 9 / Only for VFP 9 binaries)
 *
 *
-DEFINE CLASS buildexe AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -75,7 +75,7 @@ DEFINE CLASS buildexe AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS buildsetupinno AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS buildsetupinnoui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -107,7 +107,7 @@ DEFINE CLASS buildsetupinno AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS copyfile AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS copyfileui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -152,7 +152,7 @@ DEFINE CLASS copyfile AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS deletefile AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS deletefileui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -183,7 +183,7 @@ DEFINE CLASS deletefile AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS deletefolder AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS deletefolderui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -215,7 +215,7 @@ DEFINE CLASS deletefolder AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS downloadfileui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -235,6 +235,7 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 		Caption = "Password", ;
 		Left = 0, ;
 		Name = "lblPassword", ;
+		TabIndex = 7, ;
 		Top = 80
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -242,6 +243,7 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 		Caption = "Remote file", ;
 		Left = 0, ;
 		Name = "lblRemoteFile", ;
+		TabIndex = 2, ;
 		Top = 5
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -249,6 +251,7 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 		Caption = "User name", ;
 		Left = 0, ;
 		Name = "lblUserName", ;
+		TabIndex = 5, ;
 		Top = 55
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -256,6 +259,7 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 		ccontrolsource = This.Parent.oTask.cLocalFile, ;
 		Left = 0, ;
 		Name = "oLocalFile", ;
+		TabIndex = 3, ;
 		Top = 25, ;
 		lblFile.Caption = "Local file", ;
 		lblFile.Name = "lblFile", ;
@@ -270,6 +274,7 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 		Height = 23, ;
 		Left = 70, ;
 		Name = "txtPassword", ;
+		TabIndex = 6, ;
 		Top = 75, ;
 		Width = 272
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
@@ -278,6 +283,7 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 		Height = 23, ;
 		Left = 70, ;
 		Name = "txtRemoteFile", ;
+		TabIndex = 1, ;
 		Top = 0, ;
 		Width = 272
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
@@ -286,6 +292,7 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 		Height = 23, ;
 		Left = 70, ;
 		Name = "txtUserName", ;
+		TabIndex = 4, ;
 		Top = 50, ;
 		Width = 272
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
@@ -304,7 +311,7 @@ DEFINE CLASS downloadfile AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS executescript AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS executescriptui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -373,7 +380,7 @@ DEFINE CLASS executescript AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS readfromini AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS inibase AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -382,15 +389,23 @@ DEFINE CLASS readfromini AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="cboSection" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblItem" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cboItem" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblVariable" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="txtVariable" UniqueID="" Timestamp="" />
+
+	*<DefinedPropArrayMethod>
+		*m: getitemsforsection		&& Gets the items for the selected section
+		*m: getsections		&& Gets the sections from the selected INI file
+	*</DefinedPropArrayMethod>
 
 	*<PropValue>
-		Name = "readfromini"
+		Name = "inibase"
+		_memberdata = <VFPData>
+			<memberdata name="getitemsforsection" display="GetItemsForSection"/>
+			<memberdata name="getsections" display="GetSections"/>
+		</VFPData>
 	*</PropValue>
 
 	ADD OBJECT 'cboItem' AS vfpxbasecombobox WITH ;
 		Height = 24, ;
+		laddnewitemtolist = .T., ;
 		Left = 50, ;
 		Name = "cboItem", ;
 		Style = 0, ;
@@ -400,6 +415,7 @@ DEFINE CLASS readfromini AS taskuibase OF "taskui.vcx"
 
 	ADD OBJECT 'cboSection' AS vfpxbasecombobox WITH ;
 		Height = 24, ;
+		laddnewitemtolist = .T., ;
 		Left = 50, ;
 		Name = "cboSection", ;
 		Style = 0, ;
@@ -421,13 +437,6 @@ DEFINE CLASS readfromini AS taskuibase OF "taskui.vcx"
 		Top = 29
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'lblVariable' AS vfpxbaselabel WITH ;
-		Caption = "Variable", ;
-		Left = 0, ;
-		Name = "lblVariable", ;
-		Top = 80
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
 	ADD OBJECT 'oINIFile' AS vfpxlibraryfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
 		cextensions = "INI File (*.ini):ini", ;
@@ -443,75 +452,244 @@ DEFINE CLASS readfromini AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 270, ;
 		cmdGetFile.Name = "cmdGetFile"
 		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
-
-	ADD OBJECT 'txtVariable' AS vfpxbasetextbox WITH ;
-		Anchor = 10, ;
-		Height = 23, ;
-		Left = 50, ;
-		Name = "txtVariable", ;
-		Top = 77, ;
-		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
-	PROCEDURE loadsettings
-		This.cboSection.ControlSource  = 'This.Parent.oTask.cSection'
-		This.cboItem.ControlSource     = 'This.Parent.oTask.cItem'
-		This.txtVariable.ControlSource = 'This.Parent.oTask.cVariable'
-		
-	ENDPROC
-
-	PROCEDURE savesettings
-		This.oTask.cSection = This.cboSection.DisplayValue
-		This.oTask.cItem    = This.cboItem.DisplayValue
-		
-	ENDPROC
-
-	PROCEDURE validate
-		return not empty(This.oTask.cSource) and not empty(This.oTask.cSection) and ;
-			 not empty(This.oTask.cItem) and not empty(This.oTask.cVariable)
-		
-	ENDPROC
-
-	PROCEDURE cboSection.anychange
+	PROCEDURE getitemsforsection		&& Gets the items for the selected section
 		local laItems[1], ;
 			lnItems
-		if file(This.Parent.oTask.cTarget)
-			lnItems = ReadINI(This.Parent.oTask.cTarget, This.Parent.oTask.cSection, ;
-				0, '', @laItems)
+		if file(This.oTask.cSource)
+		
+		* Populate the item list with items from the selected section of the INI file.
+		
+			lnItems = ReadINI(This.oTask.cSource, This.oTask.cSection, 0, '', @laItems)
 			if lnItems > 0
-				acopy(laItems, This.Parent.cboItem.aItems)
-				This.Parent.cboItem.Requery()
+				acopy(laItems, This.cboItem.aItems)
 			endif lnItems > 0
-		endif file(This.Parent.oTask.cTarget)
+		
+		* Add the selected item to the list if necessary.
+		
+			if not empty(This.oTask.cItem) and ;
+				ascan(This.cboItem.aItems, This.oTask.cItem) = 0
+				lnItems = lnItems + 1
+				dimension This.cboItem.aItems[lnItems]
+				This.cboItem.aItems[lnItems] = This.oTask.cItem
+			endif not empty(This.oTask.cSection) ...
+		
+		* Requery the list.
+		
+			asort(This.cboItem.aItems)
+			This.cboItem.Requery()
+		endif file(This.oTask.cSource)
 		
 	ENDPROC
 
-	PROCEDURE oINIFile.anychange
+	PROCEDURE getsections		&& Gets the sections from the selected INI file
 		local lcContent, ;
-			laLines[1], ;
 			lnLines, ;
+			laLines[1], ;
 			lnSections, ;
-			lnI
-		if file(This.Parent.oTask.cTarget)
-			lcContent  = filetostr(This.Parent.oTask.cTarget)
+			lnI, ;
+			lcLine
+		if file(This.oTask.cSource)
+		
+		* Populate the section list with sections from the selected INI file.
+		
+			lcContent  = filetostr(This.oTask.cSource)
 			lnLines    = alines(laLines, lcContent)
 			lnSections = 0
 			for lnI = 1 to lnLines
 				lcLine = laLines[lnI]
 				if left(lcLine, 1) = '['
 					lnSections = lnSections + 1
-					dimension This.Parent.cboSection.aItems[lnSections]
-					This.Parent.cboSection.aItems[lnSections] = chrtran(lcLine, '[]', '')
+					dimension This.cboSection.aItems[lnSections]
+					This.cboSection.aItems[lnSections] = chrtran(lcLine, '[]', '')
 				endif left(lcLine, 1) = '['
 			next lnI
-			This.Parent.cboSection.Requery()
-		endif file(This.Parent.oTask.cTarget)
+		
+		* Add the selected section to the list if necessary.
+		
+			if not empty(This.oTask.cSection) and ;
+				ascan(This.cboSection.aItems, This.oTask.cSection) = 0
+				lnSections = lnSections + 1
+				dimension This.cboSection.aItems[lnSections]
+				This.cboSection.aItems[lnSections] = This.oTask.cSection
+			endif not empty(This.oTask.cSection) ...
+		
+		* Requery the list.
+		
+			asort(This.cboSection.aItems)
+			This.cboSection.Requery()
+		endif file(This.cFileName)
+		
+	ENDPROC
+
+	PROCEDURE loadsettings
+		This.cboSection.ControlSource = 'This.Parent.oTask.cSection'
+		This.cboItem.ControlSource    = 'This.Parent.oTask.cItem'
+		
+	ENDPROC
+
+	PROCEDURE Refresh
+		dodefault()
+		if This.Visible
+			This.GetSections()
+			This.GetItemsForSection()
+		endif This.Visible
+		
+	ENDPROC
+
+	PROCEDURE validate
+		return not empty(This.oTask.cSource) and not empty(This.oTask.cSection) and ;
+			 not empty(This.oTask.cItem)
+		
+	ENDPROC
+
+	PROCEDURE cboSection.anychange
+		This.Parent.GetItemsForSection()
+		
+	ENDPROC
+
+	PROCEDURE oINIFile.LostFocus
+		This.Parent.GetSections()
 		
 	ENDPROC
 
 ENDDEFINE
 
-DEFINE CLASS readfromregistry AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS readfrominiui AS inibase OF "taskui.vcx" 
+ 	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="lblVariable" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cboVariable" UniqueID="" Timestamp="" />
+
+	*<PropValue>
+		Name = "readfromini"
+		oINIFile.cmdGetFile.Name = "cmdGetFile"
+		oINIFile.lblFile.Name = "lblFile"
+		oINIFile.Name = "oINIFile"
+		oINIFile.txtFile.Name = "txtFile"
+		lblSection.Name = "lblSection"
+		cboSection.Name = "cboSection"
+		lblItem.Name = "lblItem"
+		cboItem.Name = "cboItem"
+	*</PropValue>
+
+	ADD OBJECT 'cboVariable' AS vfpxbasecombobox WITH ;
+		Height = 24, ;
+		Left = 50, ;
+		Name = "cboVariable", ;
+		Style = 0, ;
+		TabIndex = 6, ;
+		Top = 77, ;
+		Width = 159
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+
+	ADD OBJECT 'lblVariable' AS vfpxbaselabel WITH ;
+		Caption = "Variable", ;
+		Left = 0, ;
+		Name = "lblVariable", ;
+		TabIndex = 7, ;
+		Top = 80
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+	
+	PROCEDURE loadsettings
+		dodefault()
+		This.cboVariable.ControlSource = 'This.Parent.oTask.cVariable'
+		
+	ENDPROC
+
+	PROCEDURE Refresh
+		local laVariables[1], ;
+			lnVariables
+		dodefault()
+		if This.Visible
+			lnVariables = Thisform.oEngine.GetVariableNames(@laVariables)
+			if lnVariables > 0
+				dimension This.cboVariable.aItems[lnVariables]
+				acopy(laVariables, This.cboVariable.aItems)
+				This.cboVariable.Requery()
+			endif lnVariables > 0
+		endif This.Visible
+		
+	ENDPROC
+
+	PROCEDURE validate
+		local llReturn
+		llReturn = dodefault()
+		llReturn = llReturn and not empty(This.oTask.cVariable)
+		return llReturn
+		
+	ENDPROC
+
+ENDDEFINE
+
+DEFINE CLASS readfromregistryui AS registrybase OF "taskui.vcx" 
+ 	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="lblVariable" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cboVariable" UniqueID="" Timestamp="" />
+
+	*<PropValue>
+		Name = "readfromregistry"
+		lblKey.Name = "lblKey"
+		txtKey.Name = "txtKey"
+		lblSetting.Name = "lblSetting"
+		txtSetting.Name = "txtSetting"
+		cboMainKey.Name = "cboMainKey"
+		lblMainKey.Name = "lblMainKey"
+	*</PropValue>
+
+	ADD OBJECT 'cboVariable' AS vfpxbasecombobox WITH ;
+		Height = 24, ;
+		Left = 50, ;
+		Name = "cboVariable", ;
+		Style = 0, ;
+		TabIndex = 6, ;
+		Top = 76, ;
+		Width = 159
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+
+	ADD OBJECT 'lblVariable' AS vfpxbaselabel WITH ;
+		Caption = "Variable", ;
+		Left = 0, ;
+		Name = "lblVariable", ;
+		TabIndex = 7, ;
+		Top = 79
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+	
+	PROCEDURE loadsettings
+		dodefault()
+		This.cboVariable.ControlSource = 'This.Parent.oTask.cVariable'
+		
+	ENDPROC
+
+	PROCEDURE Refresh
+		local laVariables[1], ;
+			lnVariables
+		dodefault()
+		if This.Visible
+			lnVariables = Thisform.oEngine.GetVariableNames(@laVariables)
+			if lnVariables > 0
+				dimension This.cboVariable.aItems[lnVariables]
+				acopy(laVariables, This.cboVariable.aItems)
+				This.cboVariable.Requery()
+			endif lnVariables > 0
+		endif This.Visible
+		
+	ENDPROC
+
+	PROCEDURE validate
+		local llReturn
+		llReturn = dodefault()
+		llReturn = llReturn and not empty(This.oTask.cVariable)
+		return llReturn
+		
+	ENDPROC
+
+ENDDEFINE
+
+DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -519,18 +697,17 @@ DEFINE CLASS readfromregistry AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="txtKey" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblSetting" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="txtSetting" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblVariable" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="txtVariable" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cboMainKey" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblMainKey" UniqueID="" Timestamp="" />
 
 	#INCLUDE "vfpxlibraryregistry.h"
 	*<PropValue>
-		Name = "readfromregistry"
+		Name = "registrybase"
 	*</PropValue>
 
 	ADD OBJECT 'cboMainKey' AS vfpxbasecombobox WITH ;
 		BoundColumn = 2, ;
+		BoundTo = .F., ;
 		Height = 24, ;
 		Left = 50, ;
 		Name = "cboMainKey", ;
@@ -544,7 +721,7 @@ DEFINE CLASS readfromregistry AS taskuibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "lblKey", ;
 		TabIndex = 4, ;
-		Top = 28
+		Top = 29
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblMainKey' AS vfpxbaselabel WITH ;
@@ -560,24 +737,17 @@ DEFINE CLASS readfromregistry AS taskuibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "lblSetting", ;
 		TabIndex = 6, ;
-		Top = 53
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'lblVariable' AS vfpxbaselabel WITH ;
-		Caption = "Variable", ;
-		Left = 0, ;
-		Name = "lblVariable", ;
-		TabIndex = 8, ;
-		Top = 78
+		Top = 54
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'txtKey' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
 		Height = 23, ;
 		Left = 50, ;
+		MaxLength = 255, ;
 		Name = "txtKey", ;
 		TabIndex = 3, ;
-		Top = 25, ;
+		Top = 26, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 
@@ -587,31 +757,23 @@ DEFINE CLASS readfromregistry AS taskuibase OF "taskui.vcx"
 		Left = 50, ;
 		Name = "txtSetting", ;
 		TabIndex = 5, ;
-		Top = 50, ;
-		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
-
-	ADD OBJECT 'txtVariable' AS vfpxbasetextbox WITH ;
-		Anchor = 10, ;
-		Height = 23, ;
-		Left = 50, ;
-		Name = "txtVariable", ;
-		TabIndex = 7, ;
-		Top = 75, ;
+		Top = 51, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings
-		This.cboMainKey.ControlSource  = 'This.Parent.oTask.nMainKey'
-		This.txtKey.ControlSource      = 'This.Parent.oTask.cKey'
-		This.txtSetting.ControlSource  = 'This.Parent.oTask.cSetting'
-		This.txtVariable.ControlSource = 'This.Parent.oTask.cVariable'
+		This.txtKey.ControlSource     = 'This.Parent.oTask.cKey'
+		This.txtSetting.ControlSource = 'This.Parent.oTask.cSetting'
+		
+	ENDPROC
+
+	PROCEDURE savesettings
+		This.oTask.nMainKey = This.cboMainKey.aItems[This.cboMainKey.ListIndex, 2]
 		
 	ENDPROC
 
 	PROCEDURE validate
-		return not empty(This.oTask.cKey) and not empty(This.oTask.cSetting) and ;
-			 not empty(This.oTask.cVariable)
+		return not empty(This.oTask.cKey) and not empty(This.oTask.cSetting)
 		
 	ENDPROC
 
@@ -627,9 +789,14 @@ DEFINE CLASS readfromregistry AS taskuibase OF "taskui.vcx"
 		
 	ENDPROC
 
+	PROCEDURE cboMainKey.Refresh
+		This.Value = ascan(This.aItems, This.Parent.oTask.nMainKey, -1, -1, 2, 8)
+		
+	ENDPROC
+
 ENDDEFINE
 
-DEFINE CLASS renamefile AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS renamefileui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -674,7 +841,7 @@ DEFINE CLASS renamefile AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS runexe AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -687,6 +854,7 @@ DEFINE CLASS runexe AS taskuibase OF "taskui.vcx"
 
 	*<PropValue>
 		Name = "runexe"
+		Width = 345
 	*</PropValue>
 
 	ADD OBJECT 'cboWindowMode' AS vfpxbasecombobox WITH ;
@@ -695,12 +863,12 @@ DEFINE CLASS runexe AS taskuibase OF "taskui.vcx"
 		Height = 24, ;
 		Left = 90, ;
 		Name = "cboWindowMode", ;
-		Top = 140, ;
+		Top = 90, ;
 		Width = 120
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'edtParameters' AS vfpxbaseeditbox WITH ;
-		Height = 105, ;
+		Height = 63, ;
 		Left = 90, ;
 		Name = "edtParameters", ;
 		Top = 25, ;
@@ -714,7 +882,7 @@ DEFINE CLASS runexe AS taskuibase OF "taskui.vcx"
 		Height = 50, ;
 		Left = 0, ;
 		Name = "lblInfo", ;
-		Top = 170, ;
+		Top = 120, ;
 		Width = 340, ;
 		WordWrap = .T.
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
@@ -731,7 +899,7 @@ DEFINE CLASS runexe AS taskuibase OF "taskui.vcx"
 		Caption = "Window mode", ;
 		Left = 0, ;
 		Name = "lblWindowMode", ;
-		Top = 144
+		Top = 94
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oSource' AS vfpxlibraryfile WITH ;
@@ -778,7 +946,7 @@ DEFINE CLASS runexe AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS runprg AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS runprgui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -793,7 +961,7 @@ DEFINE CLASS runprg AS taskuibase OF "taskui.vcx"
 
 	ADD OBJECT 'edtParameters' AS vfpxbaseeditbox WITH ;
 		AddLineFeeds = .T., ;
-		Height = 105, ;
+		Height = 95, ;
 		Left = 90, ;
 		Name = "edtParameters", ;
 		Top = 25, ;
@@ -807,7 +975,7 @@ DEFINE CLASS runprg AS taskuibase OF "taskui.vcx"
 		Height = 50, ;
 		Left = 0, ;
 		Name = "lblInfo", ;
-		Top = 145, ;
+		Top = 130, ;
 		Width = 340, ;
 		WordWrap = .T.
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
@@ -848,7 +1016,7 @@ DEFINE CLASS runprg AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS setvariable AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS setvariableui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -911,29 +1079,34 @@ DEFINE CLASS setvariable AS taskuibase OF "taskui.vcx"
 	ENDPROC
 
 	PROCEDURE validate
-		return not empty(This.oTask.cVariable) and not empty(This.oTask.cValue)
+		return not empty(This.oTask.cVariable)
 		
 	ENDPROC
 
 	PROCEDURE txtVariable.Valid
-		local lnI, ;
-			lcChar, ;
-			llReturn
-		for lnI = 1 to len(This.Value)
-			lcChar = substr(This.Value, lnI)
-			llReturn = isalpha(lcChar) or (isdigit(lcChar) and lnI > 1)
-			if not llReturn
-				messagebox('That is not a valid variable name.', MB_ICONSTOP, 'DeployFox')
-				exit
-			endif not llReturn
-		next lnI
+		local llReturn, ;
+			lnI, ;
+			lcChar
+		lcValue = alltrim(This.Value)
+		if empty(lcValue)
+			llReturn = .T.
+		else
+			for lnI = 1 to len(lcValue)
+				lcChar   = substr(lcValue, lnI)
+				llReturn = isalpha(lcChar) or (isdigit(lcChar) and lnI > 1)
+				if not llReturn
+					messagebox('That is not a valid variable name.', MB_ICONSTOP, 'DeployFox')
+					exit
+				endif not llReturn
+			next lnI
+		endif empty(lcValue)
 		return llReturn
 		
 	ENDPROC
 
 ENDDEFINE
 
-DEFINE CLASS signtool AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -998,7 +1171,7 @@ DEFINE CLASS taskuibase AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 	*</DefinedPropArrayMethod>
 
 	*<PropValue>
-		Height = 130
+		Height = 155
 		Name = "taskuibase"
 		otask = .NULL.
 		Width = 345
@@ -1010,13 +1183,24 @@ DEFINE CLASS taskuibase AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		</VFPData>
 	*</PropValue>
 	
+	PROCEDURE Init
+		* Create an object for data binding (it'll be replaced when a task is selected).
+		
+		lparameters tcClass, ;
+			tcFile, ;
+			toVariables
+		This.oTask = newobject(tcClass, tcFile, '', toVariables)
+		This.LoadSettings()
+		
+	ENDPROC
+
 	PROCEDURE loadsettings		&& Loads the settings
 		* Abstract in this class
 		
 	ENDPROC
 
 	PROCEDURE Refresh
-		This.Visible = Thisform.cTaskType = lower(This.Class)
+		This.Visible = Thisform.cTaskType + 'ui' = lower(This.Class)
 		
 	ENDPROC
 
@@ -1032,7 +1216,7 @@ DEFINE CLASS taskuibase AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS unzipfile AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS unzipfileui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -1081,7 +1265,7 @@ DEFINE CLASS unzipfile AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS uploadfile AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS uploadfileui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -1190,7 +1374,7 @@ DEFINE CLASS uploadfile AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS writetofile AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -1201,6 +1385,7 @@ DEFINE CLASS writetofile AS taskuibase OF "taskui.vcx"
 
 	*<PropValue>
 		Name = "writetofile"
+		Width = 345
 	*</PropValue>
 
 	ADD OBJECT 'chkOverwrite' AS vfpxbasecheckbox WITH ;
@@ -1209,11 +1394,11 @@ DEFINE CLASS writetofile AS taskuibase OF "taskui.vcx"
 		Caption = "Overwrite file", ;
 		Left = 0, ;
 		Name = "chkOverwrite", ;
-		Top = 215
+		Top = 110
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
 	ADD OBJECT 'edtSource' AS vfpxbaseeditbox WITH ;
-		Height = 180, ;
+		Height = 80, ;
 		Left = 30, ;
 		Name = "edtSource", ;
 		Top = 30, ;
@@ -1251,53 +1436,24 @@ DEFINE CLASS writetofile AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS writetoini AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS writetoiniui AS inibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
-	*< OBJECTDATA: ObjPath="oINIFile" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblSection" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="cboSection" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblItem" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="cboItem" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblValue" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="txtValue" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "writetoini"
+		Name = "writetoini2"
+		oINIFile.cmdGetFile.Name = "cmdGetFile"
+		oINIFile.lblFile.Name = "lblFile"
+		oINIFile.Name = "oINIFile"
+		oINIFile.txtFile.Name = "txtFile"
+		lblSection.Name = "lblSection"
+		cboSection.Name = "cboSection"
+		lblItem.Name = "lblItem"
+		cboItem.Name = "cboItem"
 	*</PropValue>
-
-	ADD OBJECT 'cboItem' AS vfpxbasecombobox WITH ;
-		Height = 24, ;
-		Left = 50, ;
-		Name = "cboItem", ;
-		Style = 0, ;
-		Top = 51, ;
-		Width = 159
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
-
-	ADD OBJECT 'cboSection' AS vfpxbasecombobox WITH ;
-		Height = 24, ;
-		Left = 50, ;
-		Name = "cboSection", ;
-		Style = 0, ;
-		Top = 25, ;
-		Width = 159
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
-
-	ADD OBJECT 'lblItem' AS vfpxbaselabel WITH ;
-		Caption = "Item", ;
-		Left = 0, ;
-		Name = "lblItem", ;
-		Top = 55
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'lblSection' AS vfpxbaselabel WITH ;
-		Caption = "Section", ;
-		Left = 0, ;
-		Name = "lblSection", ;
-		Top = 29
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblValue' AS vfpxbaselabel WITH ;
 		Caption = "Value", ;
@@ -1305,22 +1461,6 @@ DEFINE CLASS writetoini AS taskuibase OF "taskui.vcx"
 		Name = "lblValue", ;
 		Top = 80
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'oINIFile' AS vfpxlibraryfile WITH ;
-		ccontrolsource = This.Parent.oTask.cSource, ;
-		cextensions = "INI File (*.ini):ini", ;
-		Left = 0, ;
-		Name = "oINIFile", ;
-		Top = 0, ;
-		lblFile.Caption = "INI file", ;
-		lblFile.Name = "lblFile", ;
-		txtFile.Height = 23, ;
-		txtFile.Left = 50, ;
-		txtFile.Name = "txtFile", ;
-		txtFile.Top = 0, ;
-		txtFile.Width = 270, ;
-		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtValue' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -1332,93 +1472,40 @@ DEFINE CLASS writetoini AS taskuibase OF "taskui.vcx"
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings		&& Loads the settings
-		This.cboSection.ControlSource = 'This.Parent.oTask.cSection'
-		This.cboItem.ControlSource    = 'This.Parent.oTask.cItem'
-		This.txtValue.ControlSource   = 'This.Parent.oTask.cValue'
-		
-	ENDPROC
-
-	PROCEDURE savesettings		&& Saves the settings
-		This.oTask.cSection = This.cboSection.DisplayValue
-		This.oTask.cItem    = This.cboItem.DisplayValue
+		dodefault()
+		This.txtValue.ControlSource = 'This.Parent.oTask.cValue'
 		
 	ENDPROC
 
 	PROCEDURE validate		&& Ensures the values are valid
-		return not empty(This.oTask.cSource) and not empty(This.oTask.cSection) and ;
-			 not empty(This.oTask.cItem) and not empty(This.oTask.cValue)
-		
-	ENDPROC
-
-	PROCEDURE cboSection.anychange
-		local laItems[1], ;
-			lnItems
-		if file(This.Parent.oTask.cTarget)
-			lnItems = ReadINI(This.Parent.oTask.cTarget, This.Parent.oTask.cSection, ;
-				0, '', @laItems)
-			if lnItems > 0
-				acopy(laItems, This.Parent.cboItem.aItems)
-				This.Parent.cboItem.Requery()
-			endif lnItems > 0
-		endif file(This.Parent.oTask.cTarget)
-		
-	ENDPROC
-
-	PROCEDURE oINIFile.anychange
-		local lcContent, ;
-			laLines[1], ;
-			lnLines, ;
-			lnSections, ;
-			lnI
-		if file(This.Parent.oTask.cTarget)
-			lcContent  = filetostr(This.Parent.oTask.cTarget)
-			lnLines    = alines(laLines, lcContent)
-			lnSections = 0
-			for lnI = 1 to lnLines
-				lcLine = laLines[lnI]
-				if left(lcLine, 1) = '['
-					lnSections = lnSections + 1
-					dimension This.Parent.cboSection.aItems[lnSections]
-					This.Parent.cboSection.aItems[lnSections] = chrtran(lcLine, '[]', '')
-				endif left(lcLine, 1) = '['
-			next lnI
-			This.Parent.cboSection.Requery()
-		endif file(This.Parent.oTask.cTarget)
+		local llReturn
+		llReturn = dodefault()
+		llReturn = llReturn and not empty(This.oTask.cValue)
+		return llReturn
 		
 	ENDPROC
 
 ENDDEFINE
 
-DEFINE CLASS writetoregistry AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
-	*< OBJECTDATA: ObjPath="lblKey" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="txtKey" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblSetting" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="txtSetting" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblValue" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="txtValue" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblType" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cboType" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="cboMainKey" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblMainKey" UniqueID="" Timestamp="" />
 
 	#INCLUDE "vfpxlibraryregistry.h"
 	*<PropValue>
 		Name = "writetoregistry"
+		lblKey.Name = "lblKey"
+		txtKey.Name = "txtKey"
+		lblSetting.Name = "lblSetting"
+		txtSetting.Name = "txtSetting"
+		cboMainKey.Name = "cboMainKey"
+		lblMainKey.Name = "lblMainKey"
 	*</PropValue>
-
-	ADD OBJECT 'cboMainKey' AS vfpxbasecombobox WITH ;
-		BoundColumn = 2, ;
-		BoundTo = .F., ;
-		Height = 24, ;
-		Left = 50, ;
-		Name = "cboMainKey", ;
-		TabIndex = 1, ;
-		Top = 0, ;
-		Width = 185
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'cboType' AS vfpxbasecombobox WITH ;
 		BoundColumn = 2, ;
@@ -1426,40 +1513,16 @@ DEFINE CLASS writetoregistry AS taskuibase OF "taskui.vcx"
 		Left = 49, ;
 		Name = "cboType", ;
 		TabIndex = 9, ;
-		Top = 101, ;
+		Top = 102, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
-
-	ADD OBJECT 'lblKey' AS vfpxbaselabel WITH ;
-		Caption = "Key", ;
-		Left = 0, ;
-		Name = "lblKey", ;
-		TabIndex = 4, ;
-		Top = 28
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'lblMainKey' AS vfpxbaselabel WITH ;
-		Caption = "Hive", ;
-		Left = 0, ;
-		Name = "lblMainKey", ;
-		TabIndex = 2, ;
-		Top = 4
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'lblSetting' AS vfpxbaselabel WITH ;
-		Caption = "Setting", ;
-		Left = 0, ;
-		Name = "lblSetting", ;
-		TabIndex = 6, ;
-		Top = 53
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblType' AS vfpxbaselabel WITH ;
 		Caption = "Type", ;
 		Left = 0, ;
 		Name = "lblType", ;
 		TabIndex = 10, ;
-		Top = 105
+		Top = 106
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblValue' AS vfpxbaselabel WITH ;
@@ -1467,28 +1530,8 @@ DEFINE CLASS writetoregistry AS taskuibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "lblValue", ;
 		TabIndex = 8, ;
-		Top = 78
+		Top = 79
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'txtKey' AS vfpxbasetextbox WITH ;
-		Anchor = 10, ;
-		Height = 23, ;
-		Left = 50, ;
-		Name = "txtKey", ;
-		TabIndex = 3, ;
-		Top = 25, ;
-		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
-
-	ADD OBJECT 'txtSetting' AS vfpxbasetextbox WITH ;
-		Anchor = 10, ;
-		Height = 23, ;
-		Left = 50, ;
-		Name = "txtSetting", ;
-		TabIndex = 5, ;
-		Top = 50, ;
-		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtValue' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -1496,34 +1539,22 @@ DEFINE CLASS writetoregistry AS taskuibase OF "taskui.vcx"
 		Left = 50, ;
 		Name = "txtValue", ;
 		TabIndex = 7, ;
-		Top = 75, ;
+		Top = 76, ;
 		Width = 294
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings		&& Loads the settings
-		This.cboMainKey.ControlSource = 'This.Parent.oTask.nMainKey'
-		This.txtKey.ControlSource     = 'This.Parent.oTask.cKey'
-		This.txtSetting.ControlSource = 'This.Parent.oTask.cSetting'
-		This.txtValue.ControlSource   = 'This.Parent.oTask.uValue'
-		This.cboType.ControlSource    = 'This.Parent.oTask.nType'
+		dodefault()
+		This.txtValue.ControlSource = 'This.Parent.oTask.uValue'
+		This.cboType.ControlSource  = 'This.Parent.oTask.nType'
 		
 	ENDPROC
 
 	PROCEDURE validate		&& Ensures the values are valid
-		return not empty(This.oTask.cKey) and not empty(This.oTask.cSetting) and ;
-			 not empty(This.oTask.uValue)
-		
-	ENDPROC
-
-	PROCEDURE cboMainKey.Init
-		dimension This.aItems[3, 2]
-		This.aItems[1, 1] = 'HKEY_CURRENT_USER'
-		This.aItems[1, 2] = cnHKEY_CURRENT_USER
-		This.aItems[2, 1] = 'HKEY_LOCAL_MACHINE'
-		This.aItems[2, 2] = cnHKEY_LOCAL_MACHINE
-		This.aItems[3, 1] = 'HKEY_CLASSES_ROOT'
-		This.aItems[3, 2] = cnHKEY_CLASSES_ROOT
-		dodefault()
+		local llReturn
+		llReturn = dodefault()
+		llReturn = llReturn and not empty(This.oTask.uValue)
+		return llReturn
 		
 	ENDPROC
 

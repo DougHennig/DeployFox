@@ -15,7 +15,6 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 
 	*<DefinedPropArrayMethod>
 		*m: adjustcontrols		&& Adjusts the control positions
-		*m: anychange		&& Fired when the value of cDirectory changes
 		*m: cdirectory_access
 		*m: cdirectory_assign
 		*m: clabelcaption_assign
@@ -45,7 +44,6 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		value = 
 		Width = 343
 		_memberdata = <VFPData>
-			<memberdata name="anychange" type="method" display="AnyChange" favorites="True"/>
 			<memberdata name="ccaption" type="property" display="cCaption" favorites="True"/>
 			<memberdata name="ccontrolsource" type="property" display="cControlSource" favorites="True"/>
 			<memberdata name="cdirectory" type="property" display="cDirectory"/>
@@ -122,11 +120,6 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		
 	ENDPROC
 
-	PROCEDURE anychange		&& Fired when the value of cDirectory changes
-		* Abstract method
-		
-	ENDPROC
-
 	PROCEDURE cdirectory_access
 		return addbs(alltrim(This.txtFolder.Value))
 		
@@ -135,6 +128,8 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 	PROCEDURE cdirectory_assign
 		lparameters tcDirectory
 		local lcDirectory, ;
+			lcProgram1, ;
+			lcProgram2, ;
 			lnPos, ;
 			llChanged, ;
 			lcAlias, ;
@@ -144,14 +139,18 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		
 		* Update the Value of the textbox if we're not being called from it.
 		
-			if not 'TXTFOLDER.ANYCHANGE' $ program(program(-1) - 1) and ;
-				not 'TXTFOLDER.ANYCHANGE' $ program(program(-1) - 2)
+			lcProgram1 = program(program(-1) - 1)
+			lcProgram2 = program(program(-1) - 2)
+			if not 'TXTFOLDER.ANYCHANGE' $ lcProgram1 and ;
+				not 'TXTFOLDER.ANYCHANGE' $ lcProgram2
 				.txtFolder.Value = lcDirectory
-			endif not 'TXTFOLDER.ANYCHANGE' $ program(program(-1) - 1) ...
+			endif not 'TXTFOLDER.ANYCHANGE' $ lcProgram1 ...
 		
 		* Write the value to our ControlSource.
 		
-			if 'CDIRECTORY_ASSIGN' $ program(program(-1) - 1)
+			if 'CMDGETFOLDER.CLICK' $ lcProgram2 or ;
+				'TXTFOLDER.ANYCHANGE' $ lcProgram1 or ;
+				'CDIRECTORY_ASSIGN' $ lcProgram1
 				lnPos = at('.', .cControlSource)
 				if lnPos > 0 and not lcDirectory == alltrim(evaluate(.cControlSource))
 					llChanged = .T.
@@ -163,7 +162,7 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 						store lcDirectory to (.cControlSource)
 					endif used(lcAlias)
 				endif lnPos > 0 ...
-			endif 'CDIRECTORY_ASSIGN' $ program(program(-1) - 1)
+			endif 'CDIRECTORY_ASSIGN' $ lcProgram1 ...
 		
 		* Update the TooltipText.
 		
@@ -171,12 +170,6 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 				.txtFolder.TooltipText = displaypath(lcDirectory, 127)
 			catch
 			endtry
-		
-		* Fire the AnyChange hook method if the value changed.
-		
-			if llChanged
-				.AnyChange()
-			endif llChanged
 		endwith
 		
 	ENDPROC
@@ -291,7 +284,6 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 
 	*<DefinedPropArrayMethod>
 		*m: adjustcontrols		&& Adjust the control positions
-		*m: anychange		&& Fired when the value of cFileName changes
 		*m: cfilename_access
 		*m: cfilename_assign
 		*m: clabelcaption_assign
@@ -307,11 +299,9 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		*p: ccontrolsource		&& The item this control's value is bound to
 		*p: cextensions		&& The value for cmdGetFile.cExtensions
 		*p: cfilename		&& The filename
-		*p: cinitialdirectory		&& The initial directory for the dialog
 		*p: clabelcaption		&& The caption to use for the label
 		*p: controlsource		&& The control source
 		*p: ladjustpositions		&& .T. if we should adjust the positions of the controls
-		*p: lbindtoformanychange		&& .T. to bind this control's AnyChange event to its form's AnyChange method
 		*p: ldisplaylabel		&& .T. to display the label
 		*p: lsavedialog		&& .T. to use a Save dialog, .F. to use an Open dialog
 		*p: lvalidfilename		&& .T. if we have a valid file name
@@ -324,12 +314,10 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		ccontrolsource = 
 		cextensions = 
 		cfilename = 
-		cinitialdirectory = 
 		clabelcaption = 
 		controlsource = 
 		Height = 23
 		ladjustpositions = .T.
-		lbindtoformanychange = .F.
 		ldisplaylabel = .T.
 		lsavedialog = .F.
 		lvalidfilename = .T.
@@ -337,7 +325,6 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		value = 
 		Width = 343
 		_memberdata = <VFPData>
-			<memberdata name="anychange" type="method" display="AnyChange" favorites="True"/>
 			<memberdata name="ccaption" type="property" display="cCaption" favorites="True"/>
 			<memberdata name="ccontrolsource" type="property" display="cControlSource" favorites="True"/>
 			<memberdata name="cextensions" type="property" display="cExtensions" favorites="True"/>
@@ -352,12 +339,10 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 			<memberdata name="value" type="property" display="Value"/>
 			<memberdata name="value_access" type="method" display="Value_Access"/>
 			<memberdata name="value_assign" type="method" display="Value_Assign"/>
-			<memberdata name="lbindtoformanychange" type="property" display="lBindToFormAnyChange"/>
 			<memberdata name="filechanged" type="method" display="FileChanged"/>
 			<memberdata name="clabelcaption_assign" type="method" display="cLabelCaption_Assign"/>
 			<memberdata name="adjustcontrols" type="method" display="AdjustControls"/>
 			<memberdata name="lsavedialog" type="property" display="lSaveDialog"/>
-			<memberdata name="cinitialdirectory" type="property" display="cInitialDirectory"/>
 			<memberdata name="_pemeditor_resize" display="_PEMEditor_Resize"/>
 			<memberdata name="controlsource" display="ControlSource"/>
 			<memberdata name="controlsource_assign" display="ControlSource_Assign"/>
@@ -369,7 +354,6 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 	ADD OBJECT 'cmdGetFile' AS vfpxlibrarygetfile WITH ;
 		Anchor = 8, ;
 		cafterdone = This.Parent.Validation(), ;
-		cdefault = This.Parent.cFileName, ;
 		cresult = This.Parent.cFileName, ;
 		Left = 320, ;
 		Name = "cmdGetFile", ;
@@ -425,11 +409,6 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		
 	ENDPROC
 
-	PROCEDURE anychange		&& Fired when the value of cFileName changes
-		* Abstract method
-		
-	ENDPROC
-
 	PROCEDURE cfilename_access
 		return alltrim(This.txtFile.Value)
 		
@@ -438,6 +417,8 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 	PROCEDURE cfilename_assign
 		lparameters tcFileName
 		local lcFileName, ;
+			lcProgram1, ;
+			lcProgram2, ;
 			lnPos, ;
 			lcAlias, ;
 			lcField
@@ -446,15 +427,18 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		
 		* Update the Value of the textbox if we're not being called from it.
 		
-			if not 'TXTFILE.ANYCHANGE' $ program(program(-1) - 1) and ;
-				not 'TXTFILE.ANYCHANGE' $ program(program(-1) - 2)
+			lcProgram1 = program(program(-1) - 1)
+			lcProgram2 = program(program(-1) - 2)
+			if not 'TXTFILE.ANYCHANGE' $ lcProgram1 and ;
+				not 'TXTFILE.ANYCHANGE' $ lcProgram2
 				.txtFile.Value = lcFileName
-			endif not 'TXTFILE.ANYCHANGE' $ program(program(-1) - 1) ...
+			endif not 'TXTFILE.ANYCHANGE' $ lcProgram1 ...
 		
 		* Write the value to our ControlSource.
 		
-			if 'CMDGETFILE.CLICK' $ program(program(-1) - 2) or ;
-				'CFILENAME_ASSIGN' $ program(program(-1) - 1)
+			if 'CMDGETFILE.CLICK' $ lcProgram2 or ;
+				'TXTFILE.ANYCHANGE' $ lcProgram1 or ;
+				'CFILENAME_ASSIGN' $ lcProgram1
 				lnPos = at('.', .cControlSource)
 				if lnPos > 0 and not lcFileName == alltrim(evaluate(.cControlSource))
 					lcAlias = left(.cControlSource, lnPos - 1)
@@ -466,7 +450,7 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 					endif used(lcAlias)
 					raiseevent(This, 'FileChanged')
 				endif lnPos > 0 ...
-			endif 'CMDGETFILE.CLICK' $ program(program(-1) - 2) ...
+			endif 'CMDGETFILE.CLICK' $ lcProgram2 ...
 		
 		* Update the TooltipText.
 		
@@ -474,10 +458,6 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 				.txtFile.TooltipText = displaypath(lcFileName, 127)
 			catch
 			endtry
-		
-		* Fire the AnyChange hook method (backward compatibility only).
-		
-			.AnyChange()
 		endwith
 		
 	ENDPROC
@@ -501,13 +481,6 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE Init
-		* If we're supposed to bind our AnyChange event to our form's AnyChange method,
-		* do so.
-		
-		if This.lBindToFormAnyChange and vartype(Thisform) = 'O' and ;
-			pemstatus(Thisform, 'AnyChange', 5)
-			bindevent(This, 'FileChanged', Thisform, 'AnyChange')
-		endif This.lBindToFormAnyChange ...
 		This.AdjustControls()
 		dodefault()
 		
@@ -580,11 +553,10 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 	PROCEDURE cmdGetFile.Click
 		local lcFileName
 		with This
-			.cCaption          = .Parent.cCaption
-			.cExtensions       = .Parent.cExtensions
-			lcFileName         = .Parent.cFileName
-			.lSaveDialog       = .Parent.lSaveDialog
-			.cInitialDirectory = .Parent.cInitialDirectory
+			.cCaption    = .Parent.cCaption
+			.cExtensions = .Parent.cExtensions
+			lcFileName   = .Parent.cFileName
+			.lSaveDialog = .Parent.lSaveDialog
 			dodefault()
 			if not lcFileName == .Parent.cFileName
 				raiseevent(This.Parent, 'FileChanged')
@@ -714,10 +686,10 @@ DEFINE CLASS vfpxlibrarygetdir AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx"
 		* in the specified location. Convert to the proper case.
 		
 			lcDir = getdir(&lcOptions)
-			if not empty(lcDir) and vartype(.oUtility) = 'O'
-				lcDir = .oUtility.GetProperFileCase(lcDir, .T.)
+			if not empty(lcDir)
+				lcDir = GetProperFileCase(lcDir, .T.)
 				store lcDir to (lcResult)
-			endif not empty(lcDir) ...
+			endif not empty(lcDir)
 		
 		* If a method or function was specified to execute after GETDIR(), do it.
 		
@@ -725,38 +697,6 @@ DEFINE CLASS vfpxlibrarygetdir AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx"
 				evaluate(.cAfterDone)
 			endif not empty(.cAfterDone)
 		endwith
-		
-	ENDPROC
-
-	PROCEDURE Destroy
-		This.oUtility = .NULL.
-		dodefault()
-		
-	ENDPROC
-
-	PROCEDURE Init
-		local lcLibrary
-		with This
-		
-		* Get a reference to an SFUtility object.
-		
-			lcLibrary = 'SFUtility.vcx'
-			do case
-				case type('.oUtility.Name') = 'C'
-				case type('oUtility.Name') = 'C'
-					.oUtility = oUtility
-				case file(lcLibrary)
-					.oUtility = newobject('SFUtility', lcLibrary)
-			endcase
-		
-		* Set the ToolTipText and StatusBarText.
-		
-			if type('oLocalizer.Name') = 'C'
-				store oLocalizer.GetLocalizedString('STR_SELECT_FOLDER') to ;
-					.ToolTipText, .StatusBarText
-			endif type('oLocalizer.Name') = 'C'
-		endwith
-		dodefault()
 		
 	ENDPROC
 
@@ -831,22 +771,22 @@ DEFINE CLASS vfpxlibrarygetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx
 		* GETFILE() or PUTFILE().
 		
 			if .lSaveDialog
+				lcOptions = iif(empty(.cText), "''", "'" + .cText + "'") + ",''," + ;
+					iif(empty(.cExtensions), "''", .cExtensions)
+				lcFile = putfile(&lcOptions)
+			else
 				lcOptions = iif(empty(.cExtensions), "''", .cExtensions) + ',' + ;
 					iif(empty(.cText), "''", "'" + .cText + "'") + ',' + ;
 					iif(empty(.cOpenButton), "''", "'" + .cOpenButton + "'") + ',' + ;
 					iif(empty(.nButtonType), '0', transform(.nButtonType)) + ;
 					iif(empty(.cCaption), '', ",'" + .cCaption + "'")
-				lcFile = putfile(&lcOptions)
-			else
-				lcOptions = iif(empty(.cText), "''", "'" + .cText + "'") + ",''," + ;
-					iif(empty(.cExtensions), "''", .cExtensions)
 				lcFile = getfile(&lcOptions)
 			endif .lSaveDialog
 		
 		* If the user chose a file, store the result in the specified location.
 		
 			if not empty(lcFile)
-				store lcFile to (lcResult)
+				store GetProperFileCase(lcFile) to (lcResult)
 		
 		* If a method or function was specified to execute after file selection, do it.
 		
@@ -855,15 +795,6 @@ DEFINE CLASS vfpxlibrarygetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx
 				endif not empty(.cAfterDone)
 			endif not empty(lcFile)
 		endwith
-		
-	ENDPROC
-
-	PROCEDURE Init
-		if type('oLocalizer.Name') = 'C'
-			store oLocalizer.GetLocalizedString('STR_SELECT_FILE') to ;
-				This.ToolTipText, This.StatusBarText
-		endif type('oLocalizer.Name') = 'C'
-		dodefault()
 		
 	ENDPROC
 

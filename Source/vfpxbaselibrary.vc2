@@ -223,6 +223,7 @@ DEFINE CLASS vfpxbasecombobox AS combobox 		&& Base class for ComboBox objects
 		*m: shortcutmenu		&& Populates the shortcut menu
 		*m: showmenu		&& Display a shortcut menu
 		*m: updatecontrolsource		&& Updates the control source
+		*p: laddnewitemtolist		&& .T. to add user-typed values to the list
 		*p: lrequeryoninit		&& .T. to call Requery from Init
 		*p: lsaveanchor		&& This allows a container to use SetAll('lSaveAnchor') to save/reset and then restore Anchor when the form's size is changed but controls shouldn't move
 		*p: nsavedanchor		&& The anchor value saved in lSaveAnchor_Assign
@@ -236,6 +237,7 @@ DEFINE CLASS vfpxbasecombobox AS combobox 		&& Base class for ComboBox objects
 		BoundTo = .T.
 		FontName = "Segoe UI"
 		ItemTips = .T.
+		laddnewitemtolist = .F.
 		lrequeryoninit = .T.
 		lsaveanchor = .F.
 		Name = "vfpxbasecombobox"
@@ -258,6 +260,7 @@ DEFINE CLASS vfpxbasecombobox AS combobox 		&& Base class for ComboBox objects
 			<memberdata name="anychange" display="AnyChange" favorites="True"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu" favorites="True"/>
 			<memberdata name="lrequeryoninit" display="lRequeryOnInit" favorites="True"/>
+			<memberdata name="laddnewitemtolist" display="lAddNewItemToList"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -447,6 +450,30 @@ DEFINE CLASS vfpxbasecombobox AS combobox 		&& Base class for ComboBox objects
 				endif used(lcAlias)
 			endif lnPos > 0 ...
 		endwith
+		
+	ENDPROC
+
+	PROCEDURE Valid
+		* If the user typed a new value, add it to the list if we're supposed to.
+		
+		local lnItems, ;
+			lnCols
+		if This.Style = 0 and This.lAddNewItemToList and ;
+			This.RowSourceType = 5 and This.RowSource = 'This.aItems' and ;
+			ascan(This.aItems, This.DisplayValue) = 0
+			lnItems = iif(empty(This.aItems[1]), 0, alen(This.aItems)) + 1
+			lnCols  = alen(This.aItems, 2)
+			if lnCols = 0
+				dimension This.aItems[lnItems]
+				This.aItems[lnItems] = This.DisplayValue
+			else
+				dimension This.aItems[lnItems, alen(This.aItems, 2)]
+				This.aItems[lnItems, 1] = This.DisplayValue
+			endif lnCols = 0
+			asort(This.aItems)
+			This.Requery()
+			This.Value = This.DisplayValue
+		endif This.Style = 0 ...
 		
 	ENDPROC
 
@@ -1021,6 +1048,7 @@ DEFINE CLASS vfpxbaseform AS form
 		MaxButton = .F.
 		MinButton = .F.
 		Name = "vfpxbaseform"
+		ShowTips = .T.
 		ShowWindow = 1
 		_memberdata = <VFPData>
 			<memberdata name="cregistrykey" display="cRegistryKey"/>

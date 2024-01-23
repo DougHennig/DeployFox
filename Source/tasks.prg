@@ -9,6 +9,11 @@ define class TaskBase as Session
 		&& a comma-delimited list of properties to encrypt
 	oVariables    = .NULL.
 		&& a reference to an object containing variables
+	lDebugMode    = .F.
+		&& .T. to run in debug mode
+*** Note: when new properties are added, include them in INLIST statement in
+***		  SaveSettings
+
 
 	function Init(toVariables)
 		This.oVariables = toVariables
@@ -40,7 +45,7 @@ define class TaskBase as Session
 					loPNode = loNode.selectSingleNode('value')
 					lcValue = loPNode.text
 					if lower(lcName) $ lcEncrypt and left(lcValue, 2) = '0x'
-						lcValue = Decrypt(strconv(substr(lcValue, 3), 16), lcKey)
+						lcValue = trim(strtran(Decrypt(strconv(substr(lcValue, 3), 16), lcKey), ccNULL))
 					endif lower(lcName) $ lcEncrypt ...
 					if not tlNoExpandVariables
 						lcValue = EvaluateExpression(lcValue, This)
@@ -92,7 +97,8 @@ define class TaskBase as Session
 				lnProperties = amembers(laProperties, This, 0, 'U')
 				for lnI = 1 to lnProperties
 					lcProperty = lower(laProperties[lnI])
-					if not inlist(lcProperty, 'cerrormessage', 'cencrypt')
+					if not inlist(lcProperty, 'cerrormessage', 'cencrypt', ;
+						'ovariables', 'lDebugMode')
 						luValue = evaluate('This.' + lcProperty)
 						lcType  = vartype(luValue)
 						do case
@@ -124,10 +130,10 @@ define class TaskBase as Session
 				lcSettings = loXMLDOM.xml
 			endif vartype(loXMLDOM) = 'O'
 		catch to loException
+set step on 
 			lcSettings = ''
 			This.cErrorMessage = Format('Error creating XML: {0}', loException.Message)
 		endtry
-set step on 
 		return lcSettings
 	endfunc
 
@@ -180,7 +186,7 @@ define class WriteToRegistry as RegistryBase
 		local loRegistry, ;
 			llReturn
 		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
-		llReturn   = loRegistry.SetKey(This.cSubKey, This.cSetting, This.uValue, ;
+		llReturn   = loRegistry.SetKey(This.cKey, This.cSetting, This.uValue, ;
 			This.nMainKey, This.nType)
 		return llReturn
 	endfunc
@@ -193,13 +199,15 @@ define class ReadFromRegistry as RegistryBase
 	function Execute
 		local loRegistry, ;
 			luValue, ;
-			llReturn
+			llReturn, ;
+			loVariable
 		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
-		luValue    = loRegistry.GetKey(This.cSubKey, This.cSetting, '', ;
+		luValue    = loRegistry.GetKey(This.cKey, This.cSetting, '', ;
 			This.nMainKey)
 		llReturn   = loRegistry.nResult = cnSUCCESS
 		if llReturn
-			store luValue to (This.cVariable)
+			loVariable = This.oVariables.Item(This.cVariable)
+			loVariable.Value = luValue
 		endif llReturn
 		return llReturn
 	endfunc
@@ -234,8 +242,10 @@ define class ReadFromINI as TaskBase
 		&& the name of the variable to save the value to
 
 	function Execute
+		local loVariable
 *** TODO FUTURE: option to support decryption: need to specify key
-		store ReadINI(This.cSource, This.cSection, This.cItem) to (This.cVariable)
+		loVariable = This.oVariables.Item(This.cVariable)
+		loVariable.Value = ReadINI(This.cSource, This.cSection, This.cItem)
 		return .T.
 	endfunc
 enddefine
@@ -406,29 +416,35 @@ define class RunEXE as TaskBase
 		&& the parameters to pass to it
 	cWindowMode = 'HID'
 		&& the window mode
-*** TODO: option to wait until done or not
+*** TODO FUTURE: option to wait until done (the default) or not
 
 	function Execute
 		local lcSource, ;
+			lcParameters, ;
 			lcCommand, ;
 			loAPI, ;
 			lcMessage, ;
+			lnResult, ;
 			llResult
-		lcSource  = EvaluateExpression(This.cSource, This)
-		lcCommand = '"' + lcSource + '"' + ;
-			icase(empty(This.cParameters), '', ;
-				'"' $ This.cParameters, ' ' + This.cParameters, ;
-				' "' + This.cParameters + '"')
+		lcSource     = EvaluateExpression(This.cSource, This)
+*** TODO: error if lcSource is empty or doesn't exist
+		lcParameters = EvaluateExpression(This.cParameters, This)
+		lcCommand    = '"' + lcSource + '"' + ;
+			icase(empty(lcParameters), '', ;
+				'"' $ lcParameters, ' ' + lcParameters, ;
+				' "' + lcParameters + '"')
 *** TODO: add logging: command being executed
 		loAPI     = newobject('API_AppRun', 'API_AppRun.prg', '', lcCommand, ;
-			justpath(fullpath(lcSource)), This.cWindowMode)
+			justpath(fullpath(lcSource)), iif(This.lDebugMode, 'NOR', This.cWindowMode))
 		do case
 			case not empty(loAPI.icErrorMessage)
 				lcMessage = loAPI.icErrorMessage
 *** TODO: problem: SQConfig doesn't terminate
 			case loAPI.LaunchAppAndWait()
-				llResult  = nvl(loAPI.CheckProcessExitCode(), -1) = 0
-				lcMessage = evl(loAPI.icErrorMessage, 'API_AppRun failed on execution')
+				lnResult  = nvl(loAPI.CheckProcessExitCode(), -1)
+				llResult  = lnResult = 0
+				lcMessage = evl(loAPI.icErrorMessage, ;
+					Format('{0} did not run successfully. The error code is {1}.', This.cSource, lnResult))
 			otherwise
 				lcMessage = loAPI.icErrorMessage
 		endcase
@@ -451,6 +467,8 @@ define class SignTool as RunEXE
 			lcParameters
 		llReturn = dodefault(tcSettings, tlNoExpandVariables)
 		if llReturn
+*** TODO: error if SignCommand or CertPassword are empty
+*** TODO: EXE run fails
 			lcParameters     = EvaluateExpression('{$SignCommand}', This)
 			lcParameters     = substr(lcParameters, at(' sign ', lcParameters))
 			lcParameters     = strtran(lcParameters, '$q', '"')
@@ -461,7 +479,7 @@ define class SignTool as RunEXE
 enddefine
 
 define class BuildSetupInno as RunEXE
-	cSource     = '{$BuildEXE}'
+	cSource     = '{$BuildEXEWithInno}'
 	cScriptFile = ''
 
 	function GetSettings(tcSettings, tlNoExpandVariables)
@@ -515,7 +533,7 @@ define class ExecuteScript as TaskBase
 		local llReturn, ;
 			loException as Exception
 		try
-			execscript(This.ccCode)
+			execscript(This.cCode)
 			llReturn = .T.
 		catch to loException
 			This.cErrorMessage = Format('Error running script: {0}', ;
@@ -588,7 +606,9 @@ define class UploadFile as RunEXE
 	function Execute
 		local llReturn
 		This.cParameters = '-T "' + This.cLocalFile + ;
-			'" ftp://' + This.cServer + This.cRemoteFile + ;
+			'" ftp://' + This.cServer + ;
+			iif(right(This.cServer, 1) = '/' or left(This.cRemoteFile, 1) = '/', '', '/') + ;
+			This.cRemoteFile + ;
 			' -u ' + This.cUserName + ':' + This.cPassword
 		llReturn = dodefault()
 		return llReturn
@@ -602,7 +622,7 @@ define class SetVariable as TaskBase
 		&& the value
 	lEncrypt  = .F.
 		&& .T. to encrypt the value
-*** TODO: need data type so can convert
+*** TODO FUTURE: need data type property so can support types other than character
 
 * Flag that we're encrypting cValue if necessary.
 
@@ -625,8 +645,8 @@ define class SetVariable as TaskBase
 		local lcVariable, ;
 			luValue
 		lcVariable = This.cVariable
-		luValue = EvaluateExpression(This.cValue, This)
-		This.oVariables.Add(This.cVariable, luValue)
+		luValue    = EvaluateExpression(This.cValue, This)
+		This.oVariables.AddVariable(This.cVariable, luValue)
 	endfunc
 enddefine
 
