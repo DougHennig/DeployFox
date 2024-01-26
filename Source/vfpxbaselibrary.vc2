@@ -1653,6 +1653,45 @@ DEFINE CLASS vfpxbaselistbox AS listbox
 
 ENDDEFINE
 
+DEFINE CLASS vfpxbaseoptionbutton AS optionbutton 
+ 	*< CLASSDATA: Baseclass="optionbutton" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*<PropValue>
+		AutoSize = .T.
+		BackStyle = 0
+		Caption = "Option1"
+		FontName = "Segoe UI"
+		Height = 17
+		Name = "vfpxbaseoptionbutton"
+		Width = 61
+	*</PropValue>
+
+ENDDEFINE
+
+DEFINE CLASS vfpxbaseoptiongroup AS optiongroup 
+ 	*< CLASSDATA: Baseclass="optiongroup" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*<PropValue>
+		AutoSize = .T.
+		BackStyle = 0
+		BorderStyle = 0
+		ButtonCount = 2
+		Height = 46
+		MemberClass = "vfpxbaseoptionbutton"
+		MemberClassLibrary = vfpxbaselibrary.vcx
+		Name = "vfpxbaseoptiongroup"
+		Value = 0
+		Width = 71
+		Vfpxbaseoptionbutton1.Left = 5
+		Vfpxbaseoptionbutton1.Name = "Vfpxbaseoptionbutton1"
+		Vfpxbaseoptionbutton1.Top = 5
+		Vfpxbaseoptionbutton2.Left = 5
+		Vfpxbaseoptionbutton2.Name = "Vfpxbaseoptionbutton2"
+		Vfpxbaseoptionbutton2.Top = 24
+	*</PropValue>
+
+ENDDEFINE
+
 DEFINE CLASS vfpxbasepage AS page 
  	*< CLASSDATA: Baseclass="page" Timestamp="" Scale="Pixels" Uniqueid="" />
 

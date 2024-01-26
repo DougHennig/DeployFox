@@ -9,6 +9,8 @@ define class DeployFoxEngine as Custom
 		&& a reference to an object containing variables
 	cAppPath      = ''
 		&& the path to DeployFox.app
+	cLogFile      = ''
+		&& the path of a file to log to
 
 	function Init
 		local laStack[1], ;
@@ -39,18 +41,27 @@ define class DeployFoxEngine as Custom
 			set library to (lcPath + 'VFPEncryption71.fll')
 		endif not 'vfpencryption71' $ set('LIBRARY')
 
-* Get the DeployFox settings.
+* Get the DeployFox settings. If we don't have any, we'll create some defaults.
 
 		This.oVariables = newobject('DeployFoxVariables', 'DeployFoxEngine.prg')
 		lcKey = GetKey()
 *** TODO: delete DeployFoxSettings.dbf before deploying
 		select 0
 		if not file(lcPath + 'DeployFoxSettings.dbf')
+
+* See if Inno Setup is installed.
+
+			loRegistry     = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
+			lcInnoCompiler = loRegistry.GetKey('InnoSetupScriptFile\Shell\Compile\Command', ;
+				'', '"C:\Program Files (x86)\Inno Setup 6\iscc.exe"', cnHKEY_CLASSES_ROOT)
+			lcInnoCompiler = strtran(lcInnoCompiler, '"%1"')
+
+* Create the DeployFoxSettings table.
+
 			create table (lcPath + 'DeployFoxSettings') (Setting C(20), Value M, Encrypt L)
 			insert into DeployFoxSettings values ('SignEXE', '{$AppPath}signtool.exe', .F.)
 			insert into DeployFoxSettings values ('SignCommand', '', .F.)
-*** TODO: locate InnoSetup and use path
-			insert into DeployFoxSettings values ('BuildEXEWithInno', 'C:\Program Files (x86)\Inno Setup 6\iscc', .F.)
+			insert into DeployFoxSettings values ('BuildEXEWithInno', lcInnoCompiler, .F.)
 			insert into DeployFoxSettings values ('CertPassword', '', .T.)
 		endif not file(lcPath + 'DeployFoxSettings.dbf')
 		use (lcPath + 'DeployFoxSettings') again shared
@@ -67,6 +78,10 @@ define class DeployFoxEngine as Custom
 * Get a task types cursor.
 
 		This.GetTaskTypes()
+
+* Declare the Sleep API function.
+
+		declare Sleep in Win32API integer nMilliseconds
 	endfunc
 
 * Open a project.
@@ -81,6 +96,12 @@ define class DeployFoxEngine as Custom
 			from (This.cProjectFile) ;
 			into cursor curProject readwrite
 		index on Order tag Order
+		This.cLogFile = forcepath('DeployFoxLog.txt', justpath(tcPath))
+		try
+*** TODO: option to timestamp and keep log files?
+			erase (This.cLogFile)
+		catch
+		endtry
 	endfunc
 
 * Create a new project.
@@ -141,6 +162,11 @@ define class DeployFoxEngine as Custom
 	function Run(tlDebug)
 		local lnSelect, ;
 			llReturn
+		try
+*** TODO: option to timestamp and keep log files?
+			erase (This.cLogFile)
+		catch
+		endtry
 		lnSelect = select()
 		select * ;
 			from (This.cProjectFile) ;
@@ -150,7 +176,7 @@ define class DeployFoxEngine as Custom
 		llReturn = This.SetVariables()
 		if llReturn
 			scan for Task <> 'SetVariable'
-				llReturn = This.RunTask(ID, Task, Settings, tlDebug)
+				llReturn = This.RunTask(ID, Name, Task, Settings, tlDebug)
 				if not llReturn
 					exit
 				endif not llReturn
@@ -164,7 +190,7 @@ define class DeployFoxEngine as Custom
 		local llReturn
 		llReturn = .T.
 		scan for Task = 'SetVariable'
-			llReturn = This.RunTask(ID, Task, Settings)
+			llReturn = This.RunTask(ID, Name, Task, Settings)
 			if not llReturn
 				exit
 			endif not llReturn
@@ -174,7 +200,7 @@ define class DeployFoxEngine as Custom
 
 * Run the current task.
 
-	function RunTask(tcID, tcTaskType, tcSettings, tlDebug)
+	function RunTask(tcID, tcName, tcTaskType, tcSettings, tlDebug)
 		local lnSelect, ;
 			lcTaskType, ;
 			lcFile, ;
@@ -190,7 +216,9 @@ define class DeployFoxEngine as Custom
 		locate for upper(Type) = upper(lcTaskType)
 		lcFile = trim(File)
 		loTask = newobject(lcTaskType, lcFile, '', This.oVariables)
+		loTask.cName      = trim(tcName)
 		loTask.lDebugMode = tlDebug
+		loTask.cLogFile   = This.cLogFile
 		if loTask.GetSettings(tcSettings)
 			try
 				llReturn  = loTask.Execute()

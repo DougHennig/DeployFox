@@ -3,7 +3,7 @@
 * Purpose:			Mimics the String.Format() and $ (string interpolation)
 *						methods of .NET
 * Author:			Doug Hennig
-* Last revision:	01/06/2024
+* Last revision:	01/25/2024
 * Parameters:		tcFormat       - the format string
 *					tuParameter0-9 - the values to insert into the string
 *						(optional: if string interpolation is used, no
@@ -93,6 +93,15 @@ for lnCount = 1 to occurs(lcCharLeft, tcFormat)
 		else
 			luValue = evaluate(lcCount)
 		endif isdigit(left(lcCount, 1))
+
+* Handle special characters in the value.
+
+		if vartype(luValue) = 'C'
+			luValue = strtran(luValue, lcCharLeft,  chr(246))
+			luValue = strtran(luValue, lcCharRight, chr(247))
+			luValue = strtran(luValue, '\r',        chr(248))
+			luValue = strtran(luValue, '\n',        chr(249))
+		endif vartype(luValue) = 'C'
 		if empty(lcFormat)
 			lcReturn = strtran(lcReturn, lcSearch, transform(luValue))
 		else
@@ -129,6 +138,10 @@ lcReturn = strtran(lcReturn, '\n', chr(10))
 
 * Handle escaped characters.
 
+lcReturn = strtran(lcReturn, chr(246), lcCharLeft)
+lcReturn = strtran(lcReturn, chr(247), lcCharRight)
+lcReturn = strtran(lcReturn, chr(248), '\r')
+lcReturn = strtran(lcReturn, chr(249), '\n')
 lcReturn = strtran(lcReturn, chr(250), '\' + lcCharLeft)
 lcReturn = strtran(lcReturn, chr(251), '\' + lcCharRight)
 lcReturn = strtran(lcReturn, chr(252), '\\r')
@@ -166,7 +179,7 @@ if len(lcFormat) = 1
 			bitlshift(asc(substr(lcTimeZone, 4, 1)), 24))
 		luValue = luValue - liBiasSeconds
 	endif inlist(lcFormat, 'r', 'u', 'U')
-*** TODO: support locales e.g. fr-FR would be dd/MM/yyyy for short date
+*** TODO FUTURE: support locales e.g. fr-FR would be dd/MM/yyyy for short date
 	do case
 
 * Short date e.g. 12/07/2002

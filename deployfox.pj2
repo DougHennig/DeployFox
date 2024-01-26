@@ -57,6 +57,7 @@ WITH loProject.FILES
 	.ADD('source\deployfoxui.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\down.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\evaluateexpression.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
+	.ADD('source\executecommand.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\fileoperation.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\format.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\getkey.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
@@ -67,6 +68,7 @@ WITH loProject.FILES
 	.ADD('source\newtask.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\newtask.msk')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\next1.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
+	.ADD('source\openfile.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\openproject.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\options.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\readini.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />

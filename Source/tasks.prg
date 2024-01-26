@@ -11,9 +11,11 @@ define class TaskBase as Session
 		&& a reference to an object containing variables
 	lDebugMode    = .F.
 		&& .T. to run in debug mode
-*** Note: when new properties are added, include them in INLIST statement in
-***		  SaveSettings
-
+	cLogFile      = ''
+		&& the path of a file to log to
+	cName         = ''
+		&& the name of the task
+*** Note: when new properties are added, include them in INLIST statement in SaveSettings
 
 	function Init(toVariables)
 		This.oVariables = toVariables
@@ -64,6 +66,7 @@ define class TaskBase as Session
 			endif vartype(loXMLDOM) = 'O'
 		catch to loException
 			This.cErrorMessage = Format('Error processing XML: {0}', loException.Message)
+			This.Log(Format('Error getting settings: {0}', This.cErrorMessage))
 		endtry
 		return llReturn
 	endfunc
@@ -98,7 +101,7 @@ define class TaskBase as Session
 				for lnI = 1 to lnProperties
 					lcProperty = lower(laProperties[lnI])
 					if not inlist(lcProperty, 'cerrormessage', 'cencrypt', ;
-						'ovariables', 'lDebugMode')
+						'ovariables', 'ldebugmode', 'clogfile', 'cname')
 						luValue = evaluate('This.' + lcProperty)
 						lcType  = vartype(luValue)
 						do case
@@ -130,9 +133,9 @@ define class TaskBase as Session
 				lcSettings = loXMLDOM.xml
 			endif vartype(loXMLDOM) = 'O'
 		catch to loException
-set step on 
 			lcSettings = ''
 			This.cErrorMessage = Format('Error creating XML: {0}', loException.Message)
+			This.Log(Format('Error saving settings: {0}', This.cErrorMessage))
 		endtry
 		return lcSettings
 	endfunc
@@ -157,6 +160,7 @@ set step on
 			endif vartype(loXMLDOM) = 'O' ...
 		catch
 			This.cErrorMessage = 'Cannot create XML parser.'
+			This.Log(This.cErrorMessage)
 		endtry
 		return loXMLDOM
 	endfunc
@@ -164,6 +168,22 @@ set step on
 * Execute the task (abstract in this class).
 
 	function Execute
+	endfunc
+
+* Log the results.
+
+	function Log(tcMessage, tlAppend)
+		if not empty(This.cLogFile)
+			try
+				if tlAppend
+					strtofile(Format('{0}\r\n', tcMessage), This.cLogFile, .T.)
+				else
+					strtofile(Format('{0}: {1} ({2}) - {3}\r\n', datetime(), ;
+						This.cName, This.Name, tcMessage), This.cLogFile, .T.)
+				endif tlAppend
+			catch
+			endtry
+		endif not empty(This.cLogFile)
 	endfunc
 enddefine
 
@@ -174,6 +194,19 @@ define class RegistryBase as TaskBase
 		&& the setting
 	nMainKey = cnHKEY_CURRENT_USER
 		&& the main key
+
+	function GetMainKeyName
+		local lcName
+		do case
+			case This.nMainKey = cnHKEY_CLASSES_ROOT
+				lcName = 'HKEY_CLASSES_ROOT'
+			case This.nMainKey = cnHKEY_CURRENT_USER
+				lcName = 'HKEY_CURRENT_USER'
+			case This.nMainKey = cnHKEY_LOCAL_MACHINE
+				lcName = 'HKEY_LOCAL_MACHINE'
+		endcase
+		return lcName
+	endfunc
 enddefine
 
 define class WriteToRegistry as RegistryBase
@@ -184,10 +217,19 @@ define class WriteToRegistry as RegistryBase
 
 	function Execute
 		local loRegistry, ;
-			llReturn
+			llReturn, ;
+			lcKey
 		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
 		llReturn   = loRegistry.SetKey(This.cKey, This.cSetting, This.uValue, ;
 			This.nMainKey, This.nType)
+		lcKey      = This.GetMainKeyName() + '\' + This.cKey
+		if llReturn
+			This.Log(Format('"{0}" written to Windows Registry at {1} of {2}', ;
+				This.uValue, This.cSetting, lcKey))
+		else
+			This.Log(Format('Failed to write "{0}" to Windows Registry at {1} of {2}', ;
+				This.uValue, This.cSetting, lcKey))
+		endif llReturn
 		return llReturn
 	endfunc
 enddefine
@@ -200,14 +242,21 @@ define class ReadFromRegistry as RegistryBase
 		local loRegistry, ;
 			luValue, ;
 			llReturn, ;
+			lcKey, ;
 			loVariable
 		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
 		luValue    = loRegistry.GetKey(This.cKey, This.cSetting, '', ;
 			This.nMainKey)
 		llReturn   = loRegistry.nResult = cnSUCCESS
+		lcKey      = This.GetMainKeyName() + '\' + This.cKey
 		if llReturn
 			loVariable = This.oVariables.Item(This.cVariable)
 			loVariable.Value = luValue
+			This.Log(Format('"{0}" read from Windows Registry at {1} of {2}', ;
+				luValue, This.cSetting, lcKey))
+		else
+			This.Log(Format('Failed to read from Windows Registry at {0} of {1}', ;
+				This.cSetting, lcKey))
 		endif llReturn
 		return llReturn
 	endfunc
@@ -227,6 +276,13 @@ define class WriteToINI as TaskBase
 		local llReturn
 *** TODO FUTURE: option to support encryption: need to specify key
 		llReturn = WriteINI(This.cSource, This.cSection, This.cItem, This.cValue)
+		if llReturn
+			This.Log(Format('"{0}" written to {1} of [{2}] of {3}', ;
+				This.cValue, This.cItem, This.cSection, This.cSource))
+		else
+			This.Log(Format('Failed to write "{0}" to {1} of [{2}] of {3}', ;
+				This.cValue, This.cItem, This.cSection, This.cSource))
+		endif llReturn
 		return llReturn
 	endfunc
 enddefine
@@ -242,11 +298,20 @@ define class ReadFromINI as TaskBase
 		&& the name of the variable to save the value to
 
 	function Execute
-		local loVariable
+		local loVariable, ;
+			llReturn
+		if file(This.cSource)
 *** TODO FUTURE: option to support decryption: need to specify key
-		loVariable = This.oVariables.Item(This.cVariable)
-		loVariable.Value = ReadINI(This.cSource, This.cSection, This.cItem)
-		return .T.
+			loVariable = This.oVariables.Item(This.cVariable)
+			loVariable.Value = ReadINI(This.cSource, This.cSection, This.cItem)
+			llReturn = .T.
+			This.Log(Format('"{0}" read from {1} of [{2}] of {3}', ;
+				loVariable.Value, This.cItem, This.cSection, This.cSource))
+		else
+			This.cErrorMessage = Format('{0} does not exist', This.cSource)
+			This.Log(This.cErrorMessage)
+		endif file(This.cSource)
+		return llReturn
 	endfunc
 enddefine
 
@@ -262,10 +327,17 @@ define class UnzipFile as TaskBase
 			loShell, ;
 			loFiles, ;
 			lcCommand, ;
-			loAPI, ;
 			lcMessage
 
-* Create the extraction if necessary.
+* Ensure the file exists.
+
+		if not file(This.cSource)
+			This.cErrorMessage = Format('{0} does not exist', This.cSource)
+			This.Log(This.cErrorMessage)
+			return .F.
+		endif not file(This.cSource)
+
+* Create the extraction folder if necessary.
 
 		if not directory(This.cTarget)
 			try
@@ -286,44 +358,129 @@ define class UnzipFile as TaskBase
 			loShell = createobject('Shell.Application')
 			loFiles = loShell.NameSpace(This.cSource).Items
 			if loFiles.Count > 0
-*** TODO: delete files first or prevent prompt to overwrite them
-				loShell.NameSpace(This.cTarget).CopyHere(loFiles, 16)
+				loShell.NameSpace(This.cTarget).CopyHere(loFiles, cnSHELL_YES_TO_ALL)
 				llResult = .T.
+				This.Log(Format('{0} unzipped to {1} using Shell.Application', ;
+					This.cSource, This.cTarget))
 			endif loFiles.Count > 0
 		catch to loException
-			This.cErrorMessage = Format('Error extracting from zip using ' + ;
-				'Shell.Application: {0}', loException.Message)
 		endtry
 
 * If that failed, use PowerShell.
 
 		if not llResult
-*** TODO: PowerShell Expand-Archive gets cranky if the files already exist. How to know which files?
 			lcCommand = 'cmd /c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe ' + ;
-				'Microsoft.Powershell.Archive\Expand-Archive ' + ;
+				'Microsoft.Powershell.Archive\Expand-Archive -Force ' + ;
 				"-Path '" + This.cSource + "' " + ;
 				"-DestinationPath '" + This.cTarget + "'"
-			loAPI = newobject('API_AppRun', 'API_AppRun.prg', '', lcCommand, ;
-				This.cTarget, 'HID')
-			do case
-				case not empty(loAPI.icErrorMessage)
-					lcMessage = loAPI.icErrorMessage
-				case loAPI.LaunchAppAndWait()
-					llResult  = nvl(loAPI.CheckProcessExitCode(), -1) = 0
-					lcMessage = evl(loAPI.icErrorMessage, 'API_AppRun failed on execution')
-				otherwise
-					lcMessage = loAPI.icErrorMessage
-			endcase
-			if not llResult
+			lcMessage = ExecuteCommand(lcCommand, This.cTarget, ;
+				iif(This.lDebugMode, 'NOR', 'HID'))
+			llResult  = empty(lcMessage)
+			if llResult
+				This.Log(Format('{0} unzipped to {1} using PowerShell', ;
+					This.cSource, This.cTarget))
+			else
 				This.cErrorMessage = lcMessage
-			endif not llResult
+				This.Log(Format('{0} could not be unzipped to {1}: {2}', ;
+					This.cSource, This.cTarget, lcMessage))
+			endif llResult
 		endif not llResult
 		return llResult
 	endfunc
 enddefine
 
 define class ZipFiles as TaskBase
-*** TODO
+	cSource = ''
+		&& a carriage return or comma-delimited list of files to zip
+	cTarget = ''
+		&& the ZIP file
+	nUpdate = 1
+		&& 1 = create new file, 2 = update existing file
+
+	function Execute
+		local laFiles[1], ;
+			lnFiles, ;
+			lcFiles, ;
+			lnI, ;
+			lcTarget, ;
+			llOK, ;
+			lnHandle, ;
+			loShell, ;
+			loZIPFile, ;
+			lcFile, ;
+			llResult, ;
+			loException as Exception, ;
+			lcCommand, ;
+			lcMessage
+
+* Create an empty ZIP file if we're supposed to, then try to use Shell.Application
+* to add files to it.
+
+		lnFiles = alines(laFiles, This.cSource, 1 + 4, ccCR, ccLF, ',')
+		lcFiles = ''
+		for lnI = 1 to lnFiles
+			lcFile  = GetProperFileCase(fullpath(laFiles[lnI]))
+			lcFiles = lcFiles + iif(empty(lcFiles), '', ',') + "'" + lcFile + "'"
+			if not file(lcFile)
+				This.cErrorMessage = Format('{0} does not exist', lcFile)
+				This.Log(This.cErrorMessage)
+				return .F.
+			endif not file(lcFile)
+		next lnI
+		try
+			lcTarget = GetProperFileCase(fullpath(This.cTarget))
+			llOK     = .T.
+			if not file(lcTarget) or This.nUpdate = 1
+				lnHandle = fcreate(lcTarget)
+				if lnHandle > 0
+					fclose(lnHandle)
+				else
+					llOK = .F.
+				endif lnHandle > 0
+			endif not file(lcTarget) ...
+			if llOK
+				loShell   = createobject('Shell.Application')
+				loZIPFile = loShell.NameSpace(lcTarget)
+				for lnI = 1 to lnFiles
+					lcFile = GetProperFileCase(fullpath(laFiles[lnI]))
+					loZIPFile.CopyHere(lcFile)
+					do while loZIPFile.Items.Count < lnI
+						Sleep(1000)
+					enddo while loZIPFile.Items.Count < lnI
+				next lnI
+				llResult = .T.
+				This.Log(Format('{0} zipped to {1} using Shell.Application', ;
+					lcFiles, This.cTarget))
+			endif llOK
+		catch to loException
+		endtry
+		if not llOK
+			This.cErrorMessage = 'Cannot create ' + lcTarget + '.'
+			return .F.
+		endif not llOK
+
+* If that failed, use PowerShell.
+
+		if not llResult
+			lcCommand = 'cmd /c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe ' + ;
+				'Microsoft.Powershell.Archive\Compress-Archive ' + ;
+				'-Path @(' + lcFiles + ') ' + ;
+				"-DestinationPath '" + lcTarget + "'" + ;
+				iif(This.nUpdate = 1, '', ' -Update')
+			lcMessage = ExecuteCommand(lcCommand, justpath(lcTarget), ;
+				iif(This.lDebugMode, 'NOR', 'HID'))
+			llResult  = empty(lcMessage)
+			if llResult
+				This.Log(Format('{0} zipped to {1} using PowerShell', ;
+					lcFiles, This.cTarget))
+			else
+				This.cErrorMessage = lcMessage
+				This.Log(Format('Could not zip {0} to {1}: {2}', ;
+					lcFiles, This.cTarget, lcMessage))
+			endif llResult
+		endif not llResult
+		return llResult
+	endfunc
 enddefine
 
 define class RenameFile as TaskBase
@@ -343,15 +500,19 @@ define class RenameFile as TaskBase
 					endif file(This.cTarget)
 					rename (This.cSource) to (This.cTarget)
 					llReturn = .T.
+					This.Log(Format('{0} renamed to {1}', This.cSource, This.cTarget))
 				catch to loException
 					This.cErrorMessage = Format('Cannot rename {0} to {1}: ' + ;
 						'{2}', This.cSource, This.cTarget, loException.Message)
+					This.Log(This.cErrorMessage)
 				endtry
 			case file(This.cTarget)
 				llReturn = .T.
 				&& the file was previously renamed so no problem
+				This.Log(Format('{0} was previously renamed to {1}', This.cSource, This.cTarget))
 			otherwise
-				This.cErrorMessage = Format('Source file {0} does not exist.', This.cSource)
+				This.cErrorMessage = Format('{0} does not exist.', This.cSource)
+				This.Log(This.cErrorMessage)
 		endcase
 		return llReturn
 	endfunc
@@ -368,10 +529,13 @@ define class DeleteFile as TaskBase
 			try
 				erase (This.cSource)
 				llReturn = .T.
+				This.Log(Format('{0} was deleted', This.cSource))
 			catch to loException
 				This.cErrorMessage = Format('Cannot delete file {0}', This.cSource)
+				This.Log(This.cErrorMessage)
 			endtry
 		else
+			This.Log(Format('{0} does not exist', This.cSource))
 			llReturn = .T.
 		endif file(This.cSource)
 		return llReturn
@@ -387,6 +551,13 @@ define class CopyFile as TaskBase
 	function Execute
 		local llReturn
 		llReturn = FileOperation(This.cSource, This.cTarget, 'copy')
+		if llReturn
+			This.Log(Format('{0} was copied to {1}', This.cSource, This.cTarget))
+		else
+			This.cErrorMessage = Format('{0} could not be copied to {1}', This.cSource, ;
+				This.cTarget)
+			This.Log(This.cErrorMessage)
+		endif llReturn
 		return llReturn
 	endfunc
 enddefine
@@ -399,11 +570,15 @@ define class DeleteFolder as TaskBase
 		local llReturn
 		if directory(This.cSource)
 			llReturn = FileOperation(This.cSource, '', 'DELETE')
-			if not llReturn
+			if llReturn
+				This.Log(Format('Folder {0} was deleted', This.cSource))
+			else
 				This.cErrorMessage = Format('Cannot delete folder {0}', This.cSource)
-			endif not llReturn
+				This.Log(This.cErrorMessage)
+			endif llReturn
 		else
 			llReturn = .T.
+			This.Log(Format('{0} does not exist', This.cSource))
 		endif directory(This.cSource)
 		return llReturn
 	endfunc
@@ -422,35 +597,35 @@ define class RunEXE as TaskBase
 		local lcSource, ;
 			lcParameters, ;
 			lcCommand, ;
-			loAPI, ;
 			lcMessage, ;
-			lnResult, ;
 			llResult
-		lcSource     = EvaluateExpression(This.cSource, This)
-*** TODO: error if lcSource is empty or doesn't exist
-		lcParameters = EvaluateExpression(This.cParameters, This)
-		lcCommand    = '"' + lcSource + '"' + ;
-			icase(empty(lcParameters), '', ;
-				'"' $ lcParameters, ' ' + lcParameters, ;
-				' "' + lcParameters + '"')
-*** TODO: add logging: command being executed
-		loAPI     = newobject('API_AppRun', 'API_AppRun.prg', '', lcCommand, ;
-			justpath(fullpath(lcSource)), iif(This.lDebugMode, 'NOR', This.cWindowMode))
+		lcSource = EvaluateExpression(This.cSource, This)
 		do case
-			case not empty(loAPI.icErrorMessage)
-				lcMessage = loAPI.icErrorMessage
-*** TODO: problem: SQConfig doesn't terminate
-			case loAPI.LaunchAppAndWait()
-				lnResult  = nvl(loAPI.CheckProcessExitCode(), -1)
-				llResult  = lnResult = 0
-				lcMessage = evl(loAPI.icErrorMessage, ;
-					Format('{0} did not run successfully. The error code is {1}.', This.cSource, lnResult))
+			case empty(lcSource)
+				This.cErrorMessage = Format('EXE to run is empty', lcSource)
+				This.Log(This.cErrorMessage)
+*** TODO FUTURE: we don't currently test FILE(lcSource) since it may be in the path
+***					(e.g. curl.exe). Maybe require a full path?
+
+*			case not file(lcSource)
+*				This.cErrorMessage = Format('{0} does not exist', lcSource)
+*				This.Log(This.cErrorMessage)
 			otherwise
-				lcMessage = loAPI.icErrorMessage
+				lcParameters = EvaluateExpression(This.cParameters, This)
+				lcCommand    = '"' + lcSource + '"' + ;
+					icase(empty(lcParameters), '', ;
+						'"' $ lcParameters, ' ' + lcParameters, ;
+						' "' + lcParameters + '"')
+				lcMessage = ExecuteCommand(lcCommand, justpath(fullpath(lcSource)), ;
+					iif(This.lDebugMode, 'NOR', 'HID'))
+				llResult  = empty(lcMessage)
+				if llResult
+					This.Log(Format('The command executed successfully\r\n\r\n{0}\r\n\r\n', lcCommand))
+				else
+					This.cErrorMessage = 'The command did not run successfully. ' + lcMessage
+					This.Log(Format('{0}\r\n\r\n{1}\r\n\r\n', This.cErrorMessage, lcCommand))
+				endif llResult
 		endcase
-		if not llResult
-			This.cErrorMessage = lcMessage
-		endif not llResult
 		return llResult
 	endfunc
 enddefine
@@ -465,16 +640,33 @@ define class SignTool as RunEXE
 	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn, ;
 			lcParameters
-		llReturn = dodefault(tcSettings, tlNoExpandVariables)
-		if llReturn
-*** TODO: error if SignCommand or CertPassword are empty
-*** TODO: EXE run fails
-			lcParameters     = EvaluateExpression('{$SignCommand}', This)
-			lcParameters     = substr(lcParameters, at(' sign ', lcParameters))
-			lcParameters     = strtran(lcParameters, '$q', '"')
-			This.cParameters = strtran(lcParameters, '$p') + ;
-				' /d "' + This.cDescription + '" "' + This.cTarget + '"'
-		endif llReturn
+		llReturn     = dodefault(tcSettings, tlNoExpandVariables)
+		lcParameters = EvaluateExpression('{$SignCommand}', This)
+		do case
+			case not llReturn
+			case empty(EvaluateExpression('{CertPassword}', This))
+				This.cErrorMessage = 'CertPassword has not been assigned'
+				This.Log(This.cErrorMessage)
+				llReturn = .F.
+			case empty(lcParameters)
+				This.cErrorMessage = 'SignCommand has not been assigned'
+				This.Log(This.cErrorMessage)
+				llReturn = .F.
+			case empty(This.cTarget)
+				This.cErrorMessage = 'The EXE to sign is not specified'
+				This.Log(This.cErrorMessage)
+				llReturn = .F.
+			case not file(This.cTarget)
+				This.cErrorMessage = Format('{0} does not exist', This.cTarget)
+				This.Log(This.cErrorMessage)
+				llReturn = .F.
+			otherwise
+				lcParameters     = substr(lcParameters, at(' sign ', lcParameters))
+				lcParameters     = strtran(lcParameters, '$q', '"')
+				This.cParameters = strtran(lcParameters, '$p') + ;
+					' /d "' + This.cDescription + '" "' + This.cTarget + '"'
+		endcase
+		return llReturn
 	endfunc
 enddefine
 
@@ -485,10 +677,22 @@ define class BuildSetupInno as RunEXE
 	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn
 		llReturn = dodefault(tcSettings, tlNoExpandVariables)
-		if llReturn
-			This.cParameters = '"' + EvaluateExpression('{$SignCommand}', This) + ;
-				'" "' + This.cScriptFile + '"'
-		endif llReturn
+set step on 
+		do case
+			case not llReturn
+			case empty(This.cSource)
+				This.cErrorMessage = 'BuildEXEWithInno has not been assigned'
+				This.Log(This.cErrorMessage)
+				llReturn = .F.
+			case not file(This.cSource)
+				This.cErrorMessage = Format('{0} does not exist', This.cSource)
+				This.Log(This.cErrorMessage)
+				llReturn = .F.
+			otherwise
+				This.cParameters = '"' + EvaluateExpression('{$SignCommand}', This) + ;
+					'" "' + This.cScriptFile + '"'
+		endcase
+		return llReturn
 	endfunc
 enddefine
 
@@ -504,23 +708,35 @@ define class RunPRG as TaskBase
 			lcParameters, ;
 			llReturn, ;
 			loException as Exception
-		lcCurrPath = sys(5) + curdir()
-		lcPath     = justpath(This.cSource)
-		try
-			cd (lcPath)
-			if empty(This.cParameters)
-				do (This.cSource)
-			else
-				lcParameters = This.cParameters
-				do (This.cSource) with &lcParameters
-			endif empty(This.cParameters)
-			llReturn = .T.
-		catch to loException
-			This.cErrorMessage = Format('Error running {0}: {1}', This.cSource, ;
-				loException.Message)
-		finally
-			cd (lcCurrPath)
-		endtry
+		do case
+			case empty(This.cSource)
+				This.cErrorMessage = 'The PRG to run is empty'
+				This.Log(This.cErrorMessage)
+			case not file(This.cSource)
+				This.cErrorMessage = Format('{0} does not exist', This.cSource)
+				This.Log(This.cErrorMessage)
+			otherwise
+				lcCurrPath = sys(5) + curdir()
+				lcPath     = justpath(This.cSource)
+				try
+					cd (lcPath)
+					if empty(This.cParameters)
+						do (This.cSource)
+					else
+						lcParameters = This.cParameters
+						do (This.cSource) with &lcParameters
+					endif empty(This.cParameters)
+					llReturn = .T.
+					This.Log(Format('{0} was passed {1} and executed successfully', ;
+						This.cSource, This.cParameters))
+				catch to loException
+					This.cErrorMessage = Format('Error running {0}: {1}', This.cSource, ;
+						loException.Message)
+					This.Log(This.cErrorMessage)
+				finally
+					cd (lcCurrPath)
+				endtry
+		endcase
 		return llReturn
 	endfunc
 enddefine
@@ -532,13 +748,20 @@ define class ExecuteScript as TaskBase
 	function Execute
 		local llReturn, ;
 			loException as Exception
-		try
-			execscript(This.cCode)
-			llReturn = .T.
-		catch to loException
-			This.cErrorMessage = Format('Error running script: {0}', ;
-				loException.Message)
-		endtry
+		if empty(This.cCode)
+			This.cErrorMessage = 'The code to execute is empty'
+			This.Log(This.cErrorMessage)
+		else
+			try
+				execscript(This.cCode)
+				llReturn = .T.
+				This.Log('Script executed successfully')
+			catch to loException
+				This.cErrorMessage = Format('Error running script: {0}', ;
+					loException.Message)
+				This.Log(This.cErrorMessage)
+			endtry
+		endif empty(This.cCode)
 		return llReturn
 	endfunc
 enddefine
@@ -555,15 +778,26 @@ define class BuildEXE as TaskBase
 		local lcRecompile, ;
 			llReturn, ;
 			loException as Exception
-		try
-			erase (This.cTarget)
-			lcRecompile = iif(This.lRecompile, 'recompile', '')
-			build exe (This.cTarget) from (This.cSource) &lcRecompile
-			llReturn = file(This.cTarget)
-		catch to loException
-			This.cErrorMessage = Format('Cannot build {0} from {1}: {2}', This.cTarget, ;
-				This.cSource, loException.Message)
-		endtry
+		do case
+			case empty(This.cSource)
+				This.cErrorMessage = 'The project to build is empty'
+				This.Log(This.cErrorMessage)
+			case not file(This.cSource)
+				This.cErrorMessage = Format('{0} does not exist', This.cSource)
+				This.Log(This.cErrorMessage)
+			otherwise
+				try
+					erase (This.cTarget)
+					lcRecompile = iif(This.lRecompile, 'recompile', '')
+					build exe (This.cTarget) from (This.cSource) &lcRecompile
+					llReturn = file(This.cTarget)
+					This.Log(Format('{0} was built from {1}', This.cTarget,This.cSource))
+				catch to loException
+					This.cErrorMessage = Format('Cannot build {0} from {1}: {2}', This.cTarget, ;
+						This.cSource, loException.Message)
+					This.Log(This.cErrorMessage)
+				endtry
+		endcase
 		return llReturn
 	endfunc
 enddefine
@@ -571,9 +805,9 @@ enddefine
 define class DownloadFile as RunEXE
 	cSource     = 'curl.exe'
 	cRemoteFile = ''
-		&& the file to upload to
+		&& the file to download
 	cLocalFile  = ''
-		&& the file to upload
+		&& the file to download to
 	cUserName   = ''
 		&& the user name to connect to the server
 	cPassword   = ''
@@ -582,9 +816,27 @@ define class DownloadFile as RunEXE
 
 	function Execute
 		local llReturn
-		This.cParameters = '-o "' + This.cLocalFile + '" ' + This.cRemoteFile + ;
-			iif(empty(This.cUserName), '', ' -u ' + This.cUserName + ':' + This.cPassword)
-		llReturn = dodefault()
+		do case
+			case empty(This.cRemoteFile)
+				This.cErrorMessage = 'The remote file is empty'
+				This.Log(This.cErrorMessage)
+			case empty(This.cLocalFile)
+				This.cErrorMessage = 'The local file is empty'
+				This.Log(This.cErrorMessage)
+			otherwise
+				This.cParameters = '-o "' + This.cLocalFile + '" ' + This.cRemoteFile + ;
+					iif(empty(This.cUserName), '', ' -u ' + This.cUserName + ':' + This.cPassword)
+				llReturn = dodefault()
+				if llReturn
+					This.Log(Format('{0} was downloaded from {1} using {2} as ' + ;
+						'the user name and {3} as the password', This.cLocalFile, This.cRemoteFile, ;
+						This.cUserName, This.cPassword), .T.)
+				else
+					This.Log(Format('{0} was not downloaded from {1} using {2} as ' + ;
+						'the user name and {3} as the password', This.cLocalFile, This.cRemoteFile, ;
+						This.cUserName, This.cPassword), .T.)
+				endif llReturn
+		endcase
 		return llReturn
 	endfunc
 enddefine
@@ -605,12 +857,39 @@ define class UploadFile as RunEXE
 
 	function Execute
 		local llReturn
-		This.cParameters = '-T "' + This.cLocalFile + ;
-			'" ftp://' + This.cServer + ;
-			iif(right(This.cServer, 1) = '/' or left(This.cRemoteFile, 1) = '/', '', '/') + ;
-			This.cRemoteFile + ;
-			' -u ' + This.cUserName + ':' + This.cPassword
-		llReturn = dodefault()
+		do case
+			case empty(This.cRemoteFile)
+				This.cErrorMessage = 'The remote file is empty'
+				This.Log(This.cErrorMessage)
+			case empty(This.cLocalFile)
+				This.cErrorMessage = 'The local file is empty'
+				This.Log(This.cErrorMessage)
+			case empty(This.cServer)
+				This.cErrorMessage = 'The server is empty'
+				This.Log(This.cErrorMessage)
+			case empty(This.cUserName)
+				This.cErrorMessage = 'The user name is empty'
+				This.Log(This.cErrorMessage)
+			case empty(This.cPassword)
+				This.cErrorMessage = 'The password is empty'
+				This.Log(This.cErrorMessage)
+			otherwise
+				This.cParameters = '-T "' + This.cLocalFile + ;
+					'" ftp://' + This.cServer + ;
+					iif(right(This.cServer, 1) = '/' or left(This.cRemoteFile, 1) = '/', '', '/') + ;
+					This.cRemoteFile + ;
+					' -u ' + This.cUserName + ':' + This.cPassword
+				llReturn = dodefault()
+				if llReturn
+					This.Log(Format('{0} was uploaded to {1} at {2} using {3} as ' + ;
+						'the user name and {4} as the password', This.cLocalFile, This.cRemoteFile, ;
+						This.cServer, This.cUserName, This.cPassword), .T.)
+				else
+					This.Log(Format('{0} was not uploaded to {1} at {2} using {3} as ' + ;
+						'the user name and {4} as the password', This.cLocalFile, This.cRemoteFile, ;
+						This.cServer, This.cUserName, This.cPassword), .T.)
+				endif llReturn
+		endcase
 		return llReturn
 	endfunc
 enddefine
@@ -647,11 +926,8 @@ define class SetVariable as TaskBase
 		lcVariable = This.cVariable
 		luValue    = EvaluateExpression(This.cValue, This)
 		This.oVariables.AddVariable(This.cVariable, luValue)
+		This.Log(Format('{0} was assigned to {1}', luValue, This.cVariable))
 	endfunc
-enddefine
-
-define class ReplaceInFile as TaskBase
-*** TODO
 enddefine
 
 define class WriteToFile as TaskBase
@@ -665,13 +941,21 @@ define class WriteToFile as TaskBase
 	function Execute
 		local llReturn, ;
 			loException as Exception
-		try
-			strtofile(This.cSource, This.cTarget, This.lOverwrite)
-			llReturn = .T.
-		catch to loException
-			This.cErrorMessage = Format('Error writing to {0}: {1}', This.cTarget, ;
-				loException.Message)
-		endtry
+		if empty(This.cTarget)
+			This.cErrorMessage = 'The file to write to is empty'
+			This.Log(This.cErrorMessage)
+		else
+			try
+				strtofile(This.cSource, This.cTarget, This.lOverwrite)
+				llReturn = .T.
+				This.Log(Format('{0} was written to {1} ({2})', This.cSource, ;
+					This.cTarget, iif(This.lOverwrite, 'overwrite', 'append')))
+			catch to loException
+				This.cErrorMessage = Format('Error writing to {0}: {1}', This.cTarget, ;
+					loException.Message)
+				This.Log(This.cErrorMessage)
+			endtry
+		endif empty(This.cTarget)
 		return llReturn
 	endfunc
 enddefine

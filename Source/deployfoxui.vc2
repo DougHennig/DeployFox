@@ -558,7 +558,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		go lnRecno
 		if llReturn
 			scan rest for Task <> 'SetVariable'
-				llReturn = Thisform.oEngine.RunTask(ID, Task, Settings, .T.)
+				llReturn = Thisform.oEngine.RunTask(ID, Name, Task, Settings, .T.)
 				skip
 				llLast = eof()
 				skip -1
@@ -572,7 +572,10 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 			endscan rest ...
 		endif llReturn
 		unbindevent(Thisform.oEngine)
-		messagebox('Run complete', MB_ICONINFORMATION, 'DeployFox')
+		if messagebox('Run complete. Would you like to view the log file?', ;
+			MB_YESNO + MB_ICONINFORMATION, 'DeployFox') = IDYES
+			OpenFile(Thisform.oEngine.cLogFile)
+		endif messagebox ...
 		go lnRecno
 		Thisform.Refresh()
 		
@@ -681,7 +684,6 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE cmdRun.Click
-		*** TODO: always run all SetVariables tasks first regardless of order
 		select curProject
 		replace all Status with ''
 		go top
@@ -689,7 +691,10 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		bindevent(Thisform.oEngine, 'Update', Thisform, 'UpdateRun')
 		Thisform.oEngine.Run()
 		unbindevent(Thisform.oEngine)
-		messagebox('Run complete', MB_ICONINFORMATION, 'DeployFox')
+		if messagebox('Run complete. Would you like to view the log file?', ;
+			MB_YESNO + MB_ICONINFORMATION, 'DeployFox') = IDYES
+			OpenFile(Thisform.oEngine.cLogFile)
+		endif messagebox ...
 		
 	ENDPROC
 

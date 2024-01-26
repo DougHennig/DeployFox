@@ -18,9 +18,12 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		*m: cdirectory_access
 		*m: cdirectory_assign
 		*m: clabelcaption_assign
+		*m: folderchanged		&& Fired when the folder is changed interactively
+		*m: ldisplaylabel_assign
 		*m: validation		&& Allows validation
 		*m: value_access
 		*m: value_assign
+		*m: width_assign
 		*m: _pemeditor_resize		&& Design-time resize event
 		*p: ccaption		&& The caption for the GETDIR() dialog
 		*p: ccontrolsource		&& The item this control's value is bound to
@@ -28,6 +31,7 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		*p: clabelcaption		&& The caption to use for the label
 		*p: ctext		&& The text for the GETDIR() dialog
 		*p: ladjustpositions		&& .T. if we should adjust the positions of the controls
+		*p: ldisplaylabel		&& .T. to display the label
 		*p: value		&& The value of the control
 	*</DefinedPropArrayMethod>
 
@@ -40,6 +44,7 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		ctext = 
 		Height = 23
 		ladjustpositions = .T.
+		ldisplaylabel = .T.
 		Name = "vfpxlibrarydirectory"
 		value = 
 		Width = 343
@@ -58,8 +63,13 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 			<memberdata name="value_assign" type="method" display="Value_Assign"/>
 			<memberdata name="ctext" type="property" display="cText"/>
 			<memberdata name="clabelcaption_assign" type="method" display="cLabelCaption_Assign"/>
-			<memberdata name="adjustcontrols" type="method" display="AdjustControls"/>
 			<memberdata name="_pemeditor_resize" display="_PEMEditor_Resize"/>
+			<memberdata name="adjustcontrols" display="AdjustControls"/>
+			<memberdata name="folderchanged" display="FolderChanged"/>
+			<memberdata name="width" display="Width"/>
+			<memberdata name="width_assign" display="Width_Assign"/>
+			<memberdata name="ldisplaylabel" display="lDisplayLabel"/>
+			<memberdata name="ldisplaylabel_assign" display="lDisplayLabel_Assign"/>
 		</VFPData>
 	*</PropValue>
 
@@ -86,7 +96,7 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		Width = 265
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
-	PROTECTED PROCEDURE adjustcontrols		&& Adjusts the control positions
+	PROCEDURE adjustcontrols		&& Adjusts the control positions
 		* Set the caption of the label if we need to and adjust the control position to
 		* account for the size of the caption. Note that if the form isn't visible, the
 		* label isn't automatically resized at this time, so we need to manually
@@ -149,7 +159,7 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		* Write the value to our ControlSource.
 		
 			if 'CMDGETFOLDER.CLICK' $ lcProgram2 or ;
-				'TXTFOLDER.ANYCHANGE' $ lcProgram1 or ;
+				'TXTFOLDER.VALID' $ lcProgram1 or ;
 				'CDIRECTORY_ASSIGN' $ lcProgram1
 				lnPos = at('.', .cControlSource)
 				if lnPos > 0 and not lcDirectory == alltrim(evaluate(.cControlSource))
@@ -161,6 +171,7 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 					else
 						store lcDirectory to (.cControlSource)
 					endif used(lcAlias)
+					raiseevent(This, 'FolderChanged')
 				endif lnPos > 0 ...
 			endif 'CDIRECTORY_ASSIGN' $ lcProgram1 ...
 		
@@ -181,30 +192,26 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 		
 	ENDPROC
 
+	PROCEDURE folderchanged		&& Fired when the folder is changed interactively
+		* Abstract method
+		
+	ENDPROC
+
 	PROCEDURE Init
 		This.AdjustControls()
 		dodefault()
 		
 	ENDPROC
 
+	PROCEDURE ldisplaylabel_assign
+		lparameters tlValue
+		store tlValue to This.lDisplayLabel, This.lblFolder.Visible
+		
+	ENDPROC
+
 	PROCEDURE LostFocus
-		* If the LostFocus method is fired because the user clicked on a button with
-		* the Cancel property set to .T. or if the button has an lCancel property
-		* (which is part of the SFCommandButton base class) and it's .T., or if we're
-		* closing the form, don't bother doing the rest of the validation.
-		
-		local loObject
-		loObject = sys(1270)
-		if (type('loObject.Cancel') = 'L' and loObject.Cancel) or ;
-			(type('loObject.lCancel') = 'L' and loObject.lCancel) or ;
-			(type('Thisform.ReleaseType') = 'N' and Thisform.ReleaseType > 0)
-			This.SetFocus()
-		endif (type('loObject.lCancel') = 'L' ...
-		
-		* Do the custom validation.
-		
 		if not This.Validation()
-			This.SetFocus()
+			This.txtFolder.SetFocus()
 		endif not This.Validation()
 		
 	ENDPROC
@@ -237,6 +244,21 @@ DEFINE CLASS vfpxlibrarydirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
 	PROCEDURE value_assign
 		lparameters tuNewValue
 		This.cDirectory = tuNewValue
+		
+	ENDPROC
+
+	PROCEDURE width_assign
+		* Adjust the width of the textbox and position of the commandbutton when the
+		* width changes.
+		
+		lparameters tnValue
+		This.Width = tnValue
+		* This is a workaround for a VFP bug that fires the Assign method when the
+		* width is accessed
+		if type('This.cmdGetFolder.Name') = 'C'
+			This.cmdGetFolder.Left = tnValue - This.cmdGetFolder.Width
+			This.txtFolder.Width   = tnValue - This.txtFolder.Left - This.cmdGetFolder.Width
+		endif type('This.cmdGetFolder.Name') = 'C'
 		
 	ENDPROC
 
@@ -437,7 +459,7 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		* Write the value to our ControlSource.
 		
 			if 'CMDGETFILE.CLICK' $ lcProgram2 or ;
-				'TXTFILE.ANYCHANGE' $ lcProgram1 or ;
+				'TXTFILE.VALID' $ lcProgram1 or ;
 				'CFILENAME_ASSIGN' $ lcProgram1
 				lnPos = at('.', .cControlSource)
 				if lnPos > 0 and not lcFileName == alltrim(evaluate(.cControlSource))
@@ -565,25 +587,10 @@ DEFINE CLASS vfpxlibraryfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		
 	ENDPROC
 
-	PROCEDURE txtFile.anychange
-		* If we're not being called from cFileName_Assign, update the cFileName
-		* property.
+	PROCEDURE txtFile.Valid
+		* Update the cFileName property.
 		
-		if not 'CFILENAME_ASSIGN' $ program(program(-1) - 2)
-			This.Parent.cFileName = This.Value
-		endif not 'CFILENAME_ASSIGN' $ program(program(-1) - 2)
-		
-	ENDPROC
-
-	PROCEDURE txtFile.InteractiveChange
-		local lnStart, ;
-			lnLength
-		lnStart  = This.SelStart
-		lnLength = This.SelLength
-		dodefault()
-		raiseevent(This.Parent, 'FileChanged')
-		This.SelStart  = lnStart
-		This.SelLength = lnLength
+		This.Parent.cFileName = This.Value
 		
 	ENDPROC
 
@@ -786,7 +793,8 @@ DEFINE CLASS vfpxlibrarygetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx
 		* If the user chose a file, store the result in the specified location.
 		
 			if not empty(lcFile)
-				store GetProperFileCase(lcFile) to (lcResult)
+				lcFile = GetProperFileCase(lcFile)
+				store lcFile to (lcResult)
 		
 		* If a method or function was specified to execute after file selection, do it.
 		

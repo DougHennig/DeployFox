@@ -1571,3 +1571,88 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 	ENDPROC
 
 ENDDEFINE
+
+DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx" 
+ 	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="oTarget" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="txtSource" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdAddFile" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="opgUpdate" UniqueID="" Timestamp="" />
+
+	#INCLUDE "deployfox.h"
+	*<DefinedPropArrayMethod>
+		*m: addfile		&& Adds a file to the list
+	*</DefinedPropArrayMethod>
+
+	*<PropValue>
+		Name = "zipfilesui"
+		_memberdata = <VFPData>
+			<memberdata name="addfile" display="AddFile"/>
+		</VFPData>
+	*</PropValue>
+
+	ADD OBJECT 'cmdAddFile' AS vfpxlibrarygetfile WITH ;
+		cafterdone = This.Parent.AddFile(lcFile), ;
+		Caption = "Files to zip", ;
+		cresult = This.Tag, ;
+		Left = 0, ;
+		Name = "cmdAddFile", ;
+		Top = 25, ;
+		Width = 65
+		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'opgUpdate' AS vfpxbaseoptiongroup WITH ;
+		Height = 27, ;
+		Left = 48, ;
+		Name = "opgUpdate", ;
+		Top = 130, ;
+		Width = 249, ;
+		Vfpxbaseoptionbutton1.Caption = "Create new file", ;
+		Vfpxbaseoptionbutton1.Left = 5, ;
+		Vfpxbaseoptionbutton1.Name = "Vfpxbaseoptionbutton1", ;
+		Vfpxbaseoptionbutton1.Top = 5, ;
+		Vfpxbaseoptionbutton2.Caption = "Update existing file", ;
+		Vfpxbaseoptionbutton2.Left = 125, ;
+		Vfpxbaseoptionbutton2.Name = "Vfpxbaseoptionbutton2", ;
+		Vfpxbaseoptionbutton2.Top = 5
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="optiongroup" />
+
+	ADD OBJECT 'oTarget' AS vfpxlibraryfile WITH ;
+		ccontrolsource = This.Parent.oTask.cTarget, ;
+		cextensions = "ZIP File (*.zip):zip", ;
+		Left = 0, ;
+		Name = "oTarget", ;
+		Top = 0, ;
+		lblFile.Caption = "ZIP file", ;
+		lblFile.Name = "lblFile", ;
+		txtFile.Left = 70, ;
+		txtFile.Name = "txtFile", ;
+		txtFile.Width = 250, ;
+		cmdGetFile.Left = 320, ;
+		cmdGetFile.Name = "cmdGetFile"
+		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+
+	ADD OBJECT 'txtSource' AS vfpxbaseeditbox WITH ;
+		Height = 100, ;
+		Left = 70, ;
+		Name = "txtSource", ;
+		Top = 25, ;
+		Width = 270
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="editbox" />
+	
+	PROCEDURE addfile		&& Adds a file to the list
+		lparameters tcFile
+		This.txtSource.Value = This.txtSource.Value + iif(empty(This.txtSource.Value), '', ccCR) + ;
+			tcFile
+		
+	ENDPROC
+
+	PROCEDURE loadsettings
+		This.txtSource.ControlSource = 'This.Parent.oTask.cSource'
+		This.opgUpdate.ControlSource = 'This.Parent.oTask.nUpdate'
+		
+	ENDPROC
+
+ENDDEFINE
