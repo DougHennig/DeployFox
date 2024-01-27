@@ -45,7 +45,7 @@ define class DeployFoxEngine as Custom
 * Populate the list of recent projects.
 
 		This.oRecentProjects = createobject('Collection')
-		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
+		loRegistry = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
 		for lnI = cnMRUProjects to 1 step -1
 			lcValue = loRegistry.GetKey(ccREGISTRY_KEY, 'Project' + transform(lnI))
 			if not empty(lcValue)
@@ -134,7 +134,7 @@ define class DeployFoxEngine as Custom
 
 		if This.oRecentProjects.GetKey(tcPath) = 0
 			This.oRecentProjects.Add(tcPath)
-			loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
+			loRegistry = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
 			dimension laProjects[cnMRUProjects]
 			lnLast = cnMRUProjects
 			for lnI = cnMRUProjects to 1 step -1

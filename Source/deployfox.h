@@ -1,5 +1,5 @@
 #include FoxPro.h
-#include VFPXLibraryRegistry.h
+#include VFPXRegistry.h
 
 #define cnKEY_START			7351
 #define cnKEY_LEN			  32

@@ -60,16 +60,16 @@ WITH loProject.FILES
 	.ADD('source\executecommand.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\fileoperation.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\format.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
-	.ADD('source\foxcryptong.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
+	.ADD('source\foxcryptong.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\getkey.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\getproperfilecase.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
-	.ADD('source\last1.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
+	.ADD('source\last.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\main.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\newproject.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\newtask.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\newtask.msk')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
-	.ADD('source\next1.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
-	.ADD('source\openfile.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
+	.ADD('source\next.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
+	.ADD('source\openfile.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\openproject.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\options.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\readini.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
@@ -78,17 +78,17 @@ WITH loProject.FILES
 	.ADD('source\run.msk')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\save.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\sfgdimeasurestring.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
-	.ADD('source\sfmenu.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
+	.ADD('source\sfmenu.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\tasks.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\tasktypes.dbf')		&& *< FileMetadata: Type="D" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\taskui.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\up.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\vfpxbaselibrary.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
 	.ADD('source\vfpxbaselibrary.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
-	.ADD('source\vfpxdropdownmenubutton.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
-	.ADD('source\vfpxlibraryfilectrls.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
-	.ADD('source\vfpxlibraryregistry.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
-	.ADD('source\vfpxlibraryregistry.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
+	.ADD('source\vfpxdropdownmenubutton.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
+	.ADD('source\vfpxfilectrls.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
+	.ADD('source\vfpxregistry.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" ObjRev="0" User="" />
+	.ADD('source\vfpxregistry.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	.ADD('source\writeini.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" ObjRev="546" User="" />
 	*</BuildProj>
 
@@ -100,13 +100,13 @@ WITH loProject.FILES
 	*<ExcludedFiles>
 	.ITEM(lcCurdir + 'source\deployfox.h').Exclude = .T.
 	.ITEM(lcCurdir + 'source\vfpxbaselibrary.h').Exclude = .T.
-	.ITEM(lcCurdir + 'source\vfpxlibraryregistry.h').Exclude = .T.
+	.ITEM(lcCurdir + 'source\vfpxregistry.h').Exclude = .T.
 	*</ExcludedFiles>
 
 	*<TextFiles>
 	.ITEM(lcCurdir + 'source\deployfox.h').Type = 'T'
 	.ITEM(lcCurdir + 'source\vfpxbaselibrary.h').Type = 'T'
-	.ITEM(lcCurdir + 'source\vfpxlibraryregistry.h').Type = 'T'
+	.ITEM(lcCurdir + 'source\vfpxregistry.h').Type = 'T'
 	*</TextFiles>
 ENDWITH
 

@@ -222,7 +222,7 @@ define class WriteToRegistry as RegistryBase
 		local loRegistry, ;
 			llReturn, ;
 			lcKey
-		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
+		loRegistry = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
 		llReturn   = loRegistry.SetKey(This.cKey, This.cSetting, This.uValue, ;
 			This.nMainKey, This.nType)
 		lcKey      = This.GetMainKeyName() + '\' + This.cKey
@@ -247,7 +247,7 @@ define class ReadFromRegistry as RegistryBase
 			llReturn, ;
 			lcKey, ;
 			loVariable
-		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
+		loRegistry = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
 		luValue    = loRegistry.GetKey(This.cKey, This.cSetting, '', ;
 			This.nMainKey)
 		llReturn   = loRegistry.nResult = cnSUCCESS

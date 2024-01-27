@@ -105,7 +105,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ADD OBJECT 'cmdDebug' AS vfpxbasetoolbarbutton WITH ;
 		Left = 125, ;
 		Name = "cmdDebug", ;
-		Picture = last1.bmp, ;
+		Picture = last.bmp, ;
 		TabIndex = 3, ;
 		ToolTipText = "Debug", ;
 		Top = 10
@@ -169,7 +169,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ADD OBJECT 'cmdRun' AS vfpxbasetoolbarbutton WITH ;
 		Left = 100, ;
 		Name = "cmdRun", ;
-		Picture = next1.bmp, ;
+		Picture = next.bmp, ;
 		TabIndex = 3, ;
 		ToolTipText = "Run", ;
 		Top = 10

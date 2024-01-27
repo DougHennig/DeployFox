@@ -25,7 +25,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 		Top = 50
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
-	ADD OBJECT 'oSource' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
 		cextensions = "PJX", ;
 		Left = 0, ;
@@ -38,9 +38,9 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 245, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 
-	ADD OBJECT 'oTarget' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
 		cextensions = "EXE", ;
 		Left = 0, ;
@@ -53,7 +53,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 245, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE loadsettings
 		This.chkRecompile.ControlSource = 'This.Parent.oTask.lRecompile'
@@ -85,7 +85,7 @@ DEFINE CLASS buildsetupinnoui AS taskuibase OF "taskui.vcx"
 		Name = "buildsetupinno"
 	*</PropValue>
 
-	ADD OBJECT 'oScriptFile' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oScriptFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cScriptFile, ;
 		cextensions = "Inno Setup Script (*.iss):ISS", ;
 		Left = 0, ;
@@ -98,7 +98,7 @@ DEFINE CLASS buildsetupinnoui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 264, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cScriptFile)
@@ -118,7 +118,7 @@ DEFINE CLASS copyfileui AS taskuibase OF "taskui.vcx"
 		Name = "copyfile"
 	*</PropValue>
 
-	ADD OBJECT 'oSource' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
 		Left = 0, ;
 		Name = "oSource", ;
@@ -130,9 +130,9 @@ DEFINE CLASS copyfileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 285, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 
-	ADD OBJECT 'oTarget' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
 		Left = 0, ;
 		Name = "oTarget", ;
@@ -143,7 +143,7 @@ DEFINE CLASS copyfileui AS taskuibase OF "taskui.vcx"
 		txtFile.Name = "txtFile", ;
 		txtFile.Width = 285, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
@@ -162,7 +162,7 @@ DEFINE CLASS deletefileui AS taskuibase OF "taskui.vcx"
 		Name = "deletefile"
 	*</PropValue>
 
-	ADD OBJECT 'oSource' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
 		Left = 0, ;
 		Name = "oSource", ;
@@ -174,7 +174,7 @@ DEFINE CLASS deletefileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 295, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cSource)
@@ -194,7 +194,7 @@ DEFINE CLASS deletefolderui AS taskuibase OF "taskui.vcx"
 		Name = "deletefolder"
 	*</PropValue>
 
-	ADD OBJECT 'oSource' AS vfpxlibrarydirectory WITH ;
+	ADD OBJECT 'oSource' AS vfpxdirectory WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
 		Left = 0, ;
 		Name = "oSource", ;
@@ -206,7 +206,7 @@ DEFINE CLASS deletefolderui AS taskuibase OF "taskui.vcx"
 		txtFolder.Width = 280, ;
 		cmdGetFolder.Left = 320, ;
 		cmdGetFolder.Name = "cmdGetFolder"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cSource)
@@ -255,7 +255,7 @@ DEFINE CLASS downloadfileui AS taskuibase OF "taskui.vcx"
 		Top = 55
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'oLocalFile' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oLocalFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cLocalFile, ;
 		Left = 0, ;
 		Name = "oLocalFile", ;
@@ -268,7 +268,7 @@ DEFINE CLASS downloadfileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 250, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtPassword' AS vfpxbasetextbox WITH ;
 		Height = 23, ;
@@ -437,7 +437,7 @@ DEFINE CLASS inibase AS taskuibase OF "taskui.vcx"
 		Top = 29
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'oINIFile' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oINIFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
 		cextensions = "INI File (*.ini):ini", ;
 		Left = 0, ;
@@ -451,7 +451,7 @@ DEFINE CLASS inibase AS taskuibase OF "taskui.vcx"
 		txtFile.Top = 0, ;
 		txtFile.Width = 270, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE getitemsforsection		&& Gets the items for the selected section
 		local laItems[1], ;
@@ -700,7 +700,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="cboMainKey" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblMainKey" UniqueID="" Timestamp="" />
 
-	#INCLUDE "vfpxlibraryregistry.h"
+	#INCLUDE "vfpxregistry.h"
 	*<PropValue>
 		Name = "registrybase"
 	*</PropValue>
@@ -807,7 +807,7 @@ DEFINE CLASS renamefileui AS taskuibase OF "taskui.vcx"
 		Name = "renamefile"
 	*</PropValue>
 
-	ADD OBJECT 'oSource' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
 		Left = 0, ;
 		Name = "oSource", ;
@@ -819,9 +819,9 @@ DEFINE CLASS renamefileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 285, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 
-	ADD OBJECT 'oTarget' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
 		Left = 0, ;
 		Name = "oTarget", ;
@@ -832,7 +832,7 @@ DEFINE CLASS renamefileui AS taskuibase OF "taskui.vcx"
 		txtFile.Name = "txtFile", ;
 		txtFile.Width = 285, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
@@ -902,7 +902,7 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		Top = 94
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'oSource' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		cextensions = "EXE", ;
 		Left = 0, ;
 		Name = "oSource", ;
@@ -916,7 +916,7 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 230, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE loadsettings
 		This.oSource.cControlSource      = 'This.Parent.oTask.cSource'
@@ -987,7 +987,7 @@ DEFINE CLASS runprgui AS taskuibase OF "taskui.vcx"
 		Top = 25
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'oSource' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		cextensions = "PRG", ;
 		Left = 0, ;
 		Name = "oSource", ;
@@ -1001,7 +1001,7 @@ DEFINE CLASS runprgui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 230, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE loadsettings
 		This.oSource.cControlSource      = 'This.Parent.oTask.cSource'
@@ -1125,7 +1125,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		Top = 28
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'oFilePath' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oFilePath' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
 		cextensions = "EXE", ;
 		Left = 0, ;
@@ -1138,7 +1138,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 245, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtDescription' AS vfpxbasetextbox WITH ;
 		Height = 23, ;
@@ -1227,7 +1227,7 @@ DEFINE CLASS unzipfileui AS taskuibase OF "taskui.vcx"
 		Name = "unzipfile"
 	*</PropValue>
 
-	ADD OBJECT 'oSource' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
 		cextensions = "ZIP File (*.zip):zip", ;
 		Left = 0, ;
@@ -1240,9 +1240,9 @@ DEFINE CLASS unzipfileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 270, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 
-	ADD OBJECT 'oTarget' AS vfpxlibrarydirectory WITH ;
+	ADD OBJECT 'oTarget' AS vfpxdirectory WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
 		Left = 0, ;
 		Name = "oTarget", ;
@@ -1256,7 +1256,7 @@ DEFINE CLASS unzipfileui AS taskuibase OF "taskui.vcx"
 		txtFolder.Width = 270, ;
 		cmdGetFolder.Left = 320, ;
 		cmdGetFolder.Name = "cmdGetFolder"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate		&& Ensures the values are valid
 		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
@@ -1311,7 +1311,7 @@ DEFINE CLASS uploadfileui AS taskuibase OF "taskui.vcx"
 		Top = 30
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'oLocalFile' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oLocalFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cLocalFile, ;
 		Left = 0, ;
 		Name = "oLocalFile", ;
@@ -1323,7 +1323,7 @@ DEFINE CLASS uploadfileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 250, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtPassword' AS vfpxbasetextbox WITH ;
 		Height = 23, ;
@@ -1412,7 +1412,7 @@ DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx"
 		Top = 30
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'oTarget' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
 		Left = 0, ;
 		Name = "oTarget", ;
@@ -1421,7 +1421,7 @@ DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx"
 		lblFile.Name = "lblFile", ;
 		txtFile.Name = "txtFile", ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE loadsettings		&& Loads the settings
 		This.edtSource.ControlSource    = 'This.Parent.oTask.cSource'
@@ -1496,9 +1496,9 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="lblType" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cboType" UniqueID="" Timestamp="" />
 
-	#INCLUDE "vfpxlibraryregistry.h"
+	#INCLUDE "vfpxregistry.h"
 	*<PropValue>
-		Name = "writetoregistry"
+		Name = "writetoregistryui"
 		lblKey.Name = "lblKey"
 		txtKey.Name = "txtKey"
 		lblSetting.Name = "lblSetting"
@@ -1593,7 +1593,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		</VFPData>
 	*</PropValue>
 
-	ADD OBJECT 'cmdAddFile' AS vfpxlibrarygetfile WITH ;
+	ADD OBJECT 'cmdAddFile' AS vfpxgetfile WITH ;
 		cafterdone = This.Parent.AddFile(lcFile), ;
 		Caption = "Files to zip", ;
 		cresult = This.Tag, ;
@@ -1601,7 +1601,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		Name = "cmdAddFile", ;
 		Top = 25, ;
 		Width = 65
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'opgUpdate' AS vfpxbaseoptiongroup WITH ;
 		Height = 27, ;
@@ -1619,7 +1619,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		Vfpxbaseoptionbutton2.Top = 5
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="optiongroup" />
 
-	ADD OBJECT 'oTarget' AS vfpxlibraryfile WITH ;
+	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
 		cextensions = "ZIP File (*.zip):zip", ;
 		Left = 0, ;
@@ -1632,7 +1632,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 250, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxlibraryfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtSource' AS vfpxbaseeditbox WITH ;
 		Height = 100, ;

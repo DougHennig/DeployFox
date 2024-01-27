@@ -2,7 +2,7 @@
 * Function:			ReadINI
 * Purpose:			Reads an entry from a section in an INI file
 * Author:			Doug Hennig
-* Last revision:	08/22/2023
+* Last revision:	01/27/2024
 * Parameters:		tcINIFile - the INI file to look in
 *					tcSection - the section to look for
 *					tuEntry   - the entry to look for (pass 0 and taEntries
@@ -25,7 +25,7 @@ lparameters tcINIFile, ;
 	tuEntry, ;
 	tcDefault, ;
 	taEntries
-#include VFPXLibraryRegistry.h
+#include VFPXRegistry.h
 local lcBuffer, ;
 	lcDefault, ;
 	lnSize, ;
