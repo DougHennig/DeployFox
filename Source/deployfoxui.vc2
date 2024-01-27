@@ -34,17 +34,18 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	*< OBJECTDATA: ObjPath="cmdDown" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdNewTask" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdDeleteTask" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="cmdOpenProject" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdRun" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblProject" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdSave" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdNewProject" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdOptions" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdDebug" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdOpenProject" UniqueID="" Timestamp="" />
 
 	#INCLUDE "deployfox.h"
 	*<DefinedPropArrayMethod>
 		*m: displaytask		&& Displays the settings for the selected task
+		*m: openproject		&& Opens the specified project
 		*m: setupgrid		&& Sets up the grid
 		*m: updateproject		&& Updates the selected record in the project
 		*m: updaterun		&& Updates the status of running the project
@@ -75,6 +76,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 			<memberdata name="updaterun" display="UpdateRun"/>
 			<memberdata name="oengine" display="oEngine"/>
 			<memberdata name="updateproject" display="UpdateProject"/>
+			<memberdata name="openproject" display="OpenProject"/>
 		</VFPData>
 	*</PropValue>
 
@@ -100,113 +102,95 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Top = 105
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
-	ADD OBJECT 'cmdDebug' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
-		Left = 110, ;
+	ADD OBJECT 'cmdDebug' AS vfpxbasetoolbarbutton WITH ;
+		Left = 125, ;
 		Name = "cmdDebug", ;
 		Picture = last1.bmp, ;
 		TabIndex = 3, ;
 		ToolTipText = "Debug", ;
-		Top = 10, ;
-		Width = 24
+		Top = 10
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
-	ADD OBJECT 'cmdDeleteTask' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
-		Left = 185, ;
+	ADD OBJECT 'cmdDeleteTask' AS vfpxbasetoolbarbutton WITH ;
+		Left = 200, ;
 		Name = "cmdDeleteTask", ;
 		Picture = removetask.bmp, ;
 		TabIndex = 5, ;
 		ToolTipText = "Remove the selected task", ;
-		Top = 10, ;
-		Width = 24
+		Top = 10
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
-	ADD OBJECT 'cmdDown' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
-		Left = 235, ;
+	ADD OBJECT 'cmdDown' AS vfpxbasetoolbarbutton WITH ;
+		Left = 250, ;
 		Name = "cmdDown", ;
 		Picture = down.bmp, ;
 		TabIndex = 7, ;
 		ToolTipText = "Move the task down", ;
-		Top = 10, ;
-		Width = 24
+		Top = 10
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
-	ADD OBJECT 'cmdNewProject' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
-		Left = 35, ;
+	ADD OBJECT 'cmdNewProject' AS vfpxbasetoolbarbutton WITH ;
+		Left = 50, ;
 		Name = "cmdNewProject", ;
 		Picture = newproject.bmp, ;
 		TabIndex = 2, ;
 		ToolTipText = "Create a new DeployFox project", ;
-		Top = 10, ;
-		Width = 24
+		Top = 10
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
-	ADD OBJECT 'cmdNewTask' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
-		Left = 160, ;
+	ADD OBJECT 'cmdNewTask' AS vfpxbasetoolbarbutton WITH ;
+		Left = 175, ;
 		Name = "cmdNewTask", ;
 		Picture = newtask.bmp, ;
 		TabIndex = 4, ;
 		ToolTipText = "Add a task", ;
-		Top = 10, ;
-		Width = 24
+		Top = 10
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
-	ADD OBJECT 'cmdOpenProject' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
+	ADD OBJECT 'cmdOpenProject' AS vfpxdropdownmenubutton WITH ;
 		Left = 10, ;
 		Name = "cmdOpenProject", ;
-		Picture = openproject.bmp, ;
-		TabIndex = 1, ;
 		ToolTipText = "Open a DeployFox project", ;
 		Top = 10, ;
-		Width = 24
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		cmdMain.Name = "cmdMain", ;
+		cmdMain.Picture = openproject.bmp, ;
+		cmdMenu.Name = "cmdMenu"
+		*< END OBJECT: ClassLib="vfpxdropdownmenubutton.vcx" BaseClass="container" />
 
-	ADD OBJECT 'cmdOptions' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
-		Left = 285, ;
+	ADD OBJECT 'cmdOptions' AS vfpxbasetoolbarbutton WITH ;
+		Left = 300, ;
 		Name = "cmdOptions", ;
 		Picture = options.bmp, ;
 		TabIndex = 8, ;
 		ToolTipText = "Options", ;
-		Top = 10, ;
-		Width = 24
+		Top = 10
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
-	ADD OBJECT 'cmdRun' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
-		Left = 85, ;
+	ADD OBJECT 'cmdRun' AS vfpxbasetoolbarbutton WITH ;
+		Left = 100, ;
 		Name = "cmdRun", ;
 		Picture = next1.bmp, ;
 		TabIndex = 3, ;
 		ToolTipText = "Run", ;
-		Top = 10, ;
-		Width = 24
+		Top = 10
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
-	ADD OBJECT 'cmdSave' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
+	ADD OBJECT 'cmdSave' AS vfpxbasetoolbarbutton WITH ;
 		Left = 1038, ;
 		Name = "cmdSave", ;
 		Picture = save.bmp, ;
 		TabIndex = 17, ;
-		Top = 45, ;
-		Width = 24
+		ToolTipText = "Save the settings", ;
+		Top = 45
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
-	ADD OBJECT 'cmdUp' AS vfpxbasecommandbutton WITH ;
-		Caption = "", ;
-		Left = 210, ;
+	ADD OBJECT 'cmdUp' AS vfpxbasetoolbarbutton WITH ;
+		Left = 225, ;
 		Name = "cmdUp", ;
 		Picture = up.bmp, ;
 		TabIndex = 6, ;
 		ToolTipText = "Move the task up", ;
-		Top = 10, ;
-		Width = 24
+		Top = 10
 		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'edtComments' AS vfpxbaseeditbox WITH ;
@@ -472,6 +456,16 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		
 	ENDPROC
 
+	PROCEDURE openproject		&& Opens the specified project
+		lparameters tcProject
+		This.grdTasks.RecordSource = ''
+		This.oEngine.OpenProject(tcProject)
+		This.grdTasks.RecordSource = 'curProject'
+		This.SetupGrid()
+		This.DisplayTask()
+		
+	ENDPROC
+
 	PROCEDURE setupgrid		&& Sets up the grid
 		with This.grdTasks
 			.Column1.ControlSource    = 'curProject.Order'
@@ -665,16 +659,26 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		
 	ENDPROC
 
-	PROCEDURE cmdOpenProject.Click
+	PROCEDURE cmdOpenProject.buttonclicked
+		local lcProject
 		lcProject = getfile('DBF', 'Project', '', 0, 'Select DeployFox Project')
 		if not empty(lcProject)
 			lcProject = GetProperFileCase(lcProject)
-			Thisform.grdTasks.RecordSource = ''
-			Thisform.oEngine.OpenProject(lcProject)
-			Thisform.grdTasks.RecordSource = 'curProject'
-			Thisform.SetupGrid()
-			Thisform.DisplayTask()
+			Thisform.OpenProject(lcProject)
 		endif not empty(lcProject)
+		
+	ENDPROC
+
+	PROCEDURE cmdOpenProject.shortcutmenu
+		lparameters toMenu,	;
+			tcObject
+		local lcProject, ;
+			lcCommand
+		for each lcProject in Thisform.oEngine.oRecentProjects foxobject
+			lcCommand = '_screen.ActiveForm.OpenProject([' + lcProject + '])'
+			toMenu.AddBar(lcProject, lcCommand)
+		next loProject
+		dodefault(toMenu, tcObject)
 		
 	ENDPROC
 

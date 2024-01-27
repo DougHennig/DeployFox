@@ -20,7 +20,7 @@ DEFINE CLASS vfpxbasecheckbox AS checkbox
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		Alignment = 0
 		AutoSize = .T.
@@ -36,13 +36,13 @@ DEFINE CLASS vfpxbasecheckbox AS checkbox
 		Width = 57
 		_memberdata = <VFPData>
 			<memberdata name="anychange" display="AnyChange"/>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="updatecontrolsource" display="UpdateControlSource"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -153,7 +153,7 @@ DEFINE CLASS vfpxbasecheckbox AS checkbox
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -232,7 +232,7 @@ DEFINE CLASS vfpxbasecombobox AS combobox 		&& Base class for ComboBox objects
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		BoundTo = .T.
 		FontName = "Segoe UI"
@@ -251,16 +251,16 @@ DEFINE CLASS vfpxbasecombobox AS combobox 		&& Base class for ComboBox objects
 			<memberdata name="about" type="method" display="About"/>
 			<memberdata name="aitems" type="property" display="aItems"/>
 			<memberdata name="release" type="method" display="Release"/>
-			<memberdata name="showmenu" type="method" display="ShowMenu"/>
 			<memberdata name="lsaveanchor" type="property" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" type="property" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" type="property" display="nSavedAnchor"/>
 			<memberdata name="updatecontrolsource" type="method" display="UpdateControlSource"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="anychange" display="AnyChange" favorites="True"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu" favorites="True"/>
 			<memberdata name="lrequeryoninit" display="lRequeryOnInit" favorites="True"/>
 			<memberdata name="laddnewitemtolist" display="lAddNewItemToList"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -395,7 +395,7 @@ DEFINE CLASS vfpxbasecombobox AS combobox 		&& Base class for ComboBox objects
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -492,7 +492,7 @@ DEFINE CLASS vfpxbasecommandbutton AS commandbutton
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		Caption = "Command1"
 		FontName = "Segoe UI"
@@ -503,12 +503,12 @@ DEFINE CLASS vfpxbasecommandbutton AS commandbutton
 		omenu = .NULL.
 		Width = 84
 		_memberdata = <VFPData>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -598,7 +598,7 @@ DEFINE CLASS vfpxbasecommandbutton AS commandbutton
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -653,7 +653,7 @@ DEFINE CLASS vfpxbasecontainer AS container 		&& Base class for Container object
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		Anchor = 15
 		BackStyle = 0
@@ -665,12 +665,12 @@ DEFINE CLASS vfpxbasecontainer AS container 		&& Base class for Container object
 		_memberdata = <VFPData>
 			<memberdata name="about" type="method" display="About"/>
 			<memberdata name="enabled_assign" type="method" display="Enabled_Assign"/>
-			<memberdata name="omenu" type="property" display="oMenu"/>
-			<memberdata name="showmenu" type="method" display="ShowMenu"/>
 			<memberdata name="lsaveanchor" type="property" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" type="property" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" type="property" display="nSavedAnchor"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu" favorites="True"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -723,7 +723,7 @@ DEFINE CLASS vfpxbasecontainer AS container 		&& Base class for Container object
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -846,7 +846,7 @@ DEFINE CLASS vfpxbaseeditbox AS editbox
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		Anchor = 15
 		FontName = "Segoe UI"
@@ -857,14 +857,14 @@ DEFINE CLASS vfpxbaseeditbox AS editbox
 		omenu = .NULL.
 		Width = 100
 		_memberdata = <VFPData>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="updatecontrolsource" display="UpdateControlSource"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="anychange" display="AnyChange"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -968,7 +968,7 @@ DEFINE CLASS vfpxbaseeditbox AS editbox
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -1110,7 +1110,7 @@ DEFINE CLASS vfpxbasegrid AS grid
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		Anchor = 15
 		DeleteMark = .F.
@@ -1123,12 +1123,12 @@ DEFINE CLASS vfpxbasegrid AS grid
 		RecordMark = .F.
 		Width = 320
 		_memberdata = <VFPData>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -1218,7 +1218,7 @@ DEFINE CLASS vfpxbasegrid AS grid
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -1272,7 +1272,7 @@ DEFINE CLASS vfpxbaselabel AS label
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		AutoSize = .T.
 		BackStyle = 0
@@ -1285,12 +1285,12 @@ DEFINE CLASS vfpxbaselabel AS label
 		omenu = .NULL.
 		Width = 36
 		_memberdata = <VFPData>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -1380,7 +1380,7 @@ DEFINE CLASS vfpxbaselabel AS label
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -1439,7 +1439,7 @@ DEFINE CLASS vfpxbaselistbox AS listbox
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED lrequeryoninit,nsavedanchor,omenu
+	PROTECTED lrequeryoninit,nsavedanchor
 	*<PropValue>
 		BoundTo = .T.
 		FontName = "Segoe UI"
@@ -1457,14 +1457,14 @@ DEFINE CLASS vfpxbaselistbox AS listbox
 			<memberdata name="aitems" display="aItems"/>
 			<memberdata name="anychange" display="AnyChange"/>
 			<memberdata name="release" display="Release"/>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="updatecontrolsource" display="UpdateControlSource"/>
 			<memberdata name="lrequeryoninit" display="lRequeryOnInit"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -1593,7 +1593,7 @@ DEFINE CLASS vfpxbaselistbox AS listbox
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -1703,22 +1703,21 @@ DEFINE CLASS vfpxbasepage AS page
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED omenu
 	*<PropValue>
 		BackStyle = 0
 		Caption = "Page"
 		Enabled = .T.
 		FontName = "Segoe UI"
-		Height = 194
+		Height = 192
 		Name = "vfpxbasepage"
 		omenu = .NULL.
-		Width = 194
+		Width = 192
 		_memberdata = <VFPData>
 			<memberdata name="enabled" display="Enabled"/>
 			<memberdata name="enabled_assign" display="Enabled_Assign"/>
+			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
 			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="omenu" display="oMenu"/>
-			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -1812,7 +1811,7 @@ DEFINE CLASS vfpxbasepage AS page
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -1866,7 +1865,7 @@ DEFINE CLASS vfpxbasepageframe AS pageframe
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		Anchor = 15
 		ErasePage = .T.
@@ -1881,12 +1880,12 @@ DEFINE CLASS vfpxbasepageframe AS pageframe
 		TabStyle = 1
 		Width = 241
 		_memberdata = <VFPData>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 		Vfpxbasepage1.Name = "Vfpxbasepage1"
 	*</PropValue>
@@ -1977,7 +1976,7 @@ DEFINE CLASS vfpxbasepageframe AS pageframe
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -2031,7 +2030,7 @@ DEFINE CLASS vfpxbaseshape AS shape 		&& The base class for all Shape objects
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		BackStyle = 0
 		lsaveanchor = .F.
@@ -2193,7 +2192,7 @@ DEFINE CLASS vfpxbasespinner AS spinner
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		FontName = "Segoe UI"
 		Height = 24
@@ -2204,14 +2203,14 @@ DEFINE CLASS vfpxbasespinner AS spinner
 		SelectOnEntry = .T.
 		Width = 50
 		_memberdata = <VFPData>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="updatecontrolsource" display="UpdateControlSource"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="anychange" display="AnyChange"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -2322,7 +2321,7 @@ DEFINE CLASS vfpxbasespinner AS spinner
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -2397,7 +2396,7 @@ DEFINE CLASS vfpxbasetextbox AS textbox
 		*p: _memberdata		&& XML Metadata for customizable properties
 	*</DefinedPropArrayMethod>
 
-	PROTECTED nsavedanchor,omenu
+	PROTECTED nsavedanchor
 	*<PropValue>
 		FontName = "Segoe UI"
 		Height = 23
@@ -2408,14 +2407,14 @@ DEFINE CLASS vfpxbasetextbox AS textbox
 		SelectOnEntry = .T.
 		Width = 100
 		_memberdata = <VFPData>
-			<memberdata name="showmenu" display="ShowMenu"/>
 			<memberdata name="updatecontrolsource" display="UpdateControlSource"/>
 			<memberdata name="lsaveanchor" display="lSaveAnchor"/>
 			<memberdata name="lsaveanchor_assign" display="lSaveAnchor_Assign"/>
 			<memberdata name="nsavedanchor" display="nSavedAnchor"/>
-			<memberdata name="omenu" display="oMenu"/>
 			<memberdata name="anychange" display="AnyChange"/>
 			<memberdata name="shortcutmenu" display="ShortcutMenu"/>
+			<memberdata name="showmenu" display="ShowMenu"/>
+			<memberdata name="omenu" display="oMenu"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -2526,7 +2525,7 @@ DEFINE CLASS vfpxbasetextbox AS textbox
 		
 	ENDPROC
 
-	PROTECTED PROCEDURE showmenu		&& Display a shortcut menu
+	PROCEDURE showmenu		&& Display a shortcut menu
 		local lcLibrary
 		private loObject, ;
 			loForm
@@ -2583,5 +2582,19 @@ DEFINE CLASS vfpxbasetextbox AS textbox
 		endwith
 		
 	ENDPROC
+
+ENDDEFINE
+
+DEFINE CLASS vfpxbasetoolbarbutton AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx" 
+ 	*< CLASSDATA: Baseclass="commandbutton" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*<PropValue>
+		Caption = ""
+		Height = 24
+		Name = "vfpxbasetoolbarbutton"
+		SpecialEffect = 2
+		TabStop = .F.
+		Width = 24
+	*</PropValue>
 
 ENDDEFINE

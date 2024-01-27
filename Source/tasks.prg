@@ -7,6 +7,8 @@ define class TaskBase as Session
 		&& the text of an error
 	cEncrypt      = ''
 		&& a comma-delimited list of properties to encrypt
+	oEncrypt      = .NULL.
+		&& a reference to a FoxCryptoNG object
 	oVariables    = .NULL.
 		&& a reference to an object containing variables
 	lDebugMode    = .F.
@@ -19,6 +21,7 @@ define class TaskBase as Session
 
 	function Init(toVariables)
 		This.oVariables = toVariables
+		This.oEncrypt   = newobject('foxCryptoNG', 'foxCryptoNG.prg')
 	endfunc
 
 * Get the settings from XML.
@@ -47,7 +50,7 @@ define class TaskBase as Session
 					loPNode = loNode.selectSingleNode('value')
 					lcValue = loPNode.text
 					if lower(lcName) $ lcEncrypt and left(lcValue, 2) = '0x'
-						lcValue = trim(strtran(Decrypt(strconv(substr(lcValue, 3), 16), lcKey), ccNULL))
+						lcValue = trim(This.oEncrypt.Decrypt_AES(strconv(substr(lcValue, 3), 16), lcKey))
 					endif lower(lcName) $ lcEncrypt ...
 					if not tlNoExpandVariables
 						lcValue = EvaluateExpression(lcValue, This)
@@ -113,7 +116,7 @@ define class TaskBase as Session
 								lcValue = alltrim(luValue)
 						endcase
 						if lower(lcProperty) $ lcEncrypt
-							lcValue = '0x' + strconv(Encrypt(lcValue, lcKey), 15)
+							lcValue = '0x' + strconv(This.oEncrypt.Encrypt_AES(lcValue, lcKey), 15)
 						endif lower(lcProperty) $ lcEncrypt
 						loChildNode = loXMLDOM.createElement('setting')
 						loRootNode.appendChild(loChildNode)

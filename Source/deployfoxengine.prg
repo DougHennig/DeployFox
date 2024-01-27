@@ -1,21 +1,29 @@
 #include DeployFox.h
 
 define class DeployFoxEngine as Custom
-	cProjectFile  = ''
-		&& the path to the project file
-	cErrorMessage = ''
-		&& the text of an error
-	oVariables    = .NULL.
-		&& a reference to an object containing variables
-	cAppPath      = ''
+	cAppPath        = ''
 		&& the path to DeployFox.app
-	cLogFile      = ''
+	cLogFile        = ''
 		&& the path of a file to log to
+	cErrorMessage   = ''
+		&& the text of an error
+	cProjectFile    = ''
+		&& the path to the project file
+	oRecentProjects = .NULL.
+		&& a collection of recent projects
+	oVariables      = .NULL.
+		&& a reference to an object containing variables
 
 	function Init
 		local laStack[1], ;
 			lnI, ;
-			lcPath
+			lcPath, ;
+			loRegistry, ;
+			lcValue, ;
+			lcInnoCompiler, ;
+			loDecrypt, ;
+			lcKey, ;
+			lcVariable
 
 * Get the path we're running from.
 
@@ -34,24 +42,29 @@ define class DeployFoxEngine as Custom
 		lcPath = addbs(lcPath)
 		This.cAppPath = lcPath
 
-* Open the encryption library.
+* Populate the list of recent projects.
 
-*** TODO: use FoxCrypto_NG?
-		if not 'vfpencryption71' $ set('LIBRARY')
-			set library to (lcPath + 'VFPEncryption71.fll')
-		endif not 'vfpencryption71' $ set('LIBRARY')
+		This.oRecentProjects = createobject('Collection')
+		loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
+		for lnI = cnMRUProjects to 1 step -1
+			lcValue = loRegistry.GetKey(ccREGISTRY_KEY, 'Project' + transform(lnI))
+			if not empty(lcValue)
+				This.oRecentProjects.Add(lcValue)
+			endif not empty(lcValue)
+		next lnI
+
+* Create a collection of variables.
+
+		This.oVariables = newobject('DeployFoxVariables', 'DeployFoxEngine.prg')
 
 * Get the DeployFox settings. If we don't have any, we'll create some defaults.
 
-		This.oVariables = newobject('DeployFoxVariables', 'DeployFoxEngine.prg')
-		lcKey = GetKey()
 *** TODO: delete DeployFoxSettings.dbf before deploying
 		select 0
 		if not file(lcPath + 'DeployFoxSettings.dbf')
 
 * See if Inno Setup is installed.
 
-			loRegistry     = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
 			lcInnoCompiler = loRegistry.GetKey('InnoSetupScriptFile\Shell\Compile\Command', ;
 				'', '"C:\Program Files (x86)\Inno Setup 6\iscc.exe"', cnHKEY_CLASSES_ROOT)
 			lcInnoCompiler = strtran(lcInnoCompiler, '"%1"')
@@ -64,12 +77,20 @@ define class DeployFoxEngine as Custom
 			insert into DeployFoxSettings values ('BuildEXEWithInno', lcInnoCompiler, .F.)
 			insert into DeployFoxSettings values ('CertPassword', '', .T.)
 		endif not file(lcPath + 'DeployFoxSettings.dbf')
+
+* Create a decryption object and get the key to use.
+
+		loDecrypt = newobject('foxCryptoNG', 'foxCryptoNG.prg')
+		lcKey     = GetKey()
+
+* Get the settings from the DeployFoxSettings table.
+
 		use (lcPath + 'DeployFoxSettings') again shared
 		scan
 			lcVariable = trim(Setting)
 			lcValue    = Value
 			if Encrypt and left(lcValue, 2) = '0x'
-				lcValue = trim(strtran(Decrypt(strconv(substr(lcValue, 3), 16), lcKey), ccNULL))
+				lcValue = trim(loDecrypt.Decrypt_AES(strconv(substr(lcValue, 3), 16), lcKey))
 			endif Encrypt ...
 			This.oVariables.AddVariable(lcVariable, lcValue, .T.)
 		endscan
@@ -87,6 +108,12 @@ define class DeployFoxEngine as Custom
 * Open a project.
 
 	function OpenProject(tcPath)
+		local loRegistry, ;
+			laProjects[1], ;
+			lnLast, ;
+			lnI, ;
+			lcProject, ;
+			lcValue
 		use in select('curProject')
 		use in select('ProjectFile')
 		This.cProjectFile = tcPath
@@ -102,6 +129,28 @@ define class DeployFoxEngine as Custom
 			erase (This.cLogFile)
 		catch
 		endtry
+
+* Add it to the list of recent projects if it isn't already there.
+
+		if This.oRecentProjects.GetKey(tcPath) = 0
+			This.oRecentProjects.Add(tcPath)
+			loRegistry = newobject('VFPXLibraryRegistry', 'VFPXLibraryRegistry.vcx')
+			dimension laProjects[cnMRUProjects]
+			lnLast = cnMRUProjects
+			for lnI = cnMRUProjects to 1 step -1
+				laProjects[lnI] = loRegistry.GetKey(ccREGISTRY_KEY, 'Project' + transform(lnI))
+				lnLast = iif(empty(laProjects[lnI]), lnI, lnLast)
+			next lnI
+			if empty(laProjects[cnMRUProjects])
+				laProjects[lnLast] = tcPath
+			else
+				adel(laProjects, 1)
+				laProjects[cnMRUProjects] = tcPath
+			endif empty(laProjects[cnMRUProjects])
+			for lnI = 1 to cnMRUProjects
+				loRegistry.SetKey(ccREGISTRY_KEY, 'Project' + transform(lnI), laProjects[lnI])
+			next lnI
+		endif This.oRecentProjects.GetKey(lcPath) = 0
 	endfunc
 
 * Create a new project.
