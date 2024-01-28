@@ -605,11 +605,9 @@ DEFINE CLASS vfpxgetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx" 		&& 
 		*p: cafterdone		&& An expression to evaluate after the file has been selected
 		*p: ccaption		&& The caption for the dialog
 		*p: cextensions		&& The extensions parameter for GETFILE() (surround literal strings in quotes)
-		*p: copenbutton		&& The text to use for the Open button
+		*p: cfilename		&& The default filename
 		*p: cresult		&& The location where to put the return value into
-		*p: ctext		&& The text to appear beside the filename in the dialog
 		*p: lsavedialog		&& .T. to use a Save dialog, .F. to use an Open dialog
-		*p: nbuttontype		&& The button type parameter for GETFILE()
 	*</DefinedPropArrayMethod>
 
 	*<PropValue>
@@ -617,13 +615,11 @@ DEFINE CLASS vfpxgetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx" 		&& 
 		Caption = "..."
 		ccaption = 
 		cextensions = 
-		copenbutton = 
+		cfilename = 
 		cresult = 
-		ctext = 
 		Height = 23
 		lsavedialog = .F.
-		Name = "vfpxlibrarygetfile"
-		nbuttontype = 0
+		Name = "vfpxgetfile"
 		StatusBarText = "Select a file and path"
 		ToolTipText = "Select a file and path"
 		Width = 23
@@ -631,11 +627,9 @@ DEFINE CLASS vfpxgetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx" 		&& 
 			<memberdata name="cafterdone" type="property" display="cAfterDone" favorites="True"/>
 			<memberdata name="ccaption" type="property" display="cCaption" favorites="True"/>
 			<memberdata name="cextensions" type="property" display="cExtensions" favorites="True"/>
-			<memberdata name="copenbutton" type="property" display="cOpenButton" favorites="True"/>
 			<memberdata name="cresult" type="property" display="cResult" favorites="True"/>
-			<memberdata name="ctext" type="property" display="cText" favorites="True"/>
-			<memberdata name="nbuttontype" type="property" display="nButtonType" favorites="True"/>
 			<memberdata name="lsavedialog" type="property" display="lSaveDialog"/>
+			<memberdata name="cfilename" display="cFileName"/>
 		</VFPData>
 	*</PropValue>
 	
@@ -644,53 +638,24 @@ DEFINE CLASS vfpxgetfile AS vfpxbasecommandbutton OF "vfpxbaselibrary.vcx" 		&& 
 		* of this object.
 		
 		local lcResult, ;
-			lcLibrary, ;
-			loDialog, ;
-			laTypes[1], ;
-			lnTypes, ;
-			lnI, ;
-			lcExt, ;
-			lnPos, ;
-			lcDescrip, ;
-			lcExten, ;
-			laExt[1], ;
-			lnExt, ;
-			lnJ, ;
-			lcFile, ;
-			lcOptions
+			lcFileName
 		with This
 			assert not empty(.cResult) ;
-				message 'VFPXLibraryGetFile: the result container was not defined.'
-			lcResult = .cResult
-		
-		* Build a string of parameters from the properties of this object and call either
-		* GETFILE() or PUTFILE().
-		
-			if .lSaveDialog
-				lcOptions = iif(empty(.cText), "''", "'" + .cText + "'") + ",''," + ;
-					iif(empty(.cExtensions), "''", .cExtensions)
-				lcFile = putfile(&lcOptions)
-			else
-				lcOptions = iif(empty(.cExtensions), "''", .cExtensions) + ',' + ;
-					iif(empty(.cText), "''", "'" + .cText + "'") + ',' + ;
-					iif(empty(.cOpenButton), "''", "'" + .cOpenButton + "'") + ',' + ;
-					iif(empty(.nButtonType), '0', transform(.nButtonType)) + ;
-					iif(empty(.cCaption), '', ",'" + .cCaption + "'")
-				lcFile = getfile(&lcOptions)
-			endif .lSaveDialog
+				message 'VFPXGetFile: the result container was not defined.'
+			lcResult   = .cResult
+			lcFileName = GetFileName(.cExtensions, .cFileName, .cCaption, .lSaveDialog)
 		
 		* If the user chose a file, store the result in the specified location.
 		
-			if not empty(lcFile)
-				lcFile = GetProperFileCase(lcFile)
-				store lcFile to (lcResult)
+			if not empty(lcFileName)
+				store lcFileName to (lcResult)
 		
 		* If a method or function was specified to execute after file selection, do it.
 		
 				if not empty(.cAfterDone)
 					evaluate(.cAfterDone)
 				endif not empty(.cAfterDone)
-			endif not empty(lcFile)
+			endif not empty(lcFileName)
 		endwith
 		
 	ENDPROC

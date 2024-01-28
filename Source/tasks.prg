@@ -7,16 +7,16 @@ define class TaskBase as Session
 		&& the text of an error
 	cEncrypt      = ''
 		&& a comma-delimited list of properties to encrypt
-	oEncrypt      = .NULL.
-		&& a reference to a FoxCryptoNG object
-	oVariables    = .NULL.
-		&& a reference to an object containing variables
-	lDebugMode    = .F.
-		&& .T. to run in debug mode
 	cLogFile      = ''
 		&& the path of a file to log to
 	cName         = ''
 		&& the name of the task
+	lDebugMode    = .F.
+		&& .T. to run in debug mode
+	oEncrypt      = .NULL.
+		&& a reference to a FoxCryptoNG object
+	oVariables    = .NULL.
+		&& a reference to an object containing variables
 *** Note: when new properties are added, include them in INLIST statement in SaveSettings
 
 	function Init(toVariables)
@@ -104,7 +104,7 @@ define class TaskBase as Session
 				for lnI = 1 to lnProperties
 					lcProperty = lower(laProperties[lnI])
 					if not inlist(lcProperty, 'cerrormessage', 'cencrypt', ;
-						'ovariables', 'ldebugmode', 'clogfile', 'cname')
+						'clogfile', 'cname', 'ldebugmode', 'oencrypt', 'ovariables')
 						luValue = evaluate('This.' + lcProperty)
 						lcType  = vartype(luValue)
 						do case
@@ -136,6 +136,8 @@ define class TaskBase as Session
 				lcSettings = loXMLDOM.xml
 			endif vartype(loXMLDOM) = 'O'
 		catch to loException
+*** TODO: remove
+set step on 
 			lcSettings = ''
 			This.cErrorMessage = Format('Error creating XML: {0}', loException.Message)
 			This.Log(Format('Error saving settings: {0}', This.cErrorMessage))
@@ -325,69 +327,17 @@ define class UnzipFile as TaskBase
 		&& the folder to unzip to
 
 	function Execute
-		local llResult, ;
-			loException as Exception, ;
-			loShell, ;
-			loFiles, ;
-			lcCommand, ;
-			lcMessage
-
-* Ensure the file exists.
-
-		if not file(This.cSource)
-			This.cErrorMessage = Format('{0} does not exist', This.cSource)
+		local loZip, ;
+			llResult
+		loZip    = newobject('VFPXZip', 'VFPXZip.prg')
+		loZip.cWindowMode = iif(This.lDebugMode, 'NOR', 'HID'))
+		llResult = loZip.Unzip(This.cSource, This.cTarget)
+		if llResult
+			This.Log(Format('{0} unzipped to {1}', This.cSource, This.cTarget))
+		else
+			This.cErrorMessage = loZip.cErrorMessage
 			This.Log(This.cErrorMessage)
-			return .F.
-		endif not file(This.cSource)
-
-* Create the extraction folder if necessary.
-
-		if not directory(This.cTarget)
-			try
-				md (This.cTarget)
-				llResult = .T.
-			catch to loException
-				This.cErrorMessage = Format('Error creating {0}: {1}', ;
-					This.cTarget, loException.Message)
-			endtry
-			if not llResult
-				return .F.
-			endif not llResult
-		endif not directory(This.cTarget)
-
-* Try to use Shell.Application to extract files.
-
-		try
-			loShell = createobject('Shell.Application')
-			loFiles = loShell.NameSpace(This.cSource).Items
-			if loFiles.Count > 0
-				loShell.NameSpace(This.cTarget).CopyHere(loFiles, cnSHELL_YES_TO_ALL)
-				llResult = .T.
-				This.Log(Format('{0} unzipped to {1} using Shell.Application', ;
-					This.cSource, This.cTarget))
-			endif loFiles.Count > 0
-		catch to loException
-		endtry
-
-* If that failed, use PowerShell.
-
-		if not llResult
-			lcCommand = 'cmd /c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe ' + ;
-				'Microsoft.Powershell.Archive\Expand-Archive -Force ' + ;
-				"-Path '" + This.cSource + "' " + ;
-				"-DestinationPath '" + This.cTarget + "'"
-			lcMessage = ExecuteCommand(lcCommand, This.cTarget, ;
-				iif(This.lDebugMode, 'NOR', 'HID'))
-			llResult  = empty(lcMessage)
-			if llResult
-				This.Log(Format('{0} unzipped to {1} using PowerShell', ;
-					This.cSource, This.cTarget))
-			else
-				This.cErrorMessage = lcMessage
-				This.Log(Format('{0} could not be unzipped to {1}: {2}', ;
-					This.cSource, This.cTarget, lcMessage))
-			endif llResult
-		endif not llResult
+		endif llResult
 		return llResult
 	endfunc
 enddefine
@@ -401,87 +351,17 @@ define class ZipFiles as TaskBase
 		&& 1 = create new file, 2 = update existing file
 
 	function Execute
-		local laFiles[1], ;
-			lnFiles, ;
-			lcFiles, ;
-			lnI, ;
-			lcTarget, ;
-			llOK, ;
-			lnHandle, ;
-			loShell, ;
-			loZIPFile, ;
-			lcFile, ;
-			llResult, ;
-			loException as Exception, ;
-			lcCommand, ;
-			lcMessage
-
-* Create an empty ZIP file if we're supposed to, then try to use Shell.Application
-* to add files to it.
-
-		lnFiles = alines(laFiles, This.cSource, 1 + 4, ccCR, ccLF, ',')
-		lcFiles = ''
-		for lnI = 1 to lnFiles
-			lcFile  = GetProperFileCase(fullpath(laFiles[lnI]))
-			lcFiles = lcFiles + iif(empty(lcFiles), '', ',') + "'" + lcFile + "'"
-			if not file(lcFile)
-				This.cErrorMessage = Format('{0} does not exist', lcFile)
-				This.Log(This.cErrorMessage)
-				return .F.
-			endif not file(lcFile)
-		next lnI
-		try
-			lcTarget = GetProperFileCase(fullpath(This.cTarget))
-			llOK     = .T.
-			if not file(lcTarget) or This.nUpdate = 1
-				lnHandle = fcreate(lcTarget)
-				if lnHandle > 0
-					fclose(lnHandle)
-				else
-					llOK = .F.
-				endif lnHandle > 0
-			endif not file(lcTarget) ...
-			if llOK
-				loShell   = createobject('Shell.Application')
-				loZIPFile = loShell.NameSpace(lcTarget)
-				for lnI = 1 to lnFiles
-					lcFile = GetProperFileCase(fullpath(laFiles[lnI]))
-					loZIPFile.CopyHere(lcFile)
-					do while loZIPFile.Items.Count < lnI
-						Sleep(1000)
-					enddo while loZIPFile.Items.Count < lnI
-				next lnI
-				llResult = .T.
-				This.Log(Format('{0} zipped to {1} using Shell.Application', ;
-					lcFiles, This.cTarget))
-			endif llOK
-		catch to loException
-		endtry
-		if not llOK
-			This.cErrorMessage = 'Cannot create ' + lcTarget + '.'
-			return .F.
-		endif not llOK
-
-* If that failed, use PowerShell.
-
-		if not llResult
-			lcCommand = 'cmd /c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe ' + ;
-				'Microsoft.Powershell.Archive\Compress-Archive ' + ;
-				'-Path @(' + lcFiles + ') ' + ;
-				"-DestinationPath '" + lcTarget + "'" + ;
-				iif(This.nUpdate = 1, '', ' -Update')
-			lcMessage = ExecuteCommand(lcCommand, justpath(lcTarget), ;
-				iif(This.lDebugMode, 'NOR', 'HID'))
-			llResult  = empty(lcMessage)
-			if llResult
-				This.Log(Format('{0} zipped to {1} using PowerShell', ;
-					lcFiles, This.cTarget))
-			else
-				This.cErrorMessage = lcMessage
-				This.Log(Format('Could not zip {0} to {1}: {2}', ;
-					lcFiles, This.cTarget, lcMessage))
-			endif llResult
-		endif not llResult
+		local loZip, ;
+			llResult
+		loZip    = newobject('VFPXZip', 'VFPXZip.prg')
+		loZip.cWindowMode = iif(This.lDebugMode, 'NOR', 'HID'))
+		llResult = loZip.Zip(This.cSource, This.cTarget, This.nUpdate = 1)
+		if llResult
+			This.Log(Format('{0} unzipped to {1}', strtran(This.cSource, ccCR, ','), This.cTarget))
+		else
+			This.cErrorMessage = loZip.cErrorMessage
+			This.Log(This.cErrorMessage)
+		endif llResult
 		return llResult
 	endfunc
 enddefine
@@ -805,51 +685,11 @@ define class BuildEXE as TaskBase
 	endfunc
 enddefine
 
-define class DownloadFile as RunEXE
-	cSource     = 'curl.exe'
+define class UploadDownload as TaskBase
 	cRemoteFile = ''
-		&& the file to download
+		&& the remote file to download or upload to
 	cLocalFile  = ''
-		&& the file to download to
-	cUserName   = ''
-		&& the user name to connect to the server
-	cPassword   = ''
-		&& the password to connect to the server
-	cEncrypt    = 'cPassword'
-
-	function Execute
-		local llReturn
-		do case
-			case empty(This.cRemoteFile)
-				This.cErrorMessage = 'The remote file is empty'
-				This.Log(This.cErrorMessage)
-			case empty(This.cLocalFile)
-				This.cErrorMessage = 'The local file is empty'
-				This.Log(This.cErrorMessage)
-			otherwise
-				This.cParameters = '-o "' + This.cLocalFile + '" ' + This.cRemoteFile + ;
-					iif(empty(This.cUserName), '', ' -u ' + This.cUserName + ':' + This.cPassword)
-				llReturn = dodefault()
-				if llReturn
-					This.Log(Format('{0} was downloaded from {1} using {2} as ' + ;
-						'the user name and {3} as the password', This.cLocalFile, This.cRemoteFile, ;
-						This.cUserName, This.cPassword), .T.)
-				else
-					This.Log(Format('{0} was not downloaded from {1} using {2} as ' + ;
-						'the user name and {3} as the password', This.cLocalFile, This.cRemoteFile, ;
-						This.cUserName, This.cPassword), .T.)
-				endif llReturn
-		endcase
-		return llReturn
-	endfunc
-enddefine
-
-define class UploadFile as RunEXE
-	cSource     = 'curl.exe'
-	cRemoteFile = ''
-		&& the file to upload to
-	cLocalFile  = ''
-		&& the file to upload
+		&& the local file to upload or download to
 	cServer     = ''
 		&& the server
 	cUserName   = ''
@@ -857,43 +697,47 @@ define class UploadFile as RunEXE
 	cPassword   = ''
 		&& the password to connect to the server
 	cEncrypt    = 'cPassword'
+enddefine
 
+define class DownloadFile as UploadDownload
 	function Execute
-		local llReturn
-		do case
-			case empty(This.cRemoteFile)
-				This.cErrorMessage = 'The remote file is empty'
-				This.Log(This.cErrorMessage)
-			case empty(This.cLocalFile)
-				This.cErrorMessage = 'The local file is empty'
-				This.Log(This.cErrorMessage)
-			case empty(This.cServer)
-				This.cErrorMessage = 'The server is empty'
-				This.Log(This.cErrorMessage)
-			case empty(This.cUserName)
-				This.cErrorMessage = 'The user name is empty'
-				This.Log(This.cErrorMessage)
-			case empty(This.cPassword)
-				This.cErrorMessage = 'The password is empty'
-				This.Log(This.cErrorMessage)
-			otherwise
-				This.cParameters = '-T "' + This.cLocalFile + ;
-					'" ftp://' + This.cServer + ;
-					iif(right(This.cServer, 1) = '/' or left(This.cRemoteFile, 1) = '/', '', '/') + ;
-					This.cRemoteFile + ;
-					' -u ' + This.cUserName + ':' + This.cPassword
-				llReturn = dodefault()
-				if llReturn
-					This.Log(Format('{0} was uploaded to {1} at {2} using {3} as ' + ;
-						'the user name and {4} as the password', This.cLocalFile, This.cRemoteFile, ;
-						This.cServer, This.cUserName, This.cPassword), .T.)
-				else
-					This.Log(Format('{0} was not uploaded to {1} at {2} using {3} as ' + ;
-						'the user name and {4} as the password', This.cLocalFile, This.cRemoteFile, ;
-						This.cServer, This.cUserName, This.cPassword), .T.)
-				endif llReturn
-		endcase
-		return llReturn
+		local loInternet, ;
+			llResult
+		loInternet = newobject('VFPXInternet', 'VFPXInternet.prg')
+		loInternet.cWindowMode = iif(This.lDebugMode, 'NOR', 'HID')
+		llResult = loInternet.DownloadFile(This.cRemoteFile, This.cLocalFile, This.cServer, ;
+			This.cUserName, This.cPassword)
+		if llResult
+			This.Log(Format('{0} was downloaded from {1} at {2} using {3} as ' + ;
+				'the user name and {4} as the password', This.cLocalFile, This.cRemoteFile, ;
+				This.cServer, This.cUserName, This.cPassword), .T.)
+		else
+			This.cErrorMessage = Format('{0} was not downloaded: {1}', This.cRemoteFile, ;
+				loInternet.cErrorMessage)
+			This.Log(This.cErrorMessage)
+		endif llResult
+		return llResult
+	endfunc
+enddefine
+
+define class UploadFile as UploadDownload
+	function Execute
+		local loInternet, ;
+			llResult
+		loInternet = newobject('VFPXInternet', 'VFPXInternet.prg')
+		loInternet.cWindowMode = iif(This.lDebugMode, 'NOR', 'HID')
+		llResult = loInternet.UploadFile(This.cRemoteFile, This.cLocalFile, This.cServer, ;
+			This.cUserName, This.cPassword)
+		if llResult
+			This.Log(Format('{0} was uploaded to {1} at {2} using {3} as ' + ;
+				'the user name and {4} as the password', This.cLocalFile, This.cRemoteFile, ;
+				This.cServer, This.cUserName, This.cPassword), .T.)
+		else
+			This.cErrorMessage = Format('{0} was not uploaded: {1}', This.cLocalFile, ;
+				loInternet.cErrorMessage)
+			This.Log(This.cErrorMessage)
+		endif llResult
+		return llResult
 	endfunc
 enddefine
 

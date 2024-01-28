@@ -49,7 +49,7 @@ define class DeployFoxEngine as Custom
 		for lnI = cnMRUProjects to 1 step -1
 			lcValue = loRegistry.GetKey(ccREGISTRY_KEY, 'Project' + transform(lnI))
 			if not empty(lcValue)
-				This.oRecentProjects.Add(lcValue)
+				This.oRecentProjects.Add(lcValue, lcValue)
 			endif not empty(lcValue)
 		next lnI
 
@@ -133,7 +133,7 @@ define class DeployFoxEngine as Custom
 * Add it to the list of recent projects if it isn't already there.
 
 		if This.oRecentProjects.GetKey(tcPath) = 0
-			This.oRecentProjects.Add(tcPath)
+			This.oRecentProjects.Add(tcPath, tcPath)
 			loRegistry = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
 			dimension laProjects[cnMRUProjects]
 			lnLast = cnMRUProjects

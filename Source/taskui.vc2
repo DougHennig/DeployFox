@@ -215,99 +215,24 @@ DEFINE CLASS deletefolderui AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS downloadfileui AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS downloadfileui AS uploaddownloadbase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
-	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
-	*< OBJECTDATA: ObjPath="lblUserName" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="txtUserName" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblPassword" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="txtPassword" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="oLocalFile" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblRemoteFile" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="txtRemoteFile" UniqueID="" Timestamp="" />
-
 	*<PropValue>
-		Name = "downloadfile"
+		Name = "downloadfileui"
+		lblServer.Name = "lblServer"
+		txtServer.Name = "txtServer"
+		lblUserName.Name = "lblUserName"
+		txtUserName.Name = "txtUserName"
+		lblPassword.Name = "lblPassword"
+		txtPassword.Name = "txtPassword"
+		oLocalFile.cmdGetFile.Name = "cmdGetFile"
+		oLocalFile.lblFile.Name = "lblFile"
+		oLocalFile.Name = "oLocalFile"
+		oLocalFile.txtFile.Name = "txtFile"
+		lblRemoteFile.Name = "lblRemoteFile"
+		txtRemoteFile.Name = "txtRemoteFile"
 	*</PropValue>
-
-	ADD OBJECT 'lblPassword' AS vfpxbaselabel WITH ;
-		Caption = "Password", ;
-		Left = 0, ;
-		Name = "lblPassword", ;
-		TabIndex = 7, ;
-		Top = 80
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'lblRemoteFile' AS vfpxbaselabel WITH ;
-		Caption = "Remote file", ;
-		Left = 0, ;
-		Name = "lblRemoteFile", ;
-		TabIndex = 2, ;
-		Top = 5
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'lblUserName' AS vfpxbaselabel WITH ;
-		Caption = "User name", ;
-		Left = 0, ;
-		Name = "lblUserName", ;
-		TabIndex = 5, ;
-		Top = 55
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'oLocalFile' AS vfpxfile WITH ;
-		ccontrolsource = This.Parent.oTask.cLocalFile, ;
-		Left = 0, ;
-		Name = "oLocalFile", ;
-		TabIndex = 3, ;
-		Top = 25, ;
-		lblFile.Caption = "Local file", ;
-		lblFile.Name = "lblFile", ;
-		txtFile.Left = 70, ;
-		txtFile.Name = "txtFile", ;
-		txtFile.Width = 250, ;
-		cmdGetFile.Left = 320, ;
-		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
-
-	ADD OBJECT 'txtPassword' AS vfpxbasetextbox WITH ;
-		Height = 23, ;
-		Left = 70, ;
-		Name = "txtPassword", ;
-		TabIndex = 6, ;
-		Top = 75, ;
-		Width = 272
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
-
-	ADD OBJECT 'txtRemoteFile' AS vfpxbasetextbox WITH ;
-		Height = 23, ;
-		Left = 70, ;
-		Name = "txtRemoteFile", ;
-		TabIndex = 1, ;
-		Top = 0, ;
-		Width = 272
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
-
-	ADD OBJECT 'txtUserName' AS vfpxbasetextbox WITH ;
-		Height = 23, ;
-		Left = 70, ;
-		Name = "txtUserName", ;
-		TabIndex = 4, ;
-		Top = 50, ;
-		Width = 272
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
-	
-	PROCEDURE loadsettings
-		This.txtUserName.ControlSource   = 'This.Parent.oTask.cUserName'
-		This.txtPassword.ControlSource   = 'This.Parent.oTask.cPassword'
-		This.txtRemoteFile.ControlSource = 'This.Parent.oTask.cRemoteFile'
-		
-	ENDPROC
-
-	PROCEDURE validate
-		return not empty(This.oTask.cRemoteFile) and not empty(This.oTask.cLocalFile)
-		
-	ENDPROC
 
 ENDDEFINE
 
@@ -1265,7 +1190,7 @@ DEFINE CLASS unzipfileui AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS uploadfileui AS taskuibase OF "taskui.vcx" 
+DEFINE CLASS uploaddownloadbase AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -1280,7 +1205,7 @@ DEFINE CLASS uploadfileui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="txtRemoteFile" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "uploadfile"
+		Name = "uploaddownloadbase"
 	*</PropValue>
 
 	ADD OBJECT 'lblPassword' AS vfpxbaselabel WITH ;
@@ -1371,6 +1296,27 @@ DEFINE CLASS uploadfileui AS taskuibase OF "taskui.vcx"
 			not empty(This.oTask.cPassword)
 		
 	ENDPROC
+
+ENDDEFINE
+
+DEFINE CLASS uploadfileui AS uploaddownloadbase OF "taskui.vcx" 
+ 	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*<PropValue>
+		Name = "uploadfileui"
+		lblServer.Name = "lblServer"
+		txtServer.Name = "txtServer"
+		lblUserName.Name = "lblUserName"
+		txtUserName.Name = "txtUserName"
+		lblPassword.Name = "lblPassword"
+		txtPassword.Name = "txtPassword"
+		oLocalFile.cmdGetFile.Name = "cmdGetFile"
+		oLocalFile.lblFile.Name = "lblFile"
+		oLocalFile.Name = "oLocalFile"
+		oLocalFile.txtFile.Name = "txtFile"
+		lblRemoteFile.Name = "lblRemoteFile"
+		txtRemoteFile.Name = "txtRemoteFile"
+	*</PropValue>
 
 ENDDEFINE
 
