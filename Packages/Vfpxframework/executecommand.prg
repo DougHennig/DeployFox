@@ -23,7 +23,7 @@ do case
 		lnResult  = nvl(loAPI.CheckProcessExitCode(), -1)
 		llResult  = lnResult = 0
 		lcMessage = iif(llResult, '', ;
-			evl(loAPI.icErrorMessage, Format('The error code is {0}.', lnResult)))
+			evl(loAPI.icErrorMessage, 'The error code is ' + transform(lnResult)))
 	otherwise
 		lcMessage = loAPI.icErrorMessage
 endcase

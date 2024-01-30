@@ -16,14 +16,13 @@ define class VFPXInternet as Custom
 				This.cErrorMessage = 'The remote file was not specified'
 			case vartype(tcLocalFile) <> 'C' or empty(tcLocalFile)
 				This.cErrorMessage = 'The local file was not specified'
-			case vartype(tcServer) <> 'C' or empty(tcServer)
-				This.cErrorMessage = 'The server was not specified'
 
 * Download the file using curl.
 
 			otherwise
-				lcCommand = 'curl.exe -o "' + tcLocalFile + '" ftp://' + tcServer + ;
-					iif(right(tcServer, 1) = '/' or left(tcRemoteFile, 1) = '/', '', '/') + ;
+				lcCommand = 'curl.exe -o "' + tcLocalFile + '" -L ' + ;
+					iif(empty(tcServer), '', '" ftp://' + tcServer + ;
+						iif(right(tcServer, 1) = '/' or left(tcRemoteFile, 1) = '/', '', '/')) + ;
 					tcRemoteFile + iif(empty(tcUserName), '', ' -u ' + tcUserName + ':' + ;
 					tcPassword)
 				lcMessage = ExecuteCommand(lcCommand, , This.cWindowMode)
