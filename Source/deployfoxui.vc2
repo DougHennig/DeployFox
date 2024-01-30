@@ -5,7 +5,7 @@
 *< FOXBIN2PRG: Version="1.20" SourceFile="deployfoxui.vcx" CPID="1252" /> (Solo para binarios VFP 9 / Only for VFP 9 binaries)
 *
 *
-DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx" 
+DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\vfpxpersistentform.vcx" 
  	*< CLASSDATA: Baseclass="form" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
@@ -78,6 +78,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 			<memberdata name="updateproject" display="UpdateProject"/>
 			<memberdata name="openproject" display="OpenProject"/>
 		</VFPData>
+		oPersist.Name = "oPersist"
 	*</PropValue>
 
 	ADD OBJECT 'cboTaskType' AS vfpxbasecombobox WITH ;
@@ -90,7 +91,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 10, ;
 		Top = 45, ;
 		Width = 209
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'chkActive' AS vfpxbasecheckbox WITH ;
 		Alignment = 0, ;
@@ -100,7 +101,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "chkActive", ;
 		TabIndex = 14, ;
 		Top = 105
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="checkbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
 	ADD OBJECT 'cmdDebug' AS vfpxbasetoolbarbutton WITH ;
 		Left = 125, ;
@@ -109,7 +110,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 3, ;
 		ToolTipText = "Debug", ;
 		Top = 10
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdDeleteTask' AS vfpxbasetoolbarbutton WITH ;
 		Left = 200, ;
@@ -118,7 +119,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 5, ;
 		ToolTipText = "Remove the selected task", ;
 		Top = 10
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdDown' AS vfpxbasetoolbarbutton WITH ;
 		Left = 250, ;
@@ -127,7 +128,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 7, ;
 		ToolTipText = "Move the task down", ;
 		Top = 10
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdNewProject' AS vfpxbasetoolbarbutton WITH ;
 		Left = 50, ;
@@ -136,7 +137,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 2, ;
 		ToolTipText = "Create a new DeployFox project", ;
 		Top = 10
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdNewTask' AS vfpxbasetoolbarbutton WITH ;
 		Left = 175, ;
@@ -145,7 +146,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 4, ;
 		ToolTipText = "Add a task", ;
 		Top = 10
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdOpenProject' AS vfpxdropdownmenubutton WITH ;
 		Left = 10, ;
@@ -155,7 +156,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		cmdMain.Name = "cmdMain", ;
 		cmdMain.Picture = openproject.bmp, ;
 		cmdMenu.Name = "cmdMenu"
-		*< END OBJECT: ClassLib="vfpxdropdownmenubutton.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxdropdownmenubutton.vcx" BaseClass="container" />
 
 	ADD OBJECT 'cmdOptions' AS vfpxbasetoolbarbutton WITH ;
 		Left = 300, ;
@@ -164,7 +165,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 8, ;
 		ToolTipText = "Options", ;
 		Top = 10
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdRun' AS vfpxbasetoolbarbutton WITH ;
 		Left = 100, ;
@@ -173,7 +174,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 3, ;
 		ToolTipText = "Run", ;
 		Top = 10
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdSave' AS vfpxbasetoolbarbutton WITH ;
 		Left = 1038, ;
@@ -182,7 +183,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 17, ;
 		ToolTipText = "Save the settings", ;
 		Top = 45
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdUp' AS vfpxbasetoolbarbutton WITH ;
 		Left = 225, ;
@@ -191,7 +192,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 6, ;
 		ToolTipText = "Move the task up", ;
 		Top = 10
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'edtComments' AS vfpxbaseeditbox WITH ;
 		Anchor = 10, ;
@@ -202,7 +203,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 16, ;
 		Top = 131, ;
 		Width = 300
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="editbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
 
 	ADD OBJECT 'grdTasks' AS vfpxbasegrid WITH ;
 		Anchor = 5, ;
@@ -237,7 +238,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Column5.ControlSource = "curProject.Status", ;
 		Column5.FontName = "Segoe UI", ;
 		Column5.Name = "Column5"
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="grid" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="grid" />
 
 	ADD OBJECT 'grdTasks.Column1.Header1' AS header WITH ;
 		Caption = "Order", ;
@@ -333,7 +334,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "lblComments", ;
 		TabIndex = 15, ;
 		Top = 131
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblName' AS vfpxbaselabel WITH ;
 		Caption = "Name", ;
@@ -341,7 +342,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "lblName", ;
 		TabIndex = 13, ;
 		Top = 78
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblProject' AS vfpxbaselabel WITH ;
 		Anchor = 4, ;
@@ -350,7 +351,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "lblProject", ;
 		TabIndex = 19, ;
 		Top = 432
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSettings' AS vfpxbaselabel WITH ;
 		BackStyle = 1, ;
@@ -360,7 +361,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Style = 3, ;
 		TabIndex = 18, ;
 		Top = 248
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblTaskType' AS vfpxbaselabel WITH ;
 		Caption = "Task type", ;
@@ -368,7 +369,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "lblTaskType", ;
 		TabIndex = 11, ;
 		Top = 49
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'shpSettings' AS vfpxbaseshape WITH ;
 		Anchor = 15, ;
@@ -377,7 +378,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		Name = "shpSettings", ;
 		Top = 256, ;
 		Width = 365
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="shape" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="shape" />
 
 	ADD OBJECT 'txtName' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -388,7 +389,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		TabIndex = 12, ;
 		Top = 75, ;
 		Width = 300
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE displaytask		&& Displays the settings for the selected task
 		lparameters tlNew
@@ -429,6 +430,7 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 	ENDPROC
 
 	PROCEDURE Init
+		This.cRegistryKey = ccREGISTRY_KEY
 		dodefault()
 		
 		This.oEngine = newobject('DeployFoxEngine', 'DeployFoxEngine.prg')
@@ -451,8 +453,6 @@ DEFINE CLASS deployfoxform AS vfpxbaseform OF "vfpxbaselibrary.vcx"
 		This.grdTasks.RecordSource = 'curProject'
 		This.SetupGrid()
 		This.BindControls = .T.
-		
-		*** TODO: persist size/position
 		
 	ENDPROC
 

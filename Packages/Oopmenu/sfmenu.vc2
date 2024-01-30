@@ -2646,6 +2646,7 @@ DEFINE CLASS sfpad AS sfmenubase OF "sfmenu.vcx" 		&& A pad in a menu
 				loBar = .Item(lnI)
 				loBar.Hide()
 			next lnI
+			.lVisible    = .F.
 			.lPadDefined = .F.
 			lcPadName    = .Name
 			lcPopupName = .cPopupName

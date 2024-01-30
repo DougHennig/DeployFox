@@ -8,6 +8,11 @@
 DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A container with a label, textbox, and button for a directory
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="lblFolder" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="txtFolder" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdGetFolder" UniqueID="" Timestamp="" />
+
 	*<DefinedPropArrayMethod>
 		*m: adjustcontrols		&& Adjusts the control positions
 		*m: cdirectory_access
@@ -32,6 +37,7 @@ DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A 
 
 	*<PropValue>
 		Anchor = 10
+		builder = VFPXDirectoryBuilder.prg
 		ccaption = Select Directory
 		ccontrolsource = 
 		cdirectory = 
@@ -40,7 +46,7 @@ DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A 
 		Height = 23
 		ladjustpositions = .T.
 		ldisplaylabel = .T.
-		Name = "vfpxlibrarydirectory"
+		Name = "vfpxdirectory"
 		value = 
 		Width = 343
 		_memberdata = <VFPData>
@@ -67,6 +73,29 @@ DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A 
 			<memberdata name="ldisplaylabel_assign" display="lDisplayLabel_Assign"/>
 		</VFPData>
 	*</PropValue>
+
+	ADD OBJECT 'cmdGetFolder' AS vfpxgetdir WITH ;
+		Anchor = 8, ;
+		cafterdone = This.Parent.Validation(), ;
+		cresult = This.Parent.cDirectory, ;
+		Left = 320, ;
+		Name = "cmdGetFolder", ;
+		TabStop = .F.
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'lblFolder' AS vfpxbaselabel WITH ;
+		Caption = "Directory", ;
+		Name = "lblFolder", ;
+		Top = 3
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'txtFolder' AS vfpxbasetextbox WITH ;
+		Anchor = 10, ;
+		Left = 55, ;
+		MaxLength = 254, ;
+		Name = "txtFolder", ;
+		Width = 265
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE adjustcontrols		&& Adjusts the control positions
 		* Set the caption of the label if we need to and adjust the control position to
@@ -98,6 +127,23 @@ DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A 
 					.cmdGetFolder.lSaveAnchor = .F.
 				endif .lAdjustPositions
 			endif not empty(.cLabelCaption) ...
+		endwith
+		
+	ENDPROC
+
+	PROCEDURE buildercode
+		* Adapted from VFPXDirectoryBuilder.prg. To use, double-click the Builder property in
+		* PEM Editor.
+		
+		lparameters toThis
+		with toThis
+			lcCaption = inputbox('Caption:', 'Directory Builder', .lblFolder.Caption)
+			if not empty(lcCaption)
+				.lblFolder.Caption = lcCaption
+			endif not empty(lcCaption)
+			.txtFolder.Left    = .lblFolder.Width + 5
+			.cmdGetFolder.Left = .Width - .cmdGetFolder.Width
+			.txtFolder.Width   = .cmdGetFolder.Left - .txtFolder.Left
 		endwith
 		
 	ENDPROC
@@ -243,10 +289,38 @@ DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A 
 		
 	ENDPROC
 
+	PROCEDURE cmdGetFolder.Click
+		with This
+			.cCaption    = .Parent.cCaption
+			.cText       = .Parent.cText
+			.cDefaultDir = '[' + .Parent.cDirectory + ']'
+		endwith
+		dodefault()
+		
+	ENDPROC
+
+	PROCEDURE cmdGetFolder.Init
+		This.cDefaultDir = '=' + This.cResult
+		dodefault()
+		
+	ENDPROC
+
+	PROCEDURE txtFolder.Valid
+		* Update the cDirectory property.
+		
+		This.Parent.cDirectory = This.Value
+		
+	ENDPROC
+
 ENDDEFINE
 
 DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="lblFile" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="txtFile" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdGetFile" UniqueID="" Timestamp="" />
 
 	*<DefinedPropArrayMethod>
 		*m: adjustcontrols		&& Adjust the control positions
@@ -273,6 +347,7 @@ DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 
 	*<PropValue>
 		Anchor = 10
+		builder = VFPXFileBuilder.prg
 		ccaption = 
 		ccontrolsource = 
 		cextensions = 
@@ -282,7 +357,7 @@ DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 		ladjustpositions = .T.
 		ldisplaylabel = .T.
 		lsavedialog = .F.
-		Name = "vfpxlibraryfile"
+		Name = "vfpxfile"
 		value = 
 		Width = 343
 		_memberdata = <VFPData>
@@ -308,6 +383,29 @@ DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 			<memberdata name="ldisplaylabel_assign" display="lDisplayLabel_Assign"/>
 		</VFPData>
 	*</PropValue>
+
+	ADD OBJECT 'cmdGetFile' AS vfpxgetfile WITH ;
+		Anchor = 8, ;
+		cafterdone = This.Parent.Validation(), ;
+		cresult = This.Parent.cFileName, ;
+		Left = 320, ;
+		Name = "cmdGetFile", ;
+		TabStop = .F.
+		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'lblFile' AS vfpxbaselabel WITH ;
+		Caption = "File", ;
+		Name = "lblFile", ;
+		Top = 3
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'txtFile' AS vfpxbasetextbox WITH ;
+		Anchor = 10, ;
+		Left = 30, ;
+		MaxLength = 240, ;
+		Name = "txtFile", ;
+		Width = 290
+		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE adjustcontrols		&& Adjust the control positions
 		* Set the caption of the label if we need to and adjust the control position to
@@ -340,6 +438,23 @@ DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 					.cmdGetFile.lSaveAnchor = .F.
 				endif .lAdjustPositions
 			endif not empty(.cLabelCaption) ...
+		endwith
+		
+	ENDPROC
+
+	PROCEDURE buildercode
+		* Adapted from VFPXFileBuilder.prg. To use, double-click the Builder property in
+		* PEM Editor.
+		
+		lparameters toThis
+		with toThis
+			lcCaption = inputbox('Caption:', 'File Builder', .lblFile.Caption)
+			if not empty(lcCaption)
+				.lblFile.Caption = lcCaption
+			endif not empty(lcCaption)
+			.txtFile.Left    = .lblFile.Width + 5
+			.cmdGetFile.Left = .Width - .cmdGetFile.Width
+			.txtFile.Width   = .cmdGetFile.Left - .txtFile.Left
 		endwith
 		
 	ENDPROC
@@ -480,6 +595,28 @@ DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 			.cmdGetFile.Left = .Width - .cmdGetFile.Width
 			.txtFile.Width   = .cmdGetFile.Left - .txtFile.Left
 		endwith
+		
+	ENDPROC
+
+	PROCEDURE cmdGetFile.Click
+		local lcFileName
+		with This
+			.cCaption    = .Parent.cCaption
+			.cExtensions = .Parent.cExtensions
+			lcFileName   = .Parent.cFileName
+			.lSaveDialog = .Parent.lSaveDialog
+			dodefault()
+			if not lcFileName == .Parent.cFileName
+				raiseevent(This.Parent, 'FileChanged')
+			endif not lcFileName == .Parent.cFileName
+		endwith
+		
+	ENDPROC
+
+	PROCEDURE txtFile.Valid
+		* Update the cFileName property.
+		
+		This.Parent.cFileName = This.Value
 		
 	ENDPROC
 

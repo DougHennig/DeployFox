@@ -55,16 +55,19 @@ DEFINE CLASS vfpxpersist AS vfpxbasecustom OF "vfpxbaselibrary.vcx"
 			with Thisform
 				loRegistry    = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
 				lcKey         = .cRegistryKey
-				lnHeight      = loRegistry.GetKey(lcKey, 'Height',      .Height)
-				lnWidth       = loRegistry.GetKey(lcKey, 'Width',       .Width)
-				lnTop         = loRegistry.GetKey(lcKey, 'Top',         .Top)
-				lnLeft        = loRegistry.GetKey(lcKey, 'Left',        .Left)
-				lnWindowState = loRegistry.GetKey(lcKey, 'WindowState', -1)
-				if lnWindowState > 0
-					This.nWindowState = lnWindowState
-				else
-					This.nWindowState = .WindowState
-				endif lnWindowState > 0
+				lnHeight      = loRegistry.GetKey(lcKey, 'Height')
+				lnWidth       = loRegistry.GetKey(lcKey, 'Width')
+				lnTop         = loRegistry.GetKey(lcKey, 'Top')
+				lnLeft        = loRegistry.GetKey(lcKey, 'Left')
+				lnWindowState = loRegistry.GetKey(lcKey, 'WindowState')
+				if vartype(lnHeight) = 'C'
+					lnHeight      = .Height
+					lnWidth       = .Width
+					lnTop         = .Top
+					lnLeft        = .Left
+					lnWindowState = .WindowState
+				endif vartype(lnHeight) = 'C'
+				This.nWindowState = lnWindowState
 		
 		* For desktop or dockable forms, get the size of the virtual desktop. If
 		* there's only one monitor, use the primary monitor size. Otherwise, use the

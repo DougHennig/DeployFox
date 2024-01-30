@@ -186,13 +186,6 @@
 		</RECORD>
 
 		<RECORD>
-			<TYPE>ReplaceInFile</TYPE>
-			<DESCRIP>Replace text in file</DESCRIP>
-			<FILE>tasks.prg</FILE>
-			<UIFILE>taskui.vcx</UIFILE>
-		</RECORD>
-
-		<RECORD>
 			<TYPE>SetVariable</TYPE>
 			<DESCRIP>Set variable</DESCRIP>
 			<FILE>tasks.prg</FILE>

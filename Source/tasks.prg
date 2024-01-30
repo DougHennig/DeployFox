@@ -330,7 +330,7 @@ define class UnzipFile as TaskBase
 		local loZip, ;
 			llResult
 		loZip    = newobject('VFPXZip', 'VFPXZip.prg')
-		loZip.cWindowMode = iif(This.lDebugMode, 'NOR', 'HID'))
+		loZip.cWindowMode = iif(This.lDebugMode, 'NOR', 'HID')
 		llResult = loZip.Unzip(This.cSource, This.cTarget)
 		if llResult
 			This.Log(Format('{0} unzipped to {1}', This.cSource, This.cTarget))
@@ -354,7 +354,7 @@ define class ZipFiles as TaskBase
 		local loZip, ;
 			llResult
 		loZip    = newobject('VFPXZip', 'VFPXZip.prg')
-		loZip.cWindowMode = iif(This.lDebugMode, 'NOR', 'HID'))
+		loZip.cWindowMode = iif(This.lDebugMode, 'NOR', 'HID')
 		llResult = loZip.Zip(This.cSource, This.cTarget, This.nUpdate = 1)
 		if llResult
 			This.Log(Format('{0} unzipped to {1}', strtran(This.cSource, ccCR, ','), This.cTarget))

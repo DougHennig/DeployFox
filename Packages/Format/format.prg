@@ -3,7 +3,7 @@
 * Purpose:			Mimics the String.Format() and $ (string interpolation)
 *						methods of .NET
 * Author:			Doug Hennig
-* Last revision:	01/25/2024
+* Last revision:	12/16/2023
 * Parameters:		tcFormat       - the format string
 *					tuParameter0-9 - the values to insert into the string
 *						(optional: if string interpolation is used, no
@@ -53,7 +53,6 @@ local lcCharLeft, ;
 	lcFormat, ;
 	lcCount, ;
 	lnSize, ;
-	lnPos, ;
 	luValue, ;
 	lcType
 
@@ -93,15 +92,6 @@ for lnCount = 1 to occurs(lcCharLeft, tcFormat)
 		else
 			luValue = evaluate(lcCount)
 		endif isdigit(left(lcCount, 1))
-
-* Handle special characters in the value.
-
-		if vartype(luValue) = 'C'
-			luValue = strtran(luValue, lcCharLeft,  chr(246))
-			luValue = strtran(luValue, lcCharRight, chr(247))
-			luValue = strtran(luValue, '\r',        chr(248))
-			luValue = strtran(luValue, '\n',        chr(249))
-		endif vartype(luValue) = 'C'
 		if empty(lcFormat)
 			lcReturn = strtran(lcReturn, lcSearch, transform(luValue))
 		else
@@ -138,10 +128,6 @@ lcReturn = strtran(lcReturn, '\n', chr(10))
 
 * Handle escaped characters.
 
-lcReturn = strtran(lcReturn, chr(246), lcCharLeft)
-lcReturn = strtran(lcReturn, chr(247), lcCharRight)
-lcReturn = strtran(lcReturn, chr(248), '\r')
-lcReturn = strtran(lcReturn, chr(249), '\n')
 lcReturn = strtran(lcReturn, chr(250), '\' + lcCharLeft)
 lcReturn = strtran(lcReturn, chr(251), '\' + lcCharRight)
 lcReturn = strtran(lcReturn, chr(252), '\\r')
@@ -179,7 +165,6 @@ if len(lcFormat) = 1
 			bitlshift(asc(substr(lcTimeZone, 4, 1)), 24))
 		luValue = luValue - liBiasSeconds
 	endif inlist(lcFormat, 'r', 'u', 'U')
-*** TODO FUTURE: support locales e.g. fr-FR would be dd/MM/yyyy for short date
 	do case
 
 * Short date e.g. 12/07/2002
@@ -202,15 +187,15 @@ if len(lcFormat) = 1
 		case lcFormat = 'F'
 			lcFormat = 'MMMM d, yyyy hh:mm:ss tt'
 
-* General date & time e.g. 12/07/2002 10:11 PM
+* Default date & time e.g. 07/12/2002 10:11 PM
 
 		case lcFormat = 'g'
-			lcFormat = 'MM/dd/yyyy hh:mm tt'
+			lcFormat = 'dd/MM/yyyy hh:mm tt'
 
-* General date & time (long) e.g. 12/07/2002 10:11:29 PM
+* Default date & time (long) e.g. 07/12/2002 10:11:29 PM
 
 		case lcFormat = 'G'
-			lcFormat = 'MM/dd/yyyy hh:mm:ss tt'
+			lcFormat = 'dd/MM/yyyy hh:mm:ss tt'
 
 * Month day e.g. December 7
 
@@ -271,7 +256,7 @@ lcFormat = strtran(lcFormat, 'dddd', cdow(tuValue))
 lcFormat = strtran(lcFormat, 'ddd',  left(cdow(tuValue), 3))
 lcFormat = strtran(lcFormat, 'dd',   padl(day(tuValue), 2, '0'))
 lcFormat = strtran(lcFormat, ' d',   ' ' + transform(day(tuValue)))
-lcFormat = trim(strtran(lcFormat, 'd ', transform(day(tuValue))) + ' ')
+lcFormat = trim(strtran(lcFormat, 'd ',   transform(day(tuValue))) + ' ')
 lcFormat = strtran(lcFormat, 'yyyy', transform(year(tuValue)))
 lcFormat = strtran(lcFormat, 'yy',   right(transform(year(tuValue)), 2))
 lcFormat = strtran(lcFormat, 'tt',   iif(hour(tuValue) < 12, 'AM', 'PM'))
@@ -279,14 +264,6 @@ return lcFormat
 
 
 function NumericFormat(tnValue, tcFormat, tnSize)
-local lcFormat, ;
-	lcChar, ;
-	lnSize, ;
-	llSize, ;
-	lnDecimals, ;
-	lnValue, ;
-	lnValueSize, ;
-	lcResult
 lcFormat    = upper(tcFormat)
 lcChar      = left(lcFormat, 1)
 lnSize      = val(substr(lcFormat, 2))
@@ -360,10 +337,6 @@ return lcResult
 
 
 function GetFormat(tnSize)
-local lcFormat, ;
-	lnCommas, ;
-	lnI, ;
-	lnPlaces
 lcFormat = ''
 lnCommas = int(tnSize/3)
 for lnI = 1 to lnCommas
@@ -377,7 +350,6 @@ return lcFormat
 
 
 function GetSize(tnSize, tnValueSize, tnValue)
-local lnSize
 lnSize = max(tnSize, 1)
 if tnSize = 0 or lnSize < tnValueSize
 	lnSize = tnValueSize

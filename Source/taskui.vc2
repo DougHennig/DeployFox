@@ -23,7 +23,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "chkRecompile", ;
 		Top = 50
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="checkbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
 	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
@@ -38,7 +38,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 245, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
@@ -53,7 +53,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 245, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE loadsettings
 		This.chkRecompile.ControlSource = 'This.Parent.oTask.lRecompile'
@@ -98,7 +98,7 @@ DEFINE CLASS buildsetupinnoui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 264, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cScriptFile)
@@ -130,7 +130,7 @@ DEFINE CLASS copyfileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 285, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
@@ -143,7 +143,7 @@ DEFINE CLASS copyfileui AS taskuibase OF "taskui.vcx"
 		txtFile.Name = "txtFile", ;
 		txtFile.Width = 285, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
@@ -174,7 +174,7 @@ DEFINE CLASS deletefileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 295, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cSource)
@@ -206,7 +206,7 @@ DEFINE CLASS deletefolderui AS taskuibase OF "taskui.vcx"
 		txtFolder.Width = 280, ;
 		cmdGetFolder.Left = 320, ;
 		cmdGetFolder.Name = "cmdGetFolder"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cSource)
@@ -253,7 +253,7 @@ DEFINE CLASS executescriptui AS taskuibase OF "taskui.vcx"
 		Name = "edtScript", ;
 		Top = 0, ;
 		Width = 293
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="editbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
 
 	ADD OBJECT 'lblScript' AS vfpxbaselabel WITH ;
 		Caption = "Script", ;
@@ -262,7 +262,7 @@ DEFINE CLASS executescriptui AS taskuibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "lblScript", ;
 		Top = 2
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 	
 	PROCEDURE loadsettings
 		This.edtScript.ControlSource = 'This.Parent.oTask.cCode'
@@ -336,7 +336,7 @@ DEFINE CLASS inibase AS taskuibase OF "taskui.vcx"
 		Style = 0, ;
 		Top = 51, ;
 		Width = 159
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'cboSection' AS vfpxbasecombobox WITH ;
 		Height = 24, ;
@@ -346,21 +346,21 @@ DEFINE CLASS inibase AS taskuibase OF "taskui.vcx"
 		Style = 0, ;
 		Top = 25, ;
 		Width = 159
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'lblItem' AS vfpxbaselabel WITH ;
 		Caption = "Item", ;
 		Left = 0, ;
 		Name = "lblItem", ;
 		Top = 55
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSection' AS vfpxbaselabel WITH ;
 		Caption = "Section", ;
 		Left = 0, ;
 		Name = "lblSection", ;
 		Top = 29
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oINIFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
@@ -376,7 +376,7 @@ DEFINE CLASS inibase AS taskuibase OF "taskui.vcx"
 		txtFile.Top = 0, ;
 		txtFile.Width = 270, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE getitemsforsection		&& Gets the items for the selected section
 		local laItems[1], ;
@@ -507,7 +507,7 @@ DEFINE CLASS readfrominiui AS inibase OF "taskui.vcx"
 		TabIndex = 6, ;
 		Top = 77, ;
 		Width = 159
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'lblVariable' AS vfpxbaselabel WITH ;
 		Caption = "Variable", ;
@@ -515,7 +515,7 @@ DEFINE CLASS readfrominiui AS inibase OF "taskui.vcx"
 		Name = "lblVariable", ;
 		TabIndex = 7, ;
 		Top = 80
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 	
 	PROCEDURE loadsettings
 		dodefault()
@@ -573,7 +573,7 @@ DEFINE CLASS readfromregistryui AS registrybase OF "taskui.vcx"
 		TabIndex = 6, ;
 		Top = 76, ;
 		Width = 159
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'lblVariable' AS vfpxbaselabel WITH ;
 		Caption = "Variable", ;
@@ -581,7 +581,7 @@ DEFINE CLASS readfromregistryui AS registrybase OF "taskui.vcx"
 		Name = "lblVariable", ;
 		TabIndex = 7, ;
 		Top = 79
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 	
 	PROCEDURE loadsettings
 		dodefault()
@@ -639,7 +639,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		TabIndex = 1, ;
 		Top = 0, ;
 		Width = 185
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'lblKey' AS vfpxbaselabel WITH ;
 		Caption = "Key", ;
@@ -647,7 +647,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Name = "lblKey", ;
 		TabIndex = 4, ;
 		Top = 29
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblMainKey' AS vfpxbaselabel WITH ;
 		Caption = "Hive", ;
@@ -655,7 +655,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Name = "lblMainKey", ;
 		TabIndex = 2, ;
 		Top = 4
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSetting' AS vfpxbaselabel WITH ;
 		Caption = "Setting", ;
@@ -663,7 +663,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Name = "lblSetting", ;
 		TabIndex = 6, ;
 		Top = 54
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'txtKey' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -674,7 +674,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		TabIndex = 3, ;
 		Top = 26, ;
 		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtSetting' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -684,7 +684,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		TabIndex = 5, ;
 		Top = 51, ;
 		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings
 		This.txtKey.ControlSource     = 'This.Parent.oTask.cKey'
@@ -744,7 +744,7 @@ DEFINE CLASS renamefileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 285, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
@@ -757,7 +757,7 @@ DEFINE CLASS renamefileui AS taskuibase OF "taskui.vcx"
 		txtFile.Name = "txtFile", ;
 		txtFile.Width = 285, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate
 		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
@@ -790,7 +790,7 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		Name = "cboWindowMode", ;
 		Top = 90, ;
 		Width = 120
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'edtParameters' AS vfpxbaseeditbox WITH ;
 		Height = 63, ;
@@ -798,7 +798,7 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		Name = "edtParameters", ;
 		Top = 25, ;
 		Width = 250
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="editbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
 
 	ADD OBJECT 'lblInfo' AS vfpxbaselabel WITH ;
 		Anchor = 4, ;
@@ -810,14 +810,14 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		Top = 120, ;
 		Width = 340, ;
 		WordWrap = .T.
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblParameters' AS vfpxbaselabel WITH ;
 		Caption = "Parameters", ;
 		Left = 0, ;
 		Name = "lblParameters", ;
 		Top = 25
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblWindowMode' AS vfpxbaselabel WITH ;
 		Anchor = 4, ;
@@ -825,7 +825,7 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "lblWindowMode", ;
 		Top = 94
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		cextensions = "EXE", ;
@@ -841,7 +841,7 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 230, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE loadsettings
 		This.oSource.cControlSource      = 'This.Parent.oTask.cSource'
@@ -891,7 +891,7 @@ DEFINE CLASS runprgui AS taskuibase OF "taskui.vcx"
 		Name = "edtParameters", ;
 		Top = 25, ;
 		Width = 250
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="editbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
 
 	ADD OBJECT 'lblInfo' AS vfpxbaselabel WITH ;
 		Anchor = 4, ;
@@ -903,14 +903,14 @@ DEFINE CLASS runprgui AS taskuibase OF "taskui.vcx"
 		Top = 130, ;
 		Width = 340, ;
 		WordWrap = .T.
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblParameters' AS vfpxbaselabel WITH ;
 		Caption = "Parameters", ;
 		Left = 0, ;
 		Name = "lblParameters", ;
 		Top = 25
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		cextensions = "PRG", ;
@@ -926,7 +926,7 @@ DEFINE CLASS runprgui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 230, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE loadsettings
 		This.oSource.cControlSource      = 'This.Parent.oTask.cSource'
@@ -962,21 +962,21 @@ DEFINE CLASS setvariableui AS taskuibase OF "taskui.vcx"
 		Left = 85, ;
 		Name = "chkEncrypt", ;
 		Top = 55
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="checkbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
 	ADD OBJECT 'lblValue' AS vfpxbaselabel WITH ;
 		Caption = "Value", ;
 		Left = 0, ;
 		Name = "lblValue", ;
 		Top = 28
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblVariable' AS vfpxbaselabel WITH ;
 		Caption = "Variable name", ;
 		Left = 0, ;
 		Name = "lblVariable", ;
 		Top = 3
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'txtValue' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -985,7 +985,7 @@ DEFINE CLASS setvariableui AS taskuibase OF "taskui.vcx"
 		Name = "txtValue", ;
 		Top = 25, ;
 		Width = 260
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtVariable' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -994,7 +994,7 @@ DEFINE CLASS setvariableui AS taskuibase OF "taskui.vcx"
 		Name = "txtVariable", ;
 		Top = 0, ;
 		Width = 260
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings
 		This.txtVariable.ControlSource = 'This.Parent.oTask.cVariable'
@@ -1048,7 +1048,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		Left = 1, ;
 		Name = "lblDescription", ;
 		Top = 28
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oFilePath' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
@@ -1063,7 +1063,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 245, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtDescription' AS vfpxbasetextbox WITH ;
 		Height = 23, ;
@@ -1071,7 +1071,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		Name = "txtDescription", ;
 		Top = 25, ;
 		Width = 270
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings
 		This.txtDescription.ControlSource = 'This.Parent.oTask.cDescription'
@@ -1085,7 +1085,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
-DEFINE CLASS taskuibase AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 
+DEFINE CLASS taskuibase AS vfpxbasecontainer OF "..\packages\vfpxframework\vfpxbaselibrary.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*<DefinedPropArrayMethod>
@@ -1165,7 +1165,7 @@ DEFINE CLASS unzipfileui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 270, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'oTarget' AS vfpxdirectory WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
@@ -1181,7 +1181,7 @@ DEFINE CLASS unzipfileui AS taskuibase OF "taskui.vcx"
 		txtFolder.Width = 270, ;
 		cmdGetFolder.Left = 320, ;
 		cmdGetFolder.Name = "cmdGetFolder"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE validate		&& Ensures the values are valid
 		return not empty(This.oTask.cSource) and not empty(This.oTask.cTarget)
@@ -1213,28 +1213,28 @@ DEFINE CLASS uploaddownloadbase AS taskuibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "lblPassword", ;
 		Top = 55
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblRemoteFile' AS vfpxbaselabel WITH ;
 		Caption = "Remote file", ;
 		Left = 0, ;
 		Name = "lblRemoteFile", ;
 		Top = 105
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblServer' AS vfpxbaselabel WITH ;
 		Caption = "Server", ;
 		Left = 0, ;
 		Name = "lblServer", ;
 		Top = 3
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblUserName' AS vfpxbaselabel WITH ;
 		Caption = "User name", ;
 		Left = 0, ;
 		Name = "lblUserName", ;
 		Top = 30
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oLocalFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cLocalFile, ;
@@ -1248,7 +1248,7 @@ DEFINE CLASS uploaddownloadbase AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 250, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtPassword' AS vfpxbasetextbox WITH ;
 		Height = 23, ;
@@ -1256,7 +1256,7 @@ DEFINE CLASS uploaddownloadbase AS taskuibase OF "taskui.vcx"
 		Name = "txtPassword", ;
 		Top = 50, ;
 		Width = 272
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtRemoteFile' AS vfpxbasetextbox WITH ;
 		Height = 23, ;
@@ -1264,7 +1264,7 @@ DEFINE CLASS uploaddownloadbase AS taskuibase OF "taskui.vcx"
 		Name = "txtRemoteFile", ;
 		Top = 100, ;
 		Width = 272
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtServer' AS vfpxbasetextbox WITH ;
 		Height = 23, ;
@@ -1272,7 +1272,7 @@ DEFINE CLASS uploaddownloadbase AS taskuibase OF "taskui.vcx"
 		Name = "txtServer", ;
 		Top = 0, ;
 		Width = 272
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtUserName' AS vfpxbasetextbox WITH ;
 		Height = 23, ;
@@ -1280,7 +1280,7 @@ DEFINE CLASS uploaddownloadbase AS taskuibase OF "taskui.vcx"
 		Name = "txtUserName", ;
 		Top = 25, ;
 		Width = 272
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings		&& Loads the settings
 		This.txtServer.ControlSource     = 'This.Parent.oTask.cServer'
@@ -1341,7 +1341,7 @@ DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "chkOverwrite", ;
 		Top = 110
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="checkbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
 	ADD OBJECT 'edtSource' AS vfpxbaseeditbox WITH ;
 		Height = 80, ;
@@ -1349,14 +1349,14 @@ DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx"
 		Name = "edtSource", ;
 		Top = 30, ;
 		Width = 310
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="editbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
 
 	ADD OBJECT 'lblSource' AS vfpxbaselabel WITH ;
 		Caption = "Text", ;
 		Left = 0, ;
 		Name = "lblSource", ;
 		Top = 30
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
@@ -1367,7 +1367,7 @@ DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx"
 		lblFile.Name = "lblFile", ;
 		txtFile.Name = "txtFile", ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 	
 	PROCEDURE loadsettings		&& Loads the settings
 		This.edtSource.ControlSource    = 'This.Parent.oTask.cSource'
@@ -1406,7 +1406,7 @@ DEFINE CLASS writetoiniui AS inibase OF "taskui.vcx"
 		Left = 0, ;
 		Name = "lblValue", ;
 		Top = 80
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'txtValue' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -1415,7 +1415,7 @@ DEFINE CLASS writetoiniui AS inibase OF "taskui.vcx"
 		Name = "txtValue", ;
 		Top = 77, ;
 		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings		&& Loads the settings
 		dodefault()
@@ -1461,7 +1461,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 		TabIndex = 9, ;
 		Top = 102, ;
 		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="combobox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'lblType' AS vfpxbaselabel WITH ;
 		Caption = "Type", ;
@@ -1469,7 +1469,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 		Name = "lblType", ;
 		TabIndex = 10, ;
 		Top = 106
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblValue' AS vfpxbaselabel WITH ;
 		Caption = "Value", ;
@@ -1477,7 +1477,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 		Name = "lblValue", ;
 		TabIndex = 8, ;
 		Top = 79
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="label" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'txtValue' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -1487,7 +1487,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 		TabIndex = 7, ;
 		Top = 76, ;
 		Width = 294
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="textbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE loadsettings		&& Loads the settings
 		dodefault()
@@ -1547,7 +1547,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		Name = "cmdAddFile", ;
 		Top = 25, ;
 		Width = 65
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="commandbutton" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'opgUpdate' AS vfpxbaseoptiongroup WITH ;
 		Height = 27, ;
@@ -1563,7 +1563,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		Vfpxbaseoptionbutton2.Left = 125, ;
 		Vfpxbaseoptionbutton2.Name = "Vfpxbaseoptionbutton2", ;
 		Vfpxbaseoptionbutton2.Top = 5
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="optiongroup" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="optiongroup" />
 
 	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
@@ -1578,7 +1578,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		txtFile.Width = 250, ;
 		cmdGetFile.Left = 320, ;
 		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="vfpxfilectrls.vcx" BaseClass="container" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtSource' AS vfpxbaseeditbox WITH ;
 		Height = 100, ;
@@ -1586,7 +1586,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		Name = "txtSource", ;
 		Top = 25, ;
 		Width = 270
-		*< END OBJECT: ClassLib="vfpxbaselibrary.vcx" BaseClass="editbox" />
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
 	
 	PROCEDURE addfile		&& Adds a file to the list
 		lparameters tcFile
