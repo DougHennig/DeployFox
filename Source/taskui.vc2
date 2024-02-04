@@ -14,7 +14,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="chkRecompile" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "buildexe"
+		Name = "buildexeui"
 	*</PropValue>
 
 	ADD OBJECT 'chkRecompile' AS vfpxbasecheckbox WITH ;
@@ -27,7 +27,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 
 	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
-		cextensions = "PJX", ;
+		cextensions = Project (*.pjx):pjx, ;
 		Left = 0, ;
 		Name = "oSource", ;
 		Top = 0, ;
@@ -42,7 +42,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 
 	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
-		cextensions = "EXE", ;
+		cextensions = Executable (*.exe):exe, ;
 		Left = 0, ;
 		Name = "oTarget", ;
 		Top = 25, ;
@@ -82,12 +82,12 @@ DEFINE CLASS buildsetupinnoui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="oScriptFile" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "buildsetupinno"
+		Name = "buildsetupinnoui"
 	*</PropValue>
 
 	ADD OBJECT 'oScriptFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cScriptFile, ;
-		cextensions = "Inno Setup Script (*.iss):ISS", ;
+		cextensions = Inno Setup Script (*.iss):iss, ;
 		Left = 0, ;
 		Name = "oScriptFile", ;
 		Top = 0, ;
@@ -236,6 +236,34 @@ DEFINE CLASS downloadfileui AS uploaddownloadbase OF "taskui.vcx"
 
 ENDDEFINE
 
+DEFINE CLASS executepsscriptui AS taskuibase OF "taskui.vcx" 
+ 	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="oScriptFile" UniqueID="" Timestamp="" />
+
+	*<PropValue>
+		Name = "executepsscriptui"
+	*</PropValue>
+
+	ADD OBJECT 'oScriptFile' AS vfpxfile WITH ;
+		ccontrolsource = This.Parent.oTask.cScriptFile, ;
+		cextensions = PowerShell Script (*.ps1):ps1, ;
+		Left = 0, ;
+		Name = "oScriptFile", ;
+		Top = 0, ;
+		Visible = .T., ;
+		lblFile.Caption = "PowerShell script", ;
+		lblFile.Name = "lblFile", ;
+		txtFile.Left = 97, ;
+		txtFile.Name = "txtFile", ;
+		txtFile.Width = 223, ;
+		cmdGetFile.Left = 320, ;
+		cmdGetFile.Name = "cmdGetFile"
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
+
+ENDDEFINE
+
 DEFINE CLASS executescriptui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
@@ -244,11 +272,11 @@ DEFINE CLASS executescriptui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="edtScript" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "executescript"
+		Name = "executescriptui"
 	*</PropValue>
 
 	ADD OBJECT 'edtScript' AS vfpxbaseeditbox WITH ;
-		Height = 130, ;
+		Height = 128, ;
 		Left = 47, ;
 		Name = "edtScript", ;
 		Top = 0, ;
@@ -287,10 +315,8 @@ DEFINE CLASS executescriptui AS taskuibase OF "taskui.vcx"
 			.Caption     = 'Script'
 			.Width       = Thisform.Width
 			.Height      = Thisform.Height
-		*	.Top         = max(Thisform.Top - 30,  0)
-		*	.Left        = max(Thisform.Left - 30, 0)
-		.Top = 0
-		.Left = 0
+			.Top         = 0
+			.Left        = 0
 			.FontName    = 'Courier New'
 			.FontSize    = 10
 		endwith
@@ -298,8 +324,10 @@ DEFINE CLASS executescriptui AS taskuibase OF "taskui.vcx"
 		* Modify the code.
 		
 		modify command (lcFile) window (loForm.Name) 
-		This.Parent.edtScript.Value = filetostr(lcFile)
+		This.Parent.oTask.cCode = filetostr(lcFile)
+		This.Parent.Refresh()
 		erase (lcFile)
+		Thisform.SaveTask()
 		
 	ENDPROC
 
@@ -625,7 +653,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="cboMainKey" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblMainKey" UniqueID="" Timestamp="" />
 
-	#INCLUDE "vfpxregistry.h"
+	#INCLUDE "deployfox.h"
 	*<PropValue>
 		Name = "registrybase"
 	*</PropValue>
@@ -766,6 +794,34 @@ DEFINE CLASS renamefileui AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
+DEFINE CLASS runbatui AS taskuibase OF "taskui.vcx" 
+ 	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="oBatFile" UniqueID="" Timestamp="" />
+
+	*<PropValue>
+		Name = "runbatui"
+	*</PropValue>
+
+	ADD OBJECT 'oBatFile' AS vfpxfile WITH ;
+		ccontrolsource = This.Parent.oTask.cBatFile, ;
+		cextensions = Batch file (*.bat):bat, ;
+		Left = 0, ;
+		Name = "oBatFile", ;
+		Top = 0, ;
+		Visible = .T., ;
+		lblFile.Caption = "Batch file", ;
+		lblFile.Name = "lblFile", ;
+		txtFile.Left = 56, ;
+		txtFile.Name = "txtFile", ;
+		txtFile.Width = 264, ;
+		cmdGetFile.Left = 320, ;
+		cmdGetFile.Name = "cmdGetFile"
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
+
+ENDDEFINE
+
 DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 
@@ -778,7 +834,7 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="lblInfo" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "runexe"
+		Name = "runexeui"
 		Width = 345
 	*</PropValue>
 
@@ -788,12 +844,12 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		Height = 24, ;
 		Left = 90, ;
 		Name = "cboWindowMode", ;
-		Top = 90, ;
+		Top = 95, ;
 		Width = 120
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
 
 	ADD OBJECT 'edtParameters' AS vfpxbaseeditbox WITH ;
-		Height = 63, ;
+		Height = 68, ;
 		Left = 90, ;
 		Name = "edtParameters", ;
 		Top = 25, ;
@@ -807,7 +863,7 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		Height = 50, ;
 		Left = 0, ;
 		Name = "lblInfo", ;
-		Top = 120, ;
+		Top = 122, ;
 		Width = 340, ;
 		WordWrap = .T.
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
@@ -824,11 +880,11 @@ DEFINE CLASS runexeui AS taskuibase OF "taskui.vcx"
 		Caption = "Window mode", ;
 		Left = 0, ;
 		Name = "lblWindowMode", ;
-		Top = 94
+		Top = 99
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oSource' AS vfpxfile WITH ;
-		cextensions = "EXE", ;
+		cextensions = Executable (*.exe):exe, ;
 		Left = 0, ;
 		Name = "oSource", ;
 		Top = 0, ;
@@ -881,12 +937,12 @@ DEFINE CLASS runprgui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="lblInfo" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "runprg"
+		Name = "runprgui"
 	*</PropValue>
 
 	ADD OBJECT 'edtParameters' AS vfpxbaseeditbox WITH ;
 		AddLineFeeds = .T., ;
-		Height = 95, ;
+		Height = 98, ;
 		Left = 90, ;
 		Name = "edtParameters", ;
 		Top = 25, ;
@@ -913,7 +969,7 @@ DEFINE CLASS runprgui AS taskuibase OF "taskui.vcx"
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oSource' AS vfpxfile WITH ;
-		cextensions = "PRG", ;
+		cextensions = Program (*.prg):prg, ;
 		Left = 0, ;
 		Name = "oSource", ;
 		Top = 0, ;
@@ -1037,10 +1093,10 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
 	*< OBJECTDATA: ObjPath="lblDescription" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="txtDescription" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="oFilePath" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="oTarget" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "signtool"
+		Name = "signtoolui"
 	*</PropValue>
 
 	ADD OBJECT 'lblDescription' AS vfpxbaselabel WITH ;
@@ -1050,11 +1106,11 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		Top = 28
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
-	ADD OBJECT 'oFilePath' AS vfpxfile WITH ;
+	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
-		cextensions = "EXE", ;
+		cextensions = Executable (*.exe):exe, ;
 		Left = 0, ;
-		Name = "oFilePath", ;
+		Name = "oTarget", ;
 		Top = 0, ;
 		lblFile.Caption = "File to sign", ;
 		lblFile.Name = "lblFile", ;
@@ -1149,12 +1205,12 @@ DEFINE CLASS unzipfileui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="oTarget" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "unzipfile"
+		Name = "unzipfileui"
 	*</PropValue>
 
 	ADD OBJECT 'oSource' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
-		cextensions = "ZIP File (*.zip):zip", ;
+		cextensions = ZIP File (*.zip):zip, ;
 		Left = 0, ;
 		Name = "oSource", ;
 		Top = 0, ;
@@ -1259,6 +1315,7 @@ DEFINE CLASS uploaddownloadbase AS taskuibase OF "taskui.vcx"
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 
 	ADD OBJECT 'txtRemoteFile' AS vfpxbasetextbox WITH ;
+		Anchor = 10, ;
 		Height = 23, ;
 		Left = 70, ;
 		Name = "txtRemoteFile", ;
@@ -1442,7 +1499,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="lblType" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cboType" UniqueID="" Timestamp="" />
 
-	#INCLUDE "vfpxregistry.h"
+	#INCLUDE "deployfox.h"
 	*<PropValue>
 		Name = "writetoregistryui"
 		lblKey.Name = "lblKey"
@@ -1567,7 +1624,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 
 	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cTarget, ;
-		cextensions = "ZIP File (*.zip):zip", ;
+		cextensions = ZIP File (*.zip):zip, ;
 		Left = 0, ;
 		Name = "oTarget", ;
 		Top = 0, ;
@@ -1581,7 +1638,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
 
 	ADD OBJECT 'txtSource' AS vfpxbaseeditbox WITH ;
-		Height = 100, ;
+		Height = 98, ;
 		Left = 70, ;
 		Name = "txtSource", ;
 		Top = 25, ;

@@ -192,7 +192,7 @@ set step on
 	endfunc
 enddefine
 
-define class RegistryBase as TaskBase
+define class RegistryBaseTask as TaskBase
 	cKey     = ''
 		&& the Registry key
 	cSetting = ''
@@ -214,7 +214,7 @@ define class RegistryBase as TaskBase
 	endfunc
 enddefine
 
-define class WriteToRegistry as RegistryBase
+define class WriteToRegistry as RegistryBaseTask
 	uValue = ''
 		&& the value
 	nType  = 0
@@ -239,7 +239,7 @@ define class WriteToRegistry as RegistryBase
 	endfunc
 enddefine
 
-define class ReadFromRegistry as RegistryBase
+define class ReadFromRegistry as RegistryBaseTask
 	cVariable = ''
 		&& the name of the variable to save the value to
 
@@ -560,7 +560,6 @@ define class BuildSetupInno as RunEXE
 	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn
 		llReturn = dodefault(tcSettings, tlNoExpandVariables)
-set step on 
 		do case
 			case not llReturn
 			case empty(This.cSource)
@@ -805,4 +804,32 @@ define class WriteToFile as TaskBase
 		endif empty(This.cTarget)
 		return llReturn
 	endfunc
+enddefine
+
+define class ExecutePSScript as RunExe
+	cSource     = 'cmd.exe'
+	cParameters = '/c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -File'
+	cScriptFile = ''
+
+	function GetSettings(tcSettings, tlNoExpandVariables)
+		local llReturn
+		llReturn = dodefault(tcSettings, tlNoExpandVariables)
+		if llReturn
+			This.cParameters = This.cParameters + ' "' + This.cScriptFile + '"'
+		endif llReturn
+		return llReturn
+enddefine
+
+define class RunBat as RunExe
+	cSource     = 'cmd.exe'
+	cParameters = '/c'
+	cBatFile    = ''
+
+	function GetSettings(tcSettings, tlNoExpandVariables)
+		local llReturn
+		llReturn = dodefault(tcSettings, tlNoExpandVariables)
+		if llReturn
+			This.cParameters = This.cParameters + ' "' + This.cBatFile + '"'
+		endif llReturn
+		return llReturn
 enddefine

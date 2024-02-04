@@ -10,7 +10,7 @@ define class DeployFoxEngine as Custom
 	cProjectFile    = ''
 		&& the path to the project file
 	oRecentProjects = .NULL.
-		&& a collection of recent projects
+		&& a references to a VFPXMRUFile object
 	oVariables      = .NULL.
 		&& a reference to an object containing variables
 
@@ -44,14 +44,11 @@ define class DeployFoxEngine as Custom
 
 * Populate the list of recent projects.
 
-		This.oRecentProjects = createobject('Collection')
-		loRegistry = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
-		for lnI = cnMRUProjects to 1 step -1
-			lcValue = loRegistry.GetKey(ccREGISTRY_KEY, 'Project' + transform(lnI))
-			if not empty(lcValue)
-				This.oRecentProjects.Add(lcValue, lcValue)
-			endif not empty(lcValue)
-		next lnI
+		This.oRecentProjects = newobject('VFPXMRUFile', 'VFPXMRU.prg')
+		This.oRecentProjects.cItemName    = 'Project'
+		This.oRecentProjects.cRegistryKey = ccREGISTRY_KEY
+		This.oRecentProjects.nMaxItems    = cnMRU_PROJECTS
+		This.oRecentProjects.LoadMRUs()
 
 * Create a collection of variables.
 
@@ -108,58 +105,75 @@ define class DeployFoxEngine as Custom
 * Open a project.
 
 	function OpenProject(tcPath)
-		local loRegistry, ;
+		local loException as Exception, ;
+			loRegistry, ;
 			laProjects[1], ;
 			lnLast, ;
 			lnI, ;
 			lcProject, ;
-			lcValue
-		use in select('curProject')
-		use in select('ProjectFile')
-		This.cProjectFile = tcPath
-		use (This.cProjectFile) alias ProjectFile in 0
-*** TODO: check structure to ensure it's a project file
-		select *, space(20) as Status ;
-			from (This.cProjectFile) ;
-			into cursor curProject readwrite
-		index on Order tag Order
-		This.cLogFile = forcepath('DeployFoxLog.txt', justpath(tcPath))
-		try
+			lcValue, ;
+			llReturn
+		if file(tcPath)
+			use in select('curProject')
+			use in select('ProjectFile')
+
+* Try to open the project file.
+
+			try
+				use (tcPath) alias ProjectFile in 0
+			catch to loException
+				This.cErrorMessage = 'Error opening ' + tcPath + ': ' + ;
+					loException.Message
+			endtry
+			if used('ProjectFile')
+
+* Ensure it's a valid project file.
+
+*** TODO: need better way to check structure or else have to maintain it here and in NewProject and in DeployFormForm.Init
+				if type('ProjectFile.ID')        = 'C' and ;
+					type('ProjectFile.Order')    = 'N' and ;
+					type('ProjectFile.Task')     = 'C' and ;
+					type('ProjectFile.Name')     = 'C' and ;
+					type('ProjectFile.Active')   = 'L' and ;
+					type('ProjectFile.Incomplete')   = 'L' and ;
+					type('ProjectFile.Settings') = 'M' and ;
+					type('ProjectFile.Comments') = 'M'
+					This.cProjectFile = tcPath
+					select *, space(20) as Status ;
+						from (This.cProjectFile) ;
+						into cursor curProject readwrite
+					index on Order tag Order
+
+* Erase the log file for the project.
+
+					This.cLogFile = forcepath('DeployFoxLog.txt', justpath(tcPath))
+					try
 *** TODO: option to timestamp and keep log files?
-			erase (This.cLogFile)
-		catch
-		endtry
+						erase (This.cLogFile)
+					catch
+					endtry
 
-* Add it to the list of recent projects if it isn't already there.
+* Add it to the list of recent projects.
 
-		if This.oRecentProjects.GetKey(tcPath) = 0
-			This.oRecentProjects.Add(tcPath, tcPath)
-			loRegistry = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
-			dimension laProjects[cnMRUProjects]
-			lnLast = cnMRUProjects
-			for lnI = cnMRUProjects to 1 step -1
-				laProjects[lnI] = loRegistry.GetKey(ccREGISTRY_KEY, 'Project' + transform(lnI))
-				lnLast = iif(empty(laProjects[lnI]), lnI, lnLast)
-			next lnI
-			if empty(laProjects[cnMRUProjects])
-				laProjects[lnLast] = tcPath
-			else
-				adel(laProjects, 1)
-				laProjects[cnMRUProjects] = tcPath
-			endif empty(laProjects[cnMRUProjects])
-			for lnI = 1 to cnMRUProjects
-				loRegistry.SetKey(ccREGISTRY_KEY, 'Project' + transform(lnI), laProjects[lnI])
-			next lnI
-		endif This.oRecentProjects.GetKey(lcPath) = 0
+					This.oRecentProjects.Add(tcPath)
+					llReturn = .T.
+				else
+					This.cErrorMessage = tcPath + ' is not DeployFox project file.'
+				endif type('ProjectFile.ID') ...
+			endif used('ProjectFile')
+		else
+			This.cErrorMessage = tcPath + ' does not exist.'
+		endif file(tcPath)
+		return llReturn
 	endfunc
 
 * Create a new project.
 
 	function NewProject(tcPath)
 		create table (tcPath) (ID C(10), Order I, Task C(20), Name C(80), Active L, ;
-			Settings M, Comments M)
+			Incomplete L, Settings M, Comments M)
+		insert into (tcPath) (Order) values (1)
 		use
-		This.OpenProject(tcPath)
 	endfunc
 
 * Get a cursor of task types, combining TaskTypes (built-in) and MyTaskTypes (custom).
