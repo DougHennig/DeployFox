@@ -37,11 +37,18 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	*< OBJECTDATA: ObjPath="lblProject" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdSave" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdNewProject" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="cmdOptions" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdSettings" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdDebug" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdOpenProject" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdClone" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="chkIncomplete" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="chkAlwaysRun" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="shpIncomplete" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblIncomplete" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="shpAlwaysRuns" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblAlwaysRun" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="spnOrder" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblOrder" UniqueID="" Timestamp="" />
 
 	#INCLUDE "deployfox.h"
 	*<DefinedPropArrayMethod>
@@ -51,6 +58,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		*m: setupgrid		&& Sets up the grid
 		*m: updateproject		&& Updates the selected record in the project
 		*m: updaterun		&& Updates the status of running the project
+		*p: ctaskid		&& The ID for the current task
 		*p: ctasktype		&& The selected task type
 		*p: oengine		&& A reference to a DeployFoxEngine
 		*p: otask		&& A reference to a Task object for the selected task
@@ -59,12 +67,13 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	*<PropValue>
 		BindControls = .F.
 		Caption = "DeployFox"
+		ctaskid = 
 		ctasktype = 
 		DataSession = 2
 		DoCreate = .T.
-		Height = 455
+		Height = 460
 		Icon = deployfox.ico
-		MinHeight = 435
+		MinHeight = 460
 		MinWidth = 1070
 		Name = "deployfoxform"
 		oengine = .NULL.
@@ -80,6 +89,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 			<memberdata name="updateproject" display="UpdateProject"/>
 			<memberdata name="openproject" display="OpenProject"/>
 			<memberdata name="savetask" display="SaveTask"/>
+			<memberdata name="ctaskid" display="cTaskID"/>
 		</VFPData>
 		oPersist.Left = 1045
 		oPersist.Name = "oPersist"
@@ -102,9 +112,19 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Alignment = 0, ;
 		Caption = "Active", ;
 		ControlSource = "curProject.Active", ;
-		Left = 696, ;
+		Left = 695, ;
 		Name = "chkActive", ;
 		TabIndex = 16, ;
+		Top = 105
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
+
+	ADD OBJECT 'chkAlwaysRun' AS vfpxbasecheckbox WITH ;
+		Alignment = 0, ;
+		Caption = "Always run when single-stepping", ;
+		ControlSource = "curProject.AlwaysRun", ;
+		Left = 870, ;
+		Name = "chkAlwaysRun", ;
+		TabIndex = 18, ;
 		Top = 105
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
@@ -183,15 +203,6 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		cmdMenu.Name = "cmdMenu"
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxdropdownmenubutton.vcx" BaseClass="container" />
 
-	ADD OBJECT 'cmdOptions' AS vfpxbasetoolbarbutton WITH ;
-		Left = 325, ;
-		Name = "cmdOptions", ;
-		Picture = options.bmp, ;
-		TabIndex = 10, ;
-		ToolTipText = "Options", ;
-		Top = 10
-		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
-
 	ADD OBJECT 'cmdRun' AS vfpxbasetoolbarbutton WITH ;
 		Left = 125, ;
 		Name = "cmdRun", ;
@@ -205,9 +216,18 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 1038, ;
 		Name = "cmdSave", ;
 		Picture = save.bmp, ;
-		TabIndex = 20, ;
+		TabIndex = 23, ;
 		ToolTipText = "Save the settings", ;
 		Top = 45
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdSettings' AS vfpxbasetoolbarbutton WITH ;
+		Left = 325, ;
+		Name = "cmdSettings", ;
+		Picture = options.bmp, ;
+		TabIndex = 10, ;
+		ToolTipText = "Options", ;
+		Top = 10
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdUp' AS vfpxbasetoolbarbutton WITH ;
@@ -222,11 +242,11 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	ADD OBJECT 'edtComments' AS vfpxbaseeditbox WITH ;
 		Anchor = 10, ;
 		ControlSource = "curProject.Comments", ;
-		Height = 113, ;
+		Height = 83, ;
 		Left = 760, ;
 		Name = "edtComments", ;
-		TabIndex = 19, ;
-		Top = 131, ;
+		TabIndex = 22, ;
+		Top = 160, ;
 		Width = 300
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
 
@@ -352,20 +372,46 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		ReadOnly = .T.
 		*< END OBJECT: BaseClass="textbox" />
 
+	ADD OBJECT 'lblAlwaysRun' AS vfpxbaselabel WITH ;
+		Anchor = 4, ;
+		Caption = "Always run", ;
+		Left = 626, ;
+		Name = "lblAlwaysRun", ;
+		TabIndex = 27, ;
+		Top = 435
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
+
 	ADD OBJECT 'lblComments' AS vfpxbaselabel WITH ;
 		Caption = "Comments", ;
-		Left = 696, ;
+		Left = 695, ;
 		Name = "lblComments", ;
-		TabIndex = 18, ;
-		Top = 131
+		TabIndex = 21, ;
+		Top = 162
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'lblIncomplete' AS vfpxbaselabel WITH ;
+		Anchor = 4, ;
+		Caption = "Incomplete", ;
+		Left = 511, ;
+		Name = "lblIncomplete", ;
+		TabIndex = 26, ;
+		Top = 435
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblName' AS vfpxbaselabel WITH ;
 		Caption = "Name", ;
-		Left = 696, ;
+		Left = 695, ;
 		Name = "lblName", ;
 		TabIndex = 15, ;
 		Top = 78
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'lblOrder' AS vfpxbaselabel WITH ;
+		Caption = "Order", ;
+		Left = 695, ;
+		Name = "lblOrder", ;
+		TabIndex = 19, ;
+		Top = 135
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblProject' AS vfpxbaselabel WITH ;
@@ -373,36 +419,70 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Caption = "Project", ;
 		Left = 10, ;
 		Name = "lblProject", ;
-		TabIndex = 22, ;
-		Top = 432
+		TabIndex = 25, ;
+		Top = 435
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSettings' AS vfpxbaselabel WITH ;
 		BackStyle = 1, ;
 		Caption = " Settings ", ;
-		Left = 706, ;
+		Left = 705, ;
 		Name = "lblSettings", ;
 		Style = 3, ;
-		TabIndex = 21, ;
+		TabIndex = 24, ;
 		Top = 248
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblTaskType' AS vfpxbaselabel WITH ;
 		Caption = "Task type", ;
-		Left = 696, ;
+		Left = 695, ;
 		Name = "lblTaskType", ;
 		TabIndex = 13, ;
 		Top = 49
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
+	ADD OBJECT 'shpAlwaysRuns' AS vfpxbaseshape WITH ;
+		Anchor = 4, ;
+		BorderStyle = 0, ;
+		BorderWidth = 0, ;
+		FillColor = 255,248,220, ;
+		FillStyle = 0, ;
+		Left = 581, ;
+		Name = "shpAlwaysRuns", ;
+		Top = 435, ;
+		Width = 40
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="shape" />
+
+	ADD OBJECT 'shpIncomplete' AS vfpxbaseshape WITH ;
+		Anchor = 4, ;
+		BorderStyle = 0, ;
+		BorderWidth = 0, ;
+		FillColor = 255,128,0, ;
+		FillStyle = 0, ;
+		Left = 466, ;
+		Name = "shpIncomplete", ;
+		Top = 435, ;
+		Width = 40
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="shape" />
+
 	ADD OBJECT 'shpSettings' AS vfpxbaseshape WITH ;
 		Anchor = 15, ;
 		Height = 171, ;
-		Left = 696, ;
+		Left = 695, ;
 		Name = "shpSettings", ;
 		Top = 256, ;
 		Width = 365
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="shape" />
+
+	ADD OBJECT 'spnOrder' AS vfpxbasespinner WITH ;
+		ControlSource = "curProject.Order", ;
+		KeyboardLowValue = 1, ;
+		Left = 760, ;
+		Name = "spnOrder", ;
+		SpinnerLowValue =   1.00, ;
+		TabIndex = 20, ;
+		Top = 131
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="spinner" />
 
 	ADD OBJECT 'txtName' AS vfpxbasetextbox WITH ;
 		Anchor = 10, ;
@@ -423,40 +503,45 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	ENDPROC
 
 	PROCEDURE displaytask		&& Displays the settings for the selected task
-		lparameters tlNew
+		lparameters tlNew, ;
+			tlForce
 		local lcControl, ;
 			lcFile, ;
 			lcUIFile
 		select curProject
-		This.cTaskType = lower(trim(Task))
-		if not empty(This.cTaskType)
-			select curTaskTypes
-			locate for lower(Type) = This.cTaskType
-			lcFile   = trim(File)
-			lcUIFile = trim(UIFile)
-			select curProject
-			lcControl = 'This.' + This.cTaskType
-			if type(lcControl) <> 'O'
-				This.NewObject(This.cTaskType, This.cTaskType + 'UI', lcUIFile, '', ;
-					This.cTaskType, lcFile, This.oEngine.oVariables)
+		if This.cTaskID <> curProject.ID or tlForce
+			This.cTaskID   = curProject.ID
+			This.cTaskType = lower(trim(Task))
+			if not empty(This.cTaskType)
+				select curTaskTypes
+				locate for lower(Type) = This.cTaskType
+				lcFile   = trim(File)
+				lcUIFile = trim(UIFile)
+				select curProject
+				lcControl = 'This.' + This.cTaskType
+				if type(lcControl) <> 'O'
+					This.NewObject(This.cTaskType, This.cTaskType + 'UI', lcUIFile, '', ;
+						This.cTaskType, lcFile, This.oEngine.oVariables)
+					with &lcControl
+						.lSaveAnchor = .T.
+						.Left        = This.shpSettings.Left + 10
+						.Top         = This.shpSettings.Top  + 10
+						.Width       = This.shpSettings.Width  - 20
+						.Height      = This.shpSettings.Height - 20
+						.lSaveAnchor = .F.
+						.Visible     = .T.
+					endwith
+				endif type(lcControl) <> 'O'
 				with &lcControl
-					.lSaveAnchor = .T.
-					.Left        = This.shpSettings.Left + 10
-					.Top         = This.shpSettings.Top  + 10
-					.lSaveAnchor = .F.
-					.Visible     = .T.
+					if tlNew
+						.oTask = newobject(This.cTaskType, lcFile, '', This.oEngine.oVariables)
+					else
+						.oTask.GetSettings(Settings, .T.)
+					endif tlNew
 				endwith
-			endif type(lcControl) <> 'O'
-		*** TODO: doesn't resize controls if not visible
-			with &lcControl
-				if tlNew
-					.oTask = newobject(This.cTaskType, lcFile, '', This.oEngine.oVariables)
-				else
-					.oTask.GetSettings(Settings, .T.)
-				endif tlNew
-			endwith
-		endif not empty(This.cTaskType)
-		This.Refresh()
+			endif not empty(This.cTaskType)
+			This.Refresh()
+		endif This.cTaskID <> curProject.ID ...
 		
 	ENDPROC
 
@@ -468,8 +553,10 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		
 		* Create a cursor for data binding.
 		
-		create cursor curProject (ID C(1), Order I, Task C(1), Name C(1), Active L, ;
-			Incomplete L, Settings M, Comments M, Status C(1))
+		This.oEngine.CreateProject('curProject', .T., .T.)
+		select *, space(20) as Status ;
+			from curProject ;
+			into cursor curProject readwrite
 		
 		* Set up cboTaskType.
 		
@@ -525,7 +612,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		with This.grdTasks
 			.Column1.ControlSource    = 'curProject.Order'
 			.Column2.ControlSource    = 'curProject.Name'
-			.Column2.DynamicBackColor = 'iif(Incomplete, rgb(255, 128, 0), rgb(255, 255, 255))'
+			.Column2.DynamicBackColor = 'icase(Incomplete, rgb(255, 128, 0), AlwaysRun, rgb(255, 248, 220), rgb(255, 255, 255))'
 			.Column2.DynamicForeColor = "iif(Incomplete, rgb(255, 255, 255), rgb(0, 0, 0))"
 			.Column3.ControlSource    = 'curProject.Task'
 			.Column4.ControlSource    = 'curProject.Active'
@@ -553,8 +640,32 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		scatter name loRecord memo
 		select ProjectFile
 		locate for ID = loRecord.ID
+		lnOldOrder = Order
 		gather name loRecord memo
+		
+		* Reorder tasks if the order changed.
+		
+		if lnOldOrder <> loRecord.Order
+			select ID, Order ;
+				from ProjectFile ;
+				where Order >= loRecord.Order and ID <> loRecord.ID ;
+				order by Order ;
+				into cursor curOrder readwrite
+			lnCurrOrder = loRecord.Order
+			scan
+				lnCurrOrder = lnCurrOrder + This.oEngine.TaskIncrement
+				select ProjectFile
+				locate for ID = curOrder.ID
+				replace Order with lnCurrOrder
+				select curProject
+				locate for ID = curOrder.ID
+				replace Order with lnCurrOrder
+			endscan
+			use
+		endif lnOldOrder <> loRecord.Order
 		select curProject
+		locate for ID = loRecord.ID
+		This.grdTasks.Refresh()
 		
 	ENDPROC
 
@@ -577,7 +688,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 
 	PROCEDURE cboTaskType.InteractiveChange
 		dodefault()
-		Thisform.DisplayTask(.T.)
+		Thisform.DisplayTask(.T., .T.)
 		
 	ENDPROC
 
@@ -615,16 +726,16 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		endscan
 		Thisform.grdTasks.Refresh()
 		
-		* Set all the variables.
+		* Run all the "always run" tasks.
 		
 		bindevent(Thisform.oEngine, 'Update', Thisform, 'UpdateRun')
-		llReturn = Thisform.oEngine.SetVariables()
+		llReturn = Thisform.oEngine.AlwaysRun()
 		
 		* Run the tasks from the selected one to the end.
 		
 		go lnRecno
 		if llReturn
-			scan rest for Task <> 'SetVariable'
+			scan rest for not AlwaysRun
 				llReturn = Thisform.oEngine.RunTask(ID, Name, Task, Settings, .T.)
 				skip
 				llLast = eof()
@@ -662,7 +773,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		if messagebox('Delete this task?', MB_YESNO + MB_ICONQUESTION, 'DeployFox') = IDYES
 			delete in curProject
 		*** TODO: renumber all tasks? If so, must update all records in ProjectFile too. 
-		***		Or have a button to renumber tasks (could ask for increment?)
+		***		Or have a button to renumber tasks)
 			select ProjectFile
 			locate for ID = curProject.ID
 			delete
@@ -722,7 +833,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		select curProject
 		calculate max(Order) to lnOrder
 		append blank
-		replace Order with lnOrder + 1, ;
+		replace Order with lnOrder + Thisform.oEngine.TaskIncrement, ;
 			Task with 'SetVariable'
 		Thisform.DisplayTask(.T.)
 		Thisform.cboTaskType.SetFocus()
@@ -761,11 +872,6 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		
 	ENDPROC
 
-	PROCEDURE cmdOptions.Click
-		*** TODO
-		
-	ENDPROC
-
 	PROCEDURE cmdRun.Click
 		select curProject
 		replace all Status with ''
@@ -798,6 +904,13 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 
 	PROCEDURE cmdSave.Refresh
 		This.Enabled = not empty(curProject.Name)
+		
+	ENDPROC
+
+	PROCEDURE cmdSettings.Click
+		local loForm
+		loForm = newobject('DeployFoxSettings', 'DeployFoxUI.vcx', '', Thisform.oEngine)
+		loForm.Show()
 		
 	ENDPROC
 
@@ -848,6 +961,217 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	PROCEDURE txtName.InteractiveChange
 		dodefault()
 		Thisform.cmdSave.Refresh()
+		
+	ENDPROC
+
+ENDDEFINE
+
+DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfpxbaselibrary.vcx" 
+ 	*< CLASSDATA: Baseclass="form" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="shpCert" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblCert" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblCertPassword" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="txtCertPassword" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="oCertPath" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblIncrement" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblSignCommand" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdSave" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdCancel" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="spnIncrement" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="edtSignCommand" UniqueID="" Timestamp="" />
+
+	*<PropValue>
+		BindControls = .F.
+		Caption = "DeployFox Settings"
+		DataSession = 2
+		DoCreate = .T.
+		Height = 249
+		Icon = options.ico
+		Name = "deployfoxsettings"
+		Width = 382
+		WindowType = 1
+	*</PropValue>
+
+	ADD OBJECT 'cmdCancel' AS vfpxbasecommandbutton WITH ;
+		Cancel = .T., ;
+		Caption = "Cancel", ;
+		Left = 191, ;
+		Name = "cmdCancel", ;
+		TabIndex = 10, ;
+		Top = 215
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdSave' AS vfpxbasecommandbutton WITH ;
+		Caption = "Save", ;
+		Left = 106, ;
+		Name = "cmdSave", ;
+		TabIndex = 9, ;
+		Top = 215
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'edtSignCommand' AS vfpxbaseeditbox WITH ;
+		ControlSource = "Thisform.SignCommand", ;
+		Height = 53, ;
+		Left = 110, ;
+		Name = "edtSignCommand", ;
+		TabIndex = 3, ;
+		ToolTipText = "The command to sign an EXE; stored in $SignCommand", ;
+		Top = 34, ;
+		Width = 255
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
+
+	ADD OBJECT 'lblCert' AS vfpxbaselabel WITH ;
+		BackStyle = 1, ;
+		Caption = " Digital Signing ", ;
+		Left = 20, ;
+		Name = "lblCert", ;
+		Style = 3, ;
+		TabIndex = 1, ;
+		Top = 10, ;
+		ZOrderSet = 1
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'lblCertPassword' AS vfpxbaselabel WITH ;
+		Caption = "Password", ;
+		Left = 20, ;
+		Name = "lblCertPassword", ;
+		TabIndex = 5, ;
+		ToolTipText = "The password for the PFX file; stored in $CertPassword", ;
+		Top = 122, ;
+		ZOrderSet = 2
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'lblIncrement' AS vfpxbaselabel WITH ;
+		Caption = "Task increment", ;
+		Left = 10, ;
+		Name = "lblIncrement", ;
+		TabIndex = 7, ;
+		Top = 173, ;
+		ZOrderSet = 2
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'lblSignCommand' AS vfpxbaselabel WITH ;
+		Caption = "Sign command", ;
+		Left = 20, ;
+		Name = "lblSignCommand", ;
+		TabIndex = 2, ;
+		ToolTipText = "The command to sign an EXE; stored in $SignCommand", ;
+		Top = 35, ;
+		ZOrderSet = 2
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'oCertPath' AS vfpxfile WITH ;
+		ccontrolsource = Thisform.CertPath, ;
+		Left = 20, ;
+		Name = "oCertPath", ;
+		TabIndex = 4, ;
+		ToolTipText = "The location of the PFX file to use; stored in $CertPath", ;
+		Top = 91, ;
+		ZOrderSet = 4, ;
+		lblFile.Caption = "PFX file", ;
+		lblFile.Name = "lblFile", ;
+		txtFile.Height = 23, ;
+		txtFile.Left = 90, ;
+		txtFile.Name = "txtFile", ;
+		txtFile.Top = 0, ;
+		txtFile.Width = 230, ;
+		cmdGetFile.Left = 320, ;
+		cmdGetFile.Name = "cmdGetFile"
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
+
+	ADD OBJECT 'shpCert' AS vfpxbaseshape WITH ;
+		Anchor = 15, ;
+		Height = 142, ;
+		Left = 10, ;
+		Name = "shpCert", ;
+		Top = 18, ;
+		Width = 365, ;
+		ZOrderSet = 0
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="shape" />
+
+	ADD OBJECT 'spnIncrement' AS vfpxbasespinner WITH ;
+		ControlSource = "Thisform.TaskIncrement", ;
+		KeyboardHighValue = 100, ;
+		KeyboardLowValue = 1, ;
+		Left = 95, ;
+		Name = "spnIncrement", ;
+		SpinnerHighValue = 100.00, ;
+		SpinnerLowValue =   1.00, ;
+		TabIndex = 8, ;
+		Top = 169
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="spinner" />
+
+	ADD OBJECT 'txtCertPassword' AS vfpxbasetextbox WITH ;
+		ControlSource = "Thisform.CertPassword", ;
+		Height = 23, ;
+		Left = 110, ;
+		Name = "txtCertPassword", ;
+		TabIndex = 6, ;
+		ToolTipText = "The password for the PFX file; stored in $CertPassword", ;
+		Top = 117, ;
+		Width = 255, ;
+		ZOrderSet = 3
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
+	
+	PROCEDURE Init
+		lparameters toEngine
+		local loDecrypt, ;
+			lcKey, ;
+			lcProperty, ;
+			lcValue
+		loDecrypt = newobject('foxCryptoNG', 'foxCryptoNG.prg')
+		lcKey     = GetKey()
+		use (toEngine.cAppPath + 'DeployFoxSettings') again shared
+		scan
+			lcProperty = trim(Setting)
+			lcValue    = Value
+			if Encrypt and left(lcValue, 2) = '0x'
+				lcValue = trim(loDecrypt.Decrypt_AES(strconv(substr(lcValue, 3), 16), lcKey))
+			endif Encrypt ...
+			do case
+				case Type = 'I'
+					luValue = int(val(lcValue))
+				case Type = 'N'
+					luValue = val(lcValue)
+				otherwise
+					luValue = lcValue
+			endcase
+			This.AddProperty(lcProperty, luValue)
+		endscan
+		This.BindControls = .T.
+		
+	ENDPROC
+
+	PROCEDURE cmdCancel.Click
+		Thisform.Release()
+		
+	ENDPROC
+
+	PROCEDURE cmdSave.Click
+		local loDecrypt, ;
+			lcKey, ;
+			lcProperty, ;
+			luValue, ;
+			lcValue
+		loDecrypt = newobject('foxCryptoNG', 'foxCryptoNG.prg')
+		lcKey     = GetKey()
+		scan
+			lcProperty = trim(Setting)
+			luValue    = evaluate('Thisform.' + lcProperty)
+			if Type = 'C'
+				lcValue = luValue
+			else
+				lcValue = transform(luValue)
+			endif Type = 'C'
+			if Encrypt
+				lcValue = '0x' + strconv(loDecrypt.Encrypt_AES(lcValue, lcKey), 15)
+			endif Encrypt
+			replace Value with lcValue
+		endscan
+		use
+		Thisform.Release()
 		
 	ENDPROC
 

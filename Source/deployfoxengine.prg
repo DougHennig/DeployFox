@@ -21,9 +21,14 @@ define class DeployFoxEngine as Custom
 			loRegistry, ;
 			lcValue, ;
 			lcInnoCompiler, ;
+			lcSignEXE, ;
+			lcSignCommand, ;
+			lcInnoSignCommand, ;
 			loDecrypt, ;
 			lcKey, ;
-			lcVariable
+			lcName, ;
+			lcValue, ;
+			luValue
 
 * Get the path we're running from.
 
@@ -56,23 +61,44 @@ define class DeployFoxEngine as Custom
 
 * Get the DeployFox settings. If we don't have any, we'll create some defaults.
 
-*** TODO: delete DeployFoxSettings.dbf before deploying
 		select 0
 		if not file(lcPath + 'DeployFoxSettings.dbf')
 
 * See if Inno Setup is installed.
 
+			loRegistry     = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
 			lcInnoCompiler = loRegistry.GetKey('InnoSetupScriptFile\Shell\Compile\Command', ;
 				'', '"C:\Program Files (x86)\Inno Setup 6\iscc.exe"', cnHKEY_CLASSES_ROOT)
 			lcInnoCompiler = strtran(lcInnoCompiler, '"%1"')
 
+* Set other settings values.
+
+			lcSignEXE     = '{$AppPath}signtool.exe'
+			lcSignCommand = '"{$SignEXE}" sign /fd SHA256 ' + ;
+				'/tr http://timestamp.digicert.com /td SHA256 ' + ;
+				'/f "{$CertPath}" ' + ;
+				'/p {$CertPassword}'
+*** TODO: what if name isn't Standard?
+			lcInnoSignCommand = [/sStandard={strtran($SignCommand, '"', '$q')} $p]
+
 * Create the DeployFoxSettings table.
 
-			create table (lcPath + 'DeployFoxSettings') (Setting C(20), Value M, Encrypt L)
-			insert into DeployFoxSettings values ('SignEXE', '{$AppPath}signtool.exe', .F.)
-			insert into DeployFoxSettings values ('SignCommand', '', .F.)
-			insert into DeployFoxSettings values ('BuildEXEWithInno', lcInnoCompiler, .F.)
-			insert into DeployFoxSettings values ('CertPassword', '', .T.)
+			create table (lcPath + 'DeployFoxSettings') (Setting C(20), Value M, ;
+				Encrypt L, Type C(1), Variable L)
+			insert into DeployFoxSettings values ('SignEXE',          lcSignEXE, ;
+				.F., 'C', .T.)
+			insert into DeployFoxSettings values ('SignCommand',      lcSignCommand, ;
+				.F., 'C', .T.)
+			insert into DeployFoxSettings values ('InnoSignCommand',  lcInnoSignCommand, ;
+				.F., 'C', .T.)
+			insert into DeployFoxSettings values ('BuildEXEWithInno', lcInnoCompiler, ;
+				.F., 'C', .T.)
+			insert into DeployFoxSettings values ('CertPassword',     '', ;
+				.T., 'C', .T.)
+			insert into DeployFoxSettings values ('CertPath',         '', ;
+				.F., 'C', .T.)
+			insert into DeployFoxSettings values ('TaskIncrement',    '1', ;
+				.F., 'I', .F.)
 		endif not file(lcPath + 'DeployFoxSettings.dbf')
 
 * Create a decryption object and get the key to use.
@@ -84,13 +110,26 @@ define class DeployFoxEngine as Custom
 
 		use (lcPath + 'DeployFoxSettings') again shared
 		scan
-			lcVariable = trim(Setting)
-			lcValue    = Value
+			lcName  = trim(Setting)
+			lcValue = Value
 			if Encrypt and left(lcValue, 2) = '0x'
 				lcValue = trim(loDecrypt.Decrypt_AES(strconv(substr(lcValue, 3), 16), lcKey))
 			endif Encrypt ...
-			This.oVariables.AddVariable(lcVariable, lcValue, .T.)
+			do case
+				case Type = 'I'
+					luValue = int(val(lcValue))
+				case Type = 'N'
+					luValue = val(lcValue)
+				otherwise
+					luValue = lcValue
+			endcase
+			if Variable
+				This.oVariables.AddVariable(lcName, luValue, .T.)
+			else
+				This.AddProperty(lcName, luValue)
+			endif Variable
 		endscan
+		use
 		This.oVariables.AddVariable('AppPath', This.cAppPath, .T.)
 
 * Get a task types cursor.
@@ -106,12 +145,12 @@ define class DeployFoxEngine as Custom
 
 	function OpenProject(tcPath)
 		local loException as Exception, ;
-			loRegistry, ;
-			laProjects[1], ;
-			lnLast, ;
+			lnFields, ;
+			laFields[1], ;
+			lnTestFields, ;
+			laTestFields[1], ;
+			llOK, ;
 			lnI, ;
-			lcProject, ;
-			lcValue, ;
 			llReturn
 		if file(tcPath)
 			use in select('curProject')
@@ -129,15 +168,20 @@ define class DeployFoxEngine as Custom
 
 * Ensure it's a valid project file.
 
-*** TODO: need better way to check structure or else have to maintain it here and in NewProject and in DeployFormForm.Init
-				if type('ProjectFile.ID')        = 'C' and ;
-					type('ProjectFile.Order')    = 'N' and ;
-					type('ProjectFile.Task')     = 'C' and ;
-					type('ProjectFile.Name')     = 'C' and ;
-					type('ProjectFile.Active')   = 'L' and ;
-					type('ProjectFile.Incomplete')   = 'L' and ;
-					type('ProjectFile.Settings') = 'M' and ;
-					type('ProjectFile.Comments') = 'M'
+				This.CreateProject('curTestStructure', .T.)
+				lnFields     = afields(laFields,     'ProjectFile')
+				lnTestFields = afields(laTestFields, 'curTestStructure')
+				llOK = lnFields = lnTestFields
+				if llOK
+					for lnI = 1 to lnFields
+						llOK = laFields[lnI, 1] == laTestFields[lnI, 1] and ;
+							laFields[lnI, 2] = laTestFields[lnI, 2]
+						if not llOK
+							exit
+						endif not llOK
+					next lnI
+				endif llOK
+				if llOK
 					This.cProjectFile = tcPath
 					select *, space(20) as Status ;
 						from (This.cProjectFile) ;
@@ -148,7 +192,7 @@ define class DeployFoxEngine as Custom
 
 					This.cLogFile = forcepath('DeployFoxLog.txt', justpath(tcPath))
 					try
-*** TODO: option to timestamp and keep log files?
+*** TODO FUTURE: option to timestamp and keep log files
 						erase (This.cLogFile)
 					catch
 					endtry
@@ -159,7 +203,7 @@ define class DeployFoxEngine as Custom
 					llReturn = .T.
 				else
 					This.cErrorMessage = tcPath + ' is not DeployFox project file.'
-				endif type('ProjectFile.ID') ...
+				endif llOK
 			endif used('ProjectFile')
 		else
 			This.cErrorMessage = tcPath + ' does not exist.'
@@ -170,10 +214,21 @@ define class DeployFoxEngine as Custom
 * Create a new project.
 
 	function NewProject(tcPath)
-		create table (tcPath) (ID C(10), Order I, Task C(20), Name C(80), Active L, ;
-			Incomplete L, Settings M, Comments M)
+		This.CreateProject(tcPath)
 		insert into (tcPath) (Order) values (1)
 		use
+	endfunc
+
+* Create a project table or cursor.
+
+	function CreateProject(tcPath, tlCursor)
+		text to lcCommand noshow textmerge pretext 2
+		create <<iif(tlCursor, 'cursor', 'table')>> (tcPath) (ID C(10), 
+			Order I, Task C(20), Name C(80), Active L, Incomplete L,
+			AlwaysRun L, Settings M, Comments M)
+		endtext
+		lcCommand = chrtran(lcCommand, ccCRLF, '')
+		&lcCommand
 	endfunc
 
 * Get a cursor of task types, combining TaskTypes (built-in) and MyTaskTypes (custom).
@@ -226,7 +281,7 @@ define class DeployFoxEngine as Custom
 		local lnSelect, ;
 			llReturn
 		try
-*** TODO: option to timestamp and keep log files?
+*** TODO FUTURE: option to timestamp and keep log files
 			erase (This.cLogFile)
 		catch
 		endtry
@@ -236,18 +291,34 @@ define class DeployFoxEngine as Custom
 			where Active ;
 			order by Order ;
 			into cursor curRun
-		llReturn = This.SetVariables()
+		llReturn = This.AlwaysRun()
 		if llReturn
-			scan for Task <> 'SetVariable'
+			scan for not AlwaysRun
 				llReturn = This.RunTask(ID, Name, Task, Settings, tlDebug)
 				if not llReturn
 					exit
 				endif not llReturn
-			endscan for Task <> 'SetVariable'
+			endscan for not AlwaysRun
 		endif llReturn
 		use in curRun
 		select (lnSelect)
 	endfunc
+
+* Run all the "always run" tasks.
+
+	function AlwaysRun
+		local llReturn
+		llReturn = .T.
+		scan for AlwaysRun
+			llReturn = This.RunTask(ID, Name, Task, Settings)
+			if not llReturn
+				exit
+			endif not llReturn
+		endscan for AlwaysRun
+		return llReturn
+	endfunc
+
+* Run all the "SetVariable" tasks.
 
 	function SetVariables
 		local llReturn
@@ -351,3 +422,4 @@ define class DeployFoxVariable as Custom
 	Value   = .NULL.
 	BuiltIn = .F.
 enddefine
+ 

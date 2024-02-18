@@ -217,6 +217,7 @@ DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A 
 
 	PROCEDURE Init
 		This.AdjustControls()
+		This.lblFolder.ToolTipText = This.ToolTipText
 		dodefault()
 		
 	ENDPROC
@@ -529,6 +530,7 @@ DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 
 	PROCEDURE Init
 		This.AdjustControls()
+		This.lblFile.ToolTipText = This.ToolTipText
 		dodefault()
 		
 	ENDPROC

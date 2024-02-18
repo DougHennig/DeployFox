@@ -136,8 +136,6 @@ define class TaskBase as Session
 				lcSettings = loXMLDOM.xml
 			endif vartype(loXMLDOM) = 'O'
 		catch to loException
-*** TODO: remove
-set step on 
 			lcSettings = ''
 			This.cErrorMessage = Format('Error creating XML: {0}', loException.Message)
 			This.Log(Format('Error saving settings: {0}', This.cErrorMessage))
@@ -489,7 +487,6 @@ define class RunEXE as TaskBase
 				This.Log(This.cErrorMessage)
 *** TODO FUTURE: we don't currently test FILE(lcSource) since it may be in the path
 ***					(e.g. curl.exe). Maybe require a full path?
-
 *			case not file(lcSource)
 *				This.cErrorMessage = Format('{0} does not exist', lcSource)
 *				This.Log(This.cErrorMessage)
@@ -527,10 +524,6 @@ define class SignTool as RunEXE
 		lcParameters = EvaluateExpression('{$SignCommand}', This)
 		do case
 			case not llReturn
-			case empty(EvaluateExpression('{CertPassword}', This))
-				This.cErrorMessage = 'CertPassword has not been assigned'
-				This.Log(This.cErrorMessage)
-				llReturn = .F.
 			case empty(lcParameters)
 				This.cErrorMessage = 'SignCommand has not been assigned'
 				This.Log(This.cErrorMessage)
@@ -545,9 +538,8 @@ define class SignTool as RunEXE
 				llReturn = .F.
 			otherwise
 				lcParameters     = substr(lcParameters, at(' sign ', lcParameters))
-				lcParameters     = strtran(lcParameters, '$q', '"')
-				This.cParameters = strtran(lcParameters, '$p') + ;
-					' /d "' + This.cDescription + '" "' + This.cTarget + '"'
+				This.cParameters = lcParameters + ' /d "' + This.cDescription + ;
+					'" "' + This.cTarget + '"'
 		endcase
 		return llReturn
 	endfunc
@@ -571,7 +563,7 @@ define class BuildSetupInno as RunEXE
 				This.Log(This.cErrorMessage)
 				llReturn = .F.
 			otherwise
-				This.cParameters = '"' + EvaluateExpression('{$SignCommand}', This) + ;
+				This.cParameters = '"' + EvaluateExpression('{$InnoSignCommand}', This) + ;
 					'" "' + This.cScriptFile + '"'
 		endcase
 		return llReturn
