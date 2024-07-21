@@ -392,7 +392,7 @@ DEFINE CLASS inibase AS taskuibase OF "taskui.vcx"
 
 	ADD OBJECT 'oINIFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cSource, ;
-		cextensions = "INI File (*.ini):ini", ;
+		cextensions = INI File (*.ini):ini, ;
 		Left = 0, ;
 		Name = "oINIFile", ;
 		Top = 0, ;
@@ -1617,10 +1617,11 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 	*</PropValue>
 
 	ADD OBJECT 'cmdAddFile' AS vfpxgetfile WITH ;
-		cafterdone = This.Parent.AddFile(lcFile), ;
+		cafterdone = This.Parent.AddFile(This.Tag), ;
 		Caption = "Files to zip", ;
 		cresult = This.Tag, ;
 		Left = 0, ;
+		lmultiselect = .T., ;
 		Name = "cmdAddFile", ;
 		TabIndex = 2, ;
 		Top = 25, ;
@@ -1628,6 +1629,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'opgUpdate' AS vfpxbaseoptiongroup WITH ;
+		Anchor = 4, ;
 		AutoSize = .F., ;
 		Height = 27, ;
 		Left = 48, ;
