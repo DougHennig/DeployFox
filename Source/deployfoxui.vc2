@@ -553,7 +553,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		
 		* Create a cursor for data binding.
 		
-		This.oEngine.CreateProject('curProject', .T., .T.)
+		This.oEngine.CreateProject('curProject', .T.)
 		select *, space(20) as Status ;
 			from curProject ;
 			into cursor curProject readwrite
@@ -989,6 +989,8 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 		DoCreate = .T.
 		Height = 249
 		Icon = options.ico
+		MinHeight = 249
+		MinWidth = 300
 		Name = "deployfoxsettings"
 		Width = 382
 		WindowType = 1
@@ -1108,6 +1110,7 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 		Height = 23, ;
 		Left = 110, ;
 		Name = "txtCertPassword", ;
+		PasswordChar = "*", ;
 		TabIndex = 6, ;
 		ToolTipText = "The password for the PFX file; stored in $CertPassword", ;
 		Top = 117, ;

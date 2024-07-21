@@ -422,4 +422,3 @@ define class DeployFoxVariable as Custom
 	Value   = .NULL.
 	BuiltIn = .F.
 enddefine
- 

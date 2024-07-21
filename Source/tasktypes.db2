@@ -241,6 +241,20 @@
 			<UIFILE>taskui.vcx</UIFILE>
 		</RECORD>
 
+		<RECORD>
+			<TYPE>ExecutePSScript</TYPE>
+			<DESCRIP>Run PowerShell script</DESCRIP>
+			<FILE>tasks.prg</FILE>
+			<UIFILE>taskui.vcx</UIFILE>
+		</RECORD>
+
+		<RECORD>
+			<TYPE>RunBat</TYPE>
+			<DESCRIP>Run BAT</DESCRIP>
+			<FILE>tasks.prg</FILE>
+			<UIFILE>taskui.vcx</UIFILE>
+		</RECORD>
+
 	</RECORDS>
 
 

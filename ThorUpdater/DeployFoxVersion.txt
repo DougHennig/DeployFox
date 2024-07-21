@@ -1,0 +1,75 @@
+lparameters toUpdateObject
+
+* Set the properties of the passed updater object.
+
+with toUpdateObject
+	.VersionNumber    = '1.0 - 20240721'
+	.AvailableVersion = 'DeployFox-1.0-update-20240721'
+	.Notes            = GetNotes()
+	.RegisterWithThor = GetRegisterWithThor()
+endwith
+return toUpdateObject
+
+* Get the notes for the project.
+
+procedure GetNotes
+local lcNotes
+text to lcNotes noshow
+# DeployFox
+
+DeployFox automates the steps required to deploy your applications by providing a customizable list of tasks: copy files, rename files, build a project into an EXE, digitally sign an EXE, run an Inno Setup script to create an installer, upload files to an FTP site, and so on.
+
+## Releases
+
+### 2024-07-21
+
+* Initial release.
+
+endtext
+return lcNotes
+
+* Register the tool with Thor. Note: Thor replaces ##InstallFolder## with the
+* installation path for the tool when this code is executed.
+
+
+procedure GetRegisterWithThor
+ local lcCommand
+ text to lcCommand noshow
+* "DeployFox" is a tool created by VFPX Deployment:
+* Create the tool under Thor Tools.
+
+loThorInfo = Execscript (_Screen.cThorDispatcher, 'Thor Register=')
+with loThorInfo
+
+* Required properties.
+
+	.PRGName    = 'Thor_Tool_DeployFox'
+	.FolderName = '##InstallFolder##'
+	.Prompt     = 'DeployFox'
+	.AppID      = 'DeployFox'
+
+* Optional properties.
+
+	.Description = 'DeployFox'
+
+* These are used to group and sort tools when they are displayed in menus or
+* the Thor form.
+
+	.Category        = 'Applications'
+	.CanRunAtStartUp = .F.
+
+* This is the code to execute when the tool is selected.
+
+	.Code = "do ('##InstallFolder##DeployFox.app')"
+
+* Register the tool with Thor.
+
+	llRegister = .Register()
+endwith
+ endtext
+
+ return lcCommand
+endproc &&GetRegisterWithThor
+
+
+*created by VFPX Deployment, 07/21/2024 9:50:34 AM

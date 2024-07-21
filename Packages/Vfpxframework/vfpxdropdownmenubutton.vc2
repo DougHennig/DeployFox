@@ -127,7 +127,6 @@ DEFINE CLASS vfpxdropdownmenubutton AS vfpxbasecontainer OF "vfpxbaselibrary.vcx
 		* The toolbar isn't docked so handle the height of the toolbar title bar and
 		* window borders.
 		
-		*** TODO: the menu is too far above the mouse pointer
 				case not Thisform.Docked 
 					lnRow = lnVPosition + sysmetric(34) + sysmetric(4) - 1
 		

@@ -65,7 +65,7 @@ DEFINE CLASS buildexeui AS taskuibase OF "taskui.vcx"
 		
 	ENDPROC
 
-	PROCEDURE oSource.LostFocus
+	PROCEDURE oSource.filechanged
 		if not empty(This.Value) and empty(This.Parent.oTask.cTarget)
 			This.Parent.oTask.cTarget = forceext(This.Value, 'exe')
 			This.Parent.oTarget.Refresh()
@@ -516,15 +516,20 @@ DEFINE CLASS readfrominiui AS inibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="cboVariable" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "readfromini"
+		Name = "readfrominiui"
 		oINIFile.cmdGetFile.Name = "cmdGetFile"
 		oINIFile.lblFile.Name = "lblFile"
 		oINIFile.Name = "oINIFile"
+		oINIFile.TabIndex = 1
 		oINIFile.txtFile.Name = "txtFile"
 		lblSection.Name = "lblSection"
+		lblSection.TabIndex = 2
 		cboSection.Name = "cboSection"
+		cboSection.TabIndex = 3
 		lblItem.Name = "lblItem"
+		lblItem.TabIndex = 4
 		cboItem.Name = "cboItem"
+		cboItem.TabIndex = 5
 	*</PropValue>
 
 	ADD OBJECT 'cboVariable' AS vfpxbasecombobox WITH ;
@@ -532,7 +537,7 @@ DEFINE CLASS readfrominiui AS inibase OF "taskui.vcx"
 		Left = 50, ;
 		Name = "cboVariable", ;
 		Style = 0, ;
-		TabIndex = 6, ;
+		TabIndex = 7, ;
 		Top = 77, ;
 		Width = 159
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
@@ -541,7 +546,7 @@ DEFINE CLASS readfrominiui AS inibase OF "taskui.vcx"
 		Caption = "Variable", ;
 		Left = 0, ;
 		Name = "lblVariable", ;
-		TabIndex = 7, ;
+		TabIndex = 6, ;
 		Top = 80
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 	
@@ -584,13 +589,19 @@ DEFINE CLASS readfromregistryui AS registrybase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="cboVariable" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "readfromregistry"
+		Name = "readfromregistryui"
 		lblKey.Name = "lblKey"
+		lblKey.TabIndex = 3
 		txtKey.Name = "txtKey"
+		txtKey.TabIndex = 4
 		lblSetting.Name = "lblSetting"
+		lblSetting.TabIndex = 5
 		txtSetting.Name = "txtSetting"
+		txtSetting.TabIndex = 6
 		cboMainKey.Name = "cboMainKey"
+		cboMainKey.TabIndex = 2
 		lblMainKey.Name = "lblMainKey"
+		lblMainKey.TabIndex = 1
 	*</PropValue>
 
 	ADD OBJECT 'cboVariable' AS vfpxbasecombobox WITH ;
@@ -598,7 +609,7 @@ DEFINE CLASS readfromregistryui AS registrybase OF "taskui.vcx"
 		Left = 50, ;
 		Name = "cboVariable", ;
 		Style = 0, ;
-		TabIndex = 6, ;
+		TabIndex = 8, ;
 		Top = 76, ;
 		Width = 159
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
@@ -664,7 +675,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Height = 24, ;
 		Left = 50, ;
 		Name = "cboMainKey", ;
-		TabIndex = 1, ;
+		TabIndex = 2, ;
 		Top = 0, ;
 		Width = 185
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
@@ -673,7 +684,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Caption = "Key", ;
 		Left = 0, ;
 		Name = "lblKey", ;
-		TabIndex = 4, ;
+		TabIndex = 3, ;
 		Top = 29
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -681,7 +692,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Caption = "Hive", ;
 		Left = 0, ;
 		Name = "lblMainKey", ;
-		TabIndex = 2, ;
+		TabIndex = 1, ;
 		Top = 4
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -689,7 +700,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Caption = "Setting", ;
 		Left = 0, ;
 		Name = "lblSetting", ;
-		TabIndex = 6, ;
+		TabIndex = 5, ;
 		Top = 54
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -699,7 +710,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Left = 50, ;
 		MaxLength = 255, ;
 		Name = "txtKey", ;
-		TabIndex = 3, ;
+		TabIndex = 4, ;
 		Top = 26, ;
 		Width = 294
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
@@ -709,7 +720,7 @@ DEFINE CLASS registrybase AS taskuibase OF "taskui.vcx"
 		Height = 23, ;
 		Left = 50, ;
 		Name = "txtSetting", ;
-		TabIndex = 5, ;
+		TabIndex = 6, ;
 		Top = 51, ;
 		Width = 294
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
@@ -757,7 +768,7 @@ DEFINE CLASS renamefileui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="oTarget" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "renamefile"
+		Name = "renamefileui"
 	*</PropValue>
 
 	ADD OBJECT 'oSource' AS vfpxfile WITH ;
@@ -1103,6 +1114,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		Caption = "Description", ;
 		Left = 1, ;
 		Name = "lblDescription", ;
+		TabIndex = 2, ;
 		Top = 28
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -1111,6 +1123,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		cextensions = Executable (*.exe):exe, ;
 		Left = 0, ;
 		Name = "oTarget", ;
+		TabIndex = 1, ;
 		Top = 0, ;
 		lblFile.Caption = "File to sign", ;
 		lblFile.Name = "lblFile", ;
@@ -1125,6 +1138,7 @@ DEFINE CLASS signtoolui AS taskuibase OF "taskui.vcx"
 		Height = 23, ;
 		Left = 75, ;
 		Name = "txtDescription", ;
+		TabIndex = 3, ;
 		Top = 25, ;
 		Width = 270
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
@@ -1387,7 +1401,7 @@ DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="chkOverwrite" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "writetofile"
+		Name = "writetofileui"
 		Width = 345
 	*</PropValue>
 
@@ -1397,14 +1411,14 @@ DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx"
 		Caption = "Overwrite file", ;
 		Left = 0, ;
 		Name = "chkOverwrite", ;
-		Top = 110
+		Top = 115
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
 	ADD OBJECT 'edtSource' AS vfpxbaseeditbox WITH ;
-		Height = 80, ;
+		Height = 83, ;
 		Left = 30, ;
 		Name = "edtSource", ;
-		Top = 30, ;
+		Top = 25, ;
 		Width = 310
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
 
@@ -1412,7 +1426,7 @@ DEFINE CLASS writetofileui AS taskuibase OF "taskui.vcx"
 		Caption = "Text", ;
 		Left = 0, ;
 		Name = "lblSource", ;
-		Top = 30
+		Top = 25
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oTarget' AS vfpxfile WITH ;
@@ -1447,7 +1461,7 @@ DEFINE CLASS writetoiniui AS inibase OF "taskui.vcx"
 	*< OBJECTDATA: ObjPath="txtValue" UniqueID="" Timestamp="" />
 
 	*<PropValue>
-		Name = "writetoini2"
+		Name = "writetoiniui"
 		oINIFile.cmdGetFile.Name = "cmdGetFile"
 		oINIFile.lblFile.Name = "lblFile"
 		oINIFile.Name = "oINIFile"
@@ -1503,11 +1517,17 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 	*<PropValue>
 		Name = "writetoregistryui"
 		lblKey.Name = "lblKey"
+		lblKey.TabIndex = 3
 		txtKey.Name = "txtKey"
+		txtKey.TabIndex = 4
 		lblSetting.Name = "lblSetting"
+		lblSetting.TabIndex = 5
 		txtSetting.Name = "txtSetting"
+		txtSetting.TabIndex = 6
 		cboMainKey.Name = "cboMainKey"
+		cboMainKey.TabIndex = 2
 		lblMainKey.Name = "lblMainKey"
+		lblMainKey.TabIndex = 1
 	*</PropValue>
 
 	ADD OBJECT 'cboType' AS vfpxbasecombobox WITH ;
@@ -1515,7 +1535,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 		Height = 24, ;
 		Left = 49, ;
 		Name = "cboType", ;
-		TabIndex = 9, ;
+		TabIndex = 10, ;
 		Top = 102, ;
 		Width = 294
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
@@ -1524,7 +1544,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 		Caption = "Type", ;
 		Left = 0, ;
 		Name = "lblType", ;
-		TabIndex = 10, ;
+		TabIndex = 9, ;
 		Top = 106
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -1532,7 +1552,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 		Caption = "Value", ;
 		Left = 0, ;
 		Name = "lblValue", ;
-		TabIndex = 8, ;
+		TabIndex = 7, ;
 		Top = 79
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -1541,7 +1561,7 @@ DEFINE CLASS writetoregistryui AS registrybase OF "taskui.vcx"
 		Height = 23, ;
 		Left = 50, ;
 		Name = "txtValue", ;
-		TabIndex = 7, ;
+		TabIndex = 8, ;
 		Top = 76, ;
 		Width = 294
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
@@ -1602,14 +1622,17 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		cresult = This.Tag, ;
 		Left = 0, ;
 		Name = "cmdAddFile", ;
+		TabIndex = 2, ;
 		Top = 25, ;
 		Width = 65
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'opgUpdate' AS vfpxbaseoptiongroup WITH ;
+		AutoSize = .F., ;
 		Height = 27, ;
 		Left = 48, ;
 		Name = "opgUpdate", ;
+		TabIndex = 4, ;
 		Top = 130, ;
 		Width = 249, ;
 		Vfpxbaseoptionbutton1.Caption = "Create new file", ;
@@ -1627,6 +1650,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		cextensions = ZIP File (*.zip):zip, ;
 		Left = 0, ;
 		Name = "oTarget", ;
+		TabIndex = 1, ;
 		Top = 0, ;
 		lblFile.Caption = "ZIP file", ;
 		lblFile.Name = "lblFile", ;
@@ -1641,6 +1665,7 @@ DEFINE CLASS zipfilesui AS taskuibase OF "taskui.vcx"
 		Height = 98, ;
 		Left = 70, ;
 		Name = "txtSource", ;
+		TabIndex = 3, ;
 		Top = 25, ;
 		Width = 270
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />

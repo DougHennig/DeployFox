@@ -104,18 +104,31 @@ DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A 
 		* calculate its width.
 		
 		lparameters tlForce
-		local loSFGDI
+		local loSFGDI, ;
+			lcString, ;
+			lcFontName, ;
+			lnFontSize, ;
+			lcStyle
 		with This
 			if not empty(.cLabelCaption) and ;
 				(not .lblFolder.Caption == .cLabelCaption or tlForce)
 				.lblFolder.Caption = .cLabelCaption
-				if not Thisform.Visible
-					loSFGDI        = newobject('SFGDIMeasureString', ;
-						'SFGDIMeasureString.prg')
-					.lblFolder.Width = loSFGDI.GetWidth(.lblFolder.Caption, ;
-						.lblFolder.FontName, .lblFolder.FontSize, ;
-						iif(.lblFolder.FontBold, 'B', ''))
-				endif not Thisform.Visible
+				do case
+					case Thisform.Visible
+					case file('SFGDIMeasureString.prg') and file('System.app')
+						loSFGDI        = newobject('SFGDIMeasureString', ;
+							'SFGDIMeasureString.prg')
+						.lblFolder.Width = loSFGDI.GetWidth(.lblFolder.Caption, ;
+							.lblFolder.FontName, .lblFolder.FontSize, ;
+							iif(.lblFolder.FontBold, 'B', ''))
+					otherwise
+						lcString   = .lblFolder.Caption
+						lcFontName = .lblFolder.FontName
+						lnFontSize = .lblFolder.FontSize
+						lcStyle    = iif(.lblFolder.FontBold, 'B', '')
+						.lblFolder.Width = txtwidth(lcString, lcFontName, lnFontSize, ;
+							lcStyle) * fontmetric(6, lcFontName, lnFontSize, lcStyle)
+				endcase
 				if .lAdjustPositions
 					.txtFolder.lSaveAnchor    = .T.
 					.txtFolder.Left           = .lblFolder.Width + 5
@@ -217,7 +230,6 @@ DEFINE CLASS vfpxdirectory AS vfpxbasecontainer OF "vfpxbaselibrary.vcx" 		&& A 
 
 	PROCEDURE Init
 		This.AdjustControls()
-		This.lblFolder.ToolTipText = This.ToolTipText
 		dodefault()
 		
 	ENDPROC
@@ -423,13 +435,22 @@ DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 			if not empty(.cLabelCaption) and ;
 				(not .lblFile.Caption == .cLabelCaption or tlForce)
 				.lblFile.Caption = .cLabelCaption
-				if not Thisform.Visible
-					loSFGDI        = newobject('SFGDIMeasureString', ;
-						'SFGDIMeasureString.prg')
-					.lblFile.Width = loSFGDI.GetWidth(.lblFile.Caption, ;
-						.lblFile.FontName, .lblFile.FontSize, ;
-						iif(.lblFile.FontBold, 'B', ''))
-				endif not Thisform.Visible
+				do case
+					case Thisform.Visible
+					case file('SFGDIMeasureString.prg') and file('System.app')
+						loSFGDI        = newobject('SFGDIMeasureString', ;
+							'SFGDIMeasureString.prg')
+						.lblFolder.Width = loSFGDI.GetWidth(.lblFolder.Caption, ;
+							.lblFolder.FontName, .lblFolder.FontSize, ;
+							iif(.lblFolder.FontBold, 'B', ''))
+					otherwise
+						lcString   = .lblFolder.Caption
+						lcFontName = .lblFolder.FontName
+						lnFontSize = .lblFolder.FontSize
+						lcStyle    = iif(.lblFolder.FontBold, 'B', '')
+						.lblFolder.Width = txtwidth(lcString, lcFontName, lnFontSize, ;
+							lcStyle) * fontmetric(6, lcFontName, lnFontSize, lcStyle)
+				endcase
 				if .lAdjustPositions
 					.txtFile.lSaveAnchor    = .T.
 					.txtFile.Left           = iif(.lblFile.Visible, ;
@@ -530,7 +551,6 @@ DEFINE CLASS vfpxfile AS vfpxbasecontainer OF "vfpxbaselibrary.vcx"
 
 	PROCEDURE Init
 		This.AdjustControls()
-		This.lblFile.ToolTipText = This.ToolTipText
 		dodefault()
 		
 	ENDPROC
