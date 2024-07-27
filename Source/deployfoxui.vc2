@@ -673,11 +673,16 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		lparameters tcID, ;
 			tcStatus, ;
 			tcMessage
-		local lnSelect
+		local lnSelect, ;
+			lnRecno
 		lnSelect = select()
 		select curProject
+		lnRecno = recno()
 		locate for ID = tcID
 		replace Status with tcStatus
+		if between(lnRecno, 1, reccount())
+			go lnRecno
+		endif between(lnRecno, 1, reccount())
 		select (lnSelect)
 		This.grdTasks.Refresh()
 		if not empty(tcMessage)
@@ -735,7 +740,8 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		
 		go lnRecno
 		if llReturn
-			scan rest for not AlwaysRun
+			scan rest for not AlwaysRun and not Incomplete
+				Thisform.DisplayTask()
 				llReturn = Thisform.oEngine.RunTask(ID, Name, Task, Settings, .T.)
 				skip
 				llLast = eof()

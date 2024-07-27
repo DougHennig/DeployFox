@@ -465,6 +465,28 @@ define class DeleteFolder as TaskBase
 	endfunc
 enddefine
 
+define class CreateFolder as TaskBase
+	cSource = ''
+		&& the folder to create
+
+	function Execute
+		local llReturn, ;
+			loException as Exception
+		if not directory(This.cSource)
+			try
+				md (This.cSource)
+				This.Log(Format('Folder {0} was created', This.cSource))
+				llReturn = .T.
+			catch to loException
+				This.cErrorMessage = Format('Cannot create folder {0}: {1}', ;
+					This.cSource, loException.Message)
+				This.Log(This.cErrorMessage)
+			endtry
+		endif not directory(This.cSource)
+		return llReturn
+	endfunc
+enddefine
+
 define class RunEXE as TaskBase
 	cSource     = ''
 		&& the EXE to run

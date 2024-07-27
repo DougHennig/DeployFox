@@ -3,8 +3,8 @@ lparameters toUpdateObject
 * Set the properties of the passed updater object.
 
 with toUpdateObject
-	.VersionNumber    = '1.0 - 20240721'
-	.AvailableVersion = 'DeployFox-1.0-update-20240721'
+	.VersionNumber    = '1.0 - 20240727'
+	.AvailableVersion = 'DeployFox-1.0-update-20240727'
 	.Notes            = GetNotes()
 	.RegisterWithThor = GetRegisterWithThor()
 endwith
@@ -20,6 +20,14 @@ text to lcNotes noshow
 DeployFox automates the steps required to deploy your applications by providing a customizable list of tasks: copy files, rename files, build a project into an EXE, digitally sign an EXE, run an Inno Setup script to create an installer, upload files to an FTP site, and so on.
 
 ## Releases
+
+### 2024-07-27
+
+* Made it display the properties for the current task when single-stepping through tasks.
+
+* Incomplete tasks are no longer executed.
+
+* Signtool.exe is now included when using Thor Check for Updates to install it.
 
 ### 2024-07-21
 
@@ -72,4 +80,4 @@ endwith
 endproc &&GetRegisterWithThor
 
 
-*created by VFPX Deployment, 07/21/2024 11:08:34 AM
+*created by VFPX Deployment, 07/27/2024 9:48:48 AM

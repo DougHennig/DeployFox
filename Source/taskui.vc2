@@ -152,6 +152,38 @@ DEFINE CLASS copyfileui AS taskuibase OF "taskui.vcx"
 
 ENDDEFINE
 
+DEFINE CLASS createfolderui AS taskuibase OF "taskui.vcx" 
+ 	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="oSource" UniqueID="" Timestamp="" />
+
+	*<PropValue>
+		Height = 250
+		Name = "createfolderui"
+	*</PropValue>
+
+	ADD OBJECT 'oSource' AS vfpxdirectory WITH ;
+		ccontrolsource = This.Parent.oTask.cSource, ;
+		Left = 0, ;
+		Name = "oSource", ;
+		Top = 0, ;
+		lblFolder.Caption = "Folder", ;
+		lblFolder.Name = "lblFolder", ;
+		txtFolder.Left = 40, ;
+		txtFolder.Name = "txtFolder", ;
+		txtFolder.Width = 280, ;
+		cmdGetFolder.Left = 320, ;
+		cmdGetFolder.Name = "cmdGetFolder"
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
+	
+	PROCEDURE validate
+		return not empty(This.oTask.cSource)
+		
+	ENDPROC
+
+ENDDEFINE
+
 DEFINE CLASS deletefileui AS taskuibase OF "taskui.vcx" 
  	*< CLASSDATA: Baseclass="container" Timestamp="" Scale="Pixels" Uniqueid="" />
 

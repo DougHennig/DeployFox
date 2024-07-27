@@ -1,1 +1,2 @@
 DeployFox.app
+Signtool.exe

@@ -288,7 +288,7 @@ define class DeployFoxEngine as Custom
 		lnSelect = select()
 		select * ;
 			from (This.cProjectFile) ;
-			where Active ;
+			where Active and not Incomplete ;
 			order by Order ;
 			into cursor curRun
 		llReturn = This.AlwaysRun()

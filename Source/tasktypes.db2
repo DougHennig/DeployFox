@@ -255,6 +255,13 @@
 			<UIFILE>taskui.vcx</UIFILE>
 		</RECORD>
 
+		<RECORD>
+			<TYPE>CreateFolder</TYPE>
+			<DESCRIP>Create Folder</DESCRIP>
+			<FILE>tasks.prg</FILE>
+			<UIFILE>taskui.vcx</UIFILE>
+		</RECORD>
+
 	</RECORDS>
 
 

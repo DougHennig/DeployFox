@@ -4,6 +4,14 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
+### 2024-07-27
+
+* Made it display the properties for the current task when single-stepping through tasks.
+
+* Incomplete tasks are no longer executed.
+
+* Signtool.exe is now included when using Thor Check for Updates to install it.
+
 ### 2024-07-21
 
 * Initial release.
