@@ -590,7 +590,7 @@ DEFINE CLASS vfpxbasecontainer AS container 		&& Base class for Container object
 		
 		* Define the menu if it hasn't already been defined.
 		
-			lcLibrary = 'SFMenu.vcx'
+			lcLibrary = 'VFPXMenu.vcx'
 			if vartype(.oMenu) <> 'O' and file(lcLibrary)
 				.oMenu = newobject('SFMenuShortcutMenu', lcLibrary, '', ;
 					'loObject.oMenu')

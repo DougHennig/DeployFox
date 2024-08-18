@@ -3,8 +3,8 @@ lparameters toUpdateObject
 * Set the properties of the passed updater object.
 
 with toUpdateObject
-	.VersionNumber    = '1.0 - 20240727'
-	.AvailableVersion = 'DeployFox-1.0-update-20240727'
+	.VersionNumber    = '1.0 - 20240818'
+	.AvailableVersion = 'DeployFox-1.0-update-20240818'
 	.Notes            = GetNotes()
 	.RegisterWithThor = GetRegisterWithThor()
 endwith
@@ -20,6 +20,20 @@ text to lcNotes noshow
 DeployFox automates the steps required to deploy your applications by providing a customizable list of tasks: copy files, rename files, build a project into an EXE, digitally sign an EXE, run an Inno Setup script to create an installer, upload files to an FTP site, and so on.
 
 ## Releases
+
+### 2024-08-18
+
+* Added the $ProjectPath built-in variable.
+
+* Fixed issues with the BuildSetupInno task.
+
+* Added the Test Project folder with a test project.
+
+* Renamed SFMenu.vcx to VFPXMenu.vcx to prevent problems building an EXE containing SFMenu.vcx (issue #1).
+
+* Prevented an issue with a dangling datasession.
+
+* New tasks are active by default.
 
 ### 2024-07-27
 
@@ -80,4 +94,4 @@ endwith
 endproc &&GetRegisterWithThor
 
 
-*created by VFPX Deployment, 07/27/2024 9:48:48 AM
+*created by VFPX Deployment, 08/18/2024 9:16:25 AM

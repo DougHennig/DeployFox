@@ -151,13 +151,15 @@ Typically, you'll turn on Always run when single-stepping for tasks that assign 
 
 There are several built-in variables:
 
-- $AppPath: the DeployFox folder.
+- $AppPath: the DeployFox folder (including trailing backslash).
 
 - $BuildEXEWithInno: the command line to build a setup executable using Inno Setup.
 
 - $CertPath: the path to the digital certificate (comes from the *PFX file* setting; see the next section).
 
 - $CertPassword: the password for the digital certificate used to sign an EXE (comes from the *Password* setting; see the next section).
+
+- $ProjectPath: the folder for the open project (including trailing backslash).
 
 - $SignCommand: the command to sign an EXE (comes from the *Sign command* setting; see the next section).
 

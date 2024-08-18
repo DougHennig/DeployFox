@@ -585,8 +585,7 @@ define class BuildSetupInno as RunEXE
 				This.Log(This.cErrorMessage)
 				llReturn = .F.
 			otherwise
-				This.cParameters = '"' + EvaluateExpression('{$InnoSignCommand}', This) + ;
-					'" "' + This.cScriptFile + '"'
+				This.cParameters = ' /cc "' + This.cScriptFile + '"'
 		endcase
 		return llReturn
 	endfunc

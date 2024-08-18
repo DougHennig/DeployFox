@@ -840,7 +840,8 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		calculate max(Order) to lnOrder
 		append blank
 		replace Order with lnOrder + Thisform.oEngine.TaskIncrement, ;
-			Task with 'SetVariable'
+			Task with 'SetVariable', ;
+			Active with .T.
 		Thisform.DisplayTask(.T.)
 		Thisform.cboTaskType.SetFocus()
 		
@@ -875,6 +876,15 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 			toMenu.AddBar(lcProject, lcCommand)
 		next loProject
 		dodefault(toMenu, tcObject)
+		
+	ENDPROC
+
+	PROCEDURE cmdOpenProject.showmenu
+		dodefault()
+		if vartype(This.oMenu) = 'O'
+			This.oMenu.Release()
+			This.oMenu = NULL
+		endif vartype(This.oMenu) = 'O'
 		
 	ENDPROC
 

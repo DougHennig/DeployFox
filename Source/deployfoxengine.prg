@@ -23,7 +23,6 @@ define class DeployFoxEngine as Custom
 			lcInnoCompiler, ;
 			lcSignEXE, ;
 			lcSignCommand, ;
-			lcInnoSignCommand, ;
 			loDecrypt, ;
 			lcKey, ;
 			lcName, ;
@@ -68,8 +67,8 @@ define class DeployFoxEngine as Custom
 
 			loRegistry     = newobject('VFPXRegistry', 'VFPXRegistry.vcx')
 			lcInnoCompiler = loRegistry.GetKey('InnoSetupScriptFile\Shell\Compile\Command', ;
-				'', '"C:\Program Files (x86)\Inno Setup 6\iscc.exe"', cnHKEY_CLASSES_ROOT)
-			lcInnoCompiler = strtran(lcInnoCompiler, '"%1"')
+				'', '', cnHKEY_CLASSES_ROOT)
+			lcInnoCompiler = strtran(strtran(lcInnoCompiler, ' /cc "%1"'), '"')
 
 * Set other settings values.
 
@@ -78,8 +77,6 @@ define class DeployFoxEngine as Custom
 				'/tr http://timestamp.digicert.com /td SHA256 ' + ;
 				'/f "{$CertPath}" ' + ;
 				'/p {$CertPassword}'
-*** TODO: what if name isn't Standard?
-			lcInnoSignCommand = [/sStandard={strtran($SignCommand, '"', '$q')} $p]
 
 * Create the DeployFoxSettings table.
 
@@ -88,8 +85,6 @@ define class DeployFoxEngine as Custom
 			insert into DeployFoxSettings values ('SignEXE',          lcSignEXE, ;
 				.F., 'C', .T.)
 			insert into DeployFoxSettings values ('SignCommand',      lcSignCommand, ;
-				.F., 'C', .T.)
-			insert into DeployFoxSettings values ('InnoSignCommand',  lcInnoSignCommand, ;
 				.F., 'C', .T.)
 			insert into DeployFoxSettings values ('BuildEXEWithInno', lcInnoCompiler, ;
 				.F., 'C', .T.)
@@ -130,7 +125,8 @@ define class DeployFoxEngine as Custom
 			endif Variable
 		endscan
 		use
-		This.oVariables.AddVariable('AppPath', This.cAppPath, .T.)
+		This.oVariables.AddVariable('AppPath',     This.cAppPath, .T.)
+		This.oVariables.AddVariable('ProjectPath', '',            .T.)
 
 * Get a task types cursor.
 
@@ -183,6 +179,7 @@ define class DeployFoxEngine as Custom
 				endif llOK
 				if llOK
 					This.cProjectFile = tcPath
+					SetVariable('ProjectPath', addbs(justpath(This.cProjectFile)))
 					select *, space(20) as Status ;
 						from (This.cProjectFile) ;
 						into cursor curProject readwrite
