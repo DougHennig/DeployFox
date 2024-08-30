@@ -49,8 +49,7 @@ with loDialog
 	.cTitleBarText = icase(not empty(tcTitleCaption), tcTitleCaption, ;
 		tlSave, 'Save', 'Open')
 	if not empty(tcFileName)
-		.cInitialDirectory = justpath(tcFileName)
-		.cFileName         = tcFileName
+		.cFileName = GetProperFileCase(fullpath(tcFileName))
 	endif not empty(tcFileName)
 	.lSaveDialog       = tlSave
 	.lOverwritePrompt  = .T.

@@ -4,6 +4,26 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
+### 2024-08-30
+
+* Added a Home Page link to the DeployFox dialog.
+
+* Added a Clone Task function.
+
+* Added a *Wait until done* setting to RunEXE and ExecutePSScript tasks.
+
+* Added a *Log file* setting to BuildSetupInno tasks.
+
+* Deleting tasks now renumbers other tasks.
+
+* Fixed an issue with ReadFromINI and WriteToINI tasks not displaying the selected section and item if the INI file doesn't exist.
+
+* Fixed an issue saving RunBat and ExecutePSScript tasks.
+
+* DeployFox now uses ISCC rather than COMPIL32 to build a setup with Inno Setup.
+
+* Implemented VFPX Framework 2024-08-30.
+
 ### 2024-08-18
 
 * Added the $ProjectPath built-in variable.

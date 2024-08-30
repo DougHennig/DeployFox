@@ -488,13 +488,13 @@ define class CreateFolder as TaskBase
 enddefine
 
 define class RunEXE as TaskBase
-	cSource     = ''
+	cSource        = ''
 		&& the EXE to run
-	cParameters = ''
+	cParameters    = ''
 		&& the parameters to pass to it
-	cWindowMode = 'HID'
+	cWindowMode    = 'HID'
 		&& the window mode
-*** TODO FUTURE: option to wait until done (the default) or not
+	lWaitUntilDone = .T.
 
 	function Execute
 		local lcSource, ;
@@ -519,7 +519,7 @@ define class RunEXE as TaskBase
 						'"' $ lcParameters, ' ' + lcParameters, ;
 						' "' + lcParameters + '"')
 				lcMessage = ExecuteCommand(lcCommand, justpath(fullpath(lcSource)), ;
-					iif(This.lDebugMode, 'NOR', 'HID'))
+					iif(This.lDebugMode, 'NOR', 'HID'), not This.lWaitUntilDone)
 				llResult  = empty(lcMessage)
 				if llResult
 					This.Log(Format('The command executed successfully\r\n\r\n{0}\r\n\r\n', lcCommand))
@@ -568,8 +568,9 @@ define class SignTool as RunEXE
 enddefine
 
 define class BuildSetupInno as RunEXE
-	cSource     = '{$BuildEXEWithInno}'
-	cScriptFile = ''
+	cSource        = '{$BuildEXEWithInno}'
+	cScriptFile    = ''
+	cResultLogFile = ''
 
 	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn
@@ -585,7 +586,9 @@ define class BuildSetupInno as RunEXE
 				This.Log(This.cErrorMessage)
 				llReturn = .F.
 			otherwise
-				This.cParameters = ' /cc "' + This.cScriptFile + '"'
+				This.cSource     = forcepath('iscc.exe', justpath(This.cSource))
+				This.cParameters = ' "' + This.cScriptFile + '"' + ;
+					iif(empty(This.cResultLogFile), '', ' > "' + This.cResultLogFile + '"')
 		endcase
 		return llReturn
 	endfunc
@@ -821,28 +824,26 @@ enddefine
 
 define class ExecutePSScript as RunExe
 	cSource     = 'cmd.exe'
-	cParameters = '/c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -File'
 	cScriptFile = ''
 
 	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn
 		llReturn = dodefault(tcSettings, tlNoExpandVariables)
 		if llReturn
-			This.cParameters = This.cParameters + ' "' + This.cScriptFile + '"'
+			This.cParameters = '/c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -File "' + This.cScriptFile + '"'
 		endif llReturn
 		return llReturn
 enddefine
 
 define class RunBat as RunExe
-	cSource     = 'cmd.exe'
-	cParameters = '/c'
-	cBatFile    = ''
+	cSource  = 'cmd.exe'
+	cBatFile = ''
 
 	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn
 		llReturn = dodefault(tcSettings, tlNoExpandVariables)
 		if llReturn
-			This.cParameters = This.cParameters + ' "' + This.cBatFile + '"'
+			This.cParameters = '/c "' + This.cBatFile + '"'
 		endif llReturn
 		return llReturn
 enddefine

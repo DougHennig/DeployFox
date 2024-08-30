@@ -20,6 +20,8 @@ The toolbar has the following functions:
 
 - ![](newtask.bmp): adds a task to the project. It's added as the next step but can be moved up to an earlier step.
 
+- ![](clone.bmp): clones the current task. This is useful if you need another task similar to the current one but with some differences.
+
 - ![](removetask.bmp): removes the selected task.
 
 - ![](up.bmp) and ![](down.bmp): moves the selected task up and down in the list and renumbers the steps accordingly.
@@ -46,7 +48,7 @@ The properties for the selected tasks displayed at the right are:
 
 - *Settings*: the settings for a task are specific to the task type and are discussed below.
 
-The status bar displays the path for the open project file and a color chart showing the colors used in the grid for the status of the tasks.
+The status bar displays the path for the open project file, a color chart showing the colors used in the grid for the status of the tasks, and a link that takes you to the DeployFox home page.
 
 ## Task types
 
@@ -85,13 +87,13 @@ Uploads a file. The settings are the server, username, and password to connect t
 Executes a PRG. The settings are the path for the PRG file and any parameters to pass to it. Put quotes around any string parameters.
 
 ### RunEXE
-Executes an EXE. The settings are the path for the PRG file, any parameters to pass to it, and the window mode (Normal, Hidden, Minimized, or Maximized). Put quotes around any parameters containing spaces or other illegal command line characters.
+Executes an EXE. The settings are the path for the PRG file, any parameters to pass to it, the window mode (Normal, Hidden, Minimized, or Maximized), and whether to wait until the EXE is done executing before continuing. Put quotes around any parameters containing spaces or other illegal command line characters.
 
 ### RunBAT
 Executes a Window batch (BAT) file. The settings are the path for the BAT file.
 
 ### ExecutePSScript
-Executes a PowerShell script (PS1) file. The settings are the path for the PS1 file.
+Executes a PowerShell script (PS1) file. The settings are the path for the PS1 file and whether to wait until the script is done executing before continuing.
 
 ### ExecuteScript
 Executes VFP code. The settings are the code to execute.
@@ -118,7 +120,7 @@ Builds an EXE from a VFP project. The settings are the path for the project, the
 Digitally signs a file. The settings are the path for the file to sign and the description to apply. This task uses SignTool.exe, which is included with DeployFox, and the settings stored in the Options dialog (discussed below).
 
 ### BuildSetupInno
-Builds a setup executable from an Inno Setup script file. The settings are the path for the script file. Inno Setup, which you can download from <a href="https://jrsoftware.org/isinfo.php" target="_blank">https://jrsoftware.org/isinfo.php</a>, must be installed.
+Builds a setup executable from an Inno Setup script file. The settings are the path for the script file and optionally a log file to output the build process to. Inno Setup, which you can download from <a href="https://jrsoftware.org/isinfo.php" target="_blank">https://jrsoftware.org/isinfo.php</a>, must be installed.
 
 ## Expressions and variables
 Most settings can either be a literal value (such as "C:\SomePath\SomeFile.png") or an expression. To distinguish them, an expression is surrounded with curly braces; for example, "{fullpath('SomeFile.png')}."
