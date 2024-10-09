@@ -4,6 +4,14 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
+### 2024-10-09
+
+* UploadFile and DownloadFile tasks no longer output the user name and password to the log file.
+
+* The log file is no longer opened in the background on Windows 10 machines (issue #2). Note: this is actually a change in OpenFile.prg, which is part of [VFPX Framework](https://github.com/VFPX/VFPXFramework). Thanks to Joel Leach for the fix.
+
+* FoxCryptoNG.prg was renamed to DeployFoxEncryption.prg to prevent conflict building projects that contained that program.
+
 ### 2024-08-30
 
 * Added a Home Page link to the DeployFox dialog.

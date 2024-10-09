@@ -1,0 +1,21 @@
+<?xml version = "1.0" encoding="Windows-1252" standalone="yes"?>
+<VFPData>
+	<packages>
+		<name>OOPMenu</name>
+		<version>1.0.8453</version>
+		<date>2024-01-30</date>
+		<refcount>1</refcount>
+	</packages>
+	<packages>
+		<name>Format</name>
+		<version>1.0.20231216</version>
+		<date>2024-01-30</date>
+		<refcount>1</refcount>
+	</packages>
+	<packages>
+		<name>VFPXFramework</name>
+		<version>1.0.20240130</version>
+		<date>2024-01-30</date>
+		<refcount>1</refcount>
+	</packages>
+</VFPData>

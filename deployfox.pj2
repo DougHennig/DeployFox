@@ -49,7 +49,6 @@ loProject = _VFP.Projects('deployfox.pjx')
 
 WITH loProject.FILES
 	.ADD('packages\format\format.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" User="" />
-	.ADD('packages\foxcryptong\foxcryptong.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('packages\oopmenu\copyxpsmall.bmp')		&& *< FileMetadata: Type="x" Cpid="0" Timestamp="0" ID="0" User="" />
 	.ADD('packages\oopmenu\copyxpsmall.msk')		&& *< FileMetadata: Type="x" Cpid="0" Timestamp="0" ID="0" User="" />
 	.ADD('packages\oopmenu\cutxpsmall.bmp')		&& *< FileMetadata: Type="x" Cpid="0" Timestamp="0" ID="0" User="" />
@@ -85,6 +84,7 @@ WITH loProject.FILES
 	.ADD('source\clone.msk')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\deployfox.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\deployfox.ico')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
+	.ADD('source\deployfoxencryption.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\deployfoxengine.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\deployfoxui.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\down.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />

@@ -174,7 +174,19 @@ Click the Settings button in the toolbar to display the DeployFox Settings dialo
 
 There are three settings related to digitally signing an EXE:
 
-- *Sign command*: the command used to sign an EXE. The default uses SignTool (the path to which is in the $SignEXE variable) to sign the EXE using the digital certificate specified in the PFX file setting.
+- *Sign command*: the command used to sign an EXE. The default uses SignTool (the path to which is in the $SignEXE variable) to sign the EXE using the digital certificate specified in the PFX file setting (stored in the $CertPath variable with $CertPassword containing the password).
+
+    ```
+    "{$SignEXE}" sign /fd SHA256 /tr http://timestamp.digicert.com
+        /td SHA256 /f "{$CertPath}" /p {$CertPassword}
+    ```
+
+    To specify a hardware key, change the command to:
+
+    ```
+    "{$SignEXE}" sign /fd SHA256 /tr http://timestamp.digicert.com
+        /td SHA256 /a
+    ```
 
 - *PFX file*: the path to the digital certificate.
 

@@ -6,4 +6,6 @@ declare integer ShellExecute in Shell32.dll ;
 	string lpParameters, ;
 	string lpDirectory, ;
 	long nShowCmd 
-ShellExecute(0, 'Open', tcFile, '', '', 0)
+declare integer FindWindow in Win32API ;
+	string cNull, string cWinName
+ShellExecute(FindWindow(0, _screen.Caption), 'Open', tcFile, '', '', 1)

@@ -1,3 +1,6 @@
+* Note: this was modified from foxCryptoNG (https://github.com/cwollenhaupt/foxCryptoNG)
+* to avoid issues with building an EXE that contains foxCryptoNG.
+
 *========================================================================================
 * Implements an easier to use interface to Microsoft's Cryptography Next Generation API.
 *
@@ -20,7 +23,7 @@
 * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
 * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *========================================================================================
-Define Class foxCryptoNG as Custom
+Define Class DeployFoxEncryption as Custom
 
 	*--------------------------------------------------------------------------------------
 	* Various constants used

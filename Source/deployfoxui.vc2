@@ -1051,11 +1051,11 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
 	*< OBJECTDATA: ObjPath="shpCert" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblCert" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblSignCommand" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblIncrement" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblCertPassword" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="txtCertPassword" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="oCertPath" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblIncrement" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblSignCommand" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdSave" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdCancel" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="spnIncrement" UniqueID="" Timestamp="" />
@@ -1203,7 +1203,7 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 			lcKey, ;
 			lcProperty, ;
 			lcValue
-		loDecrypt = newobject('foxCryptoNG', 'foxCryptoNG.prg')
+		loDecrypt = newobject('DeployFoxEncryption', 'DeployFoxEncryption.prg')
 		lcKey     = GetKey()
 		use (toEngine.cAppPath + 'DeployFoxSettings') again shared
 		scan
@@ -1237,7 +1237,7 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 			lcProperty, ;
 			luValue, ;
 			lcValue
-		loDecrypt = newobject('foxCryptoNG', 'foxCryptoNG.prg')
+		loDecrypt = newobject('DeployFoxEncryption', 'DeployFoxEncryption.prg')
 		lcKey     = GetKey()
 		scan
 			lcProperty = trim(Setting)

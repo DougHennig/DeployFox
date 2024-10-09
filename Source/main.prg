@@ -3,7 +3,6 @@
 lnStack = astackinfo(laStack)
 if justext(laStack[lnStack, 2]) <> 'app'
 	set path to 'Source,' + ;
-		'Packages\FoxCryptoNG,' + ;
 		'Packages\Format,' + ;
 		'Packages\VFPXFramework,' + ;
 		'Packages\OOPMenu' ;

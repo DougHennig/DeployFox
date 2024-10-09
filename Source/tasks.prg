@@ -14,14 +14,14 @@ define class TaskBase as Session
 	lDebugMode    = .F.
 		&& .T. to run in debug mode
 	oEncrypt      = .NULL.
-		&& a reference to a FoxCryptoNG object
+		&& a reference to a DeployFoxEncryption object
 	oVariables    = .NULL.
 		&& a reference to an object containing variables
 *** Note: when new properties are added, include them in INLIST statement in SaveSettings
 
 	function Init(toVariables)
 		This.oVariables = toVariables
-		This.oEncrypt   = newobject('foxCryptoNG', 'foxCryptoNG.prg')
+		This.oEncrypt   = newobject('DeployFoxEncryption', 'DeployFoxEncryption.prg')
 	endfunc
 
 * Get the settings from XML.
@@ -723,9 +723,8 @@ define class DownloadFile as UploadDownload
 		llResult = loInternet.DownloadFile(This.cRemoteFile, This.cLocalFile, This.cServer, ;
 			This.cUserName, This.cPassword)
 		if llResult
-			This.Log(Format('{0} was downloaded from {1} at {2} using {3} as ' + ;
-				'the user name and {4} as the password', This.cLocalFile, This.cRemoteFile, ;
-				This.cServer, This.cUserName, This.cPassword), .T.)
+			This.Log(Format('{0} was downloaded from {1} at {2}', This.cLocalFile, This.cRemoteFile, ;
+				This.cServer), .T.)
 		else
 			This.cErrorMessage = Format('{0} was not downloaded: {1}', This.cRemoteFile, ;
 				loInternet.cErrorMessage)
@@ -744,9 +743,8 @@ define class UploadFile as UploadDownload
 		llResult = loInternet.UploadFile(This.cRemoteFile, This.cLocalFile, This.cServer, ;
 			This.cUserName, This.cPassword)
 		if llResult
-			This.Log(Format('{0} was uploaded to {1} at {2} using {3} as ' + ;
-				'the user name and {4} as the password', This.cLocalFile, This.cRemoteFile, ;
-				This.cServer, This.cUserName, This.cPassword), .T.)
+			This.Log(Format('{0} was uploaded to {1} at {2}', This.cLocalFile, This.cRemoteFile, ;
+				This.cServer), .T.)
 		else
 			This.cErrorMessage = Format('{0} was not uploaded: {1}', This.cLocalFile, ;
 				loInternet.cErrorMessage)

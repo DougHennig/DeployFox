@@ -98,7 +98,7 @@ define class DeployFoxEngine as Custom
 
 * Create a decryption object and get the key to use.
 
-		loDecrypt = newobject('foxCryptoNG', 'foxCryptoNG.prg')
+		loDecrypt = newobject('DeployFoxEncryption', 'DeployFoxEncryption.prg')
 		lcKey     = GetKey()
 
 * Get the settings from the DeployFoxSettings table.
