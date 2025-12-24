@@ -1,5 +1,7 @@
 # DeployFox
 
+[![ChangeLog](https://img.shields.io/github/last-commit/DougHennig/DeployFox?path=ChangeLog.md&label=Latest%20Release)](ChangeLog.md)
+
 Tracy Pearson did a presentation at Southwest Fox 2019 titled "[VFP DevOps: Implementing an Automated Build for a Complex Release of a Vertical Market Application](https://swfox.net/2019/SessionsSWFOX.aspx#DevOps_Implementing_an_Automated_Build)" that explains in detail the benefits of automating deployment.
 
 Until recently, I used a Microsoft Excel document with a long list of tasks as a checklist for application deployment. These tasks were almost all manual. I've always wanted to automate deployment as much as possible, so I created DeployFox. DeployFox automates the steps required to deploy your applications by providing a customizable list of tasks: copy files, rename files, build a project into an EXE, digitally sign an EXE, run an Inno Setup script to create an installer, upload files to an FTP site, and so on. Now I mostly just open a DeployFox project and run it to deploy an application, saving me lots of time and making an error-free process.

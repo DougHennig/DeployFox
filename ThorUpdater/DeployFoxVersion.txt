@@ -3,8 +3,8 @@ lparameters toUpdateObject
 * Set the properties of the passed updater object.
 
 with toUpdateObject
-	.VersionNumber    = '1.0 - 20241009'
-	.AvailableVersion = 'DeployFox-1.0-update-20241009'
+	.VersionNumber    = '1.0 - 20251224'
+	.AvailableVersion = 'DeployFox-1.0-update-20251224'
 	.Notes            = GetNotes()
 	.RegisterWithThor = GetRegisterWithThor()
 endwith
@@ -20,6 +20,14 @@ text to lcNotes noshow
 DeployFox automates the steps required to deploy your applications by providing a customizable list of tasks: copy files, rename files, build a project into an EXE, digitally sign an EXE, run an Inno Setup script to create an installer, upload files to an FTP site, and so on.
 
 ## Releases
+
+### 2025-12-24
+
+* Issues with cloning a task were fixed.
+
+* When a new project is created, the first task is active by default.
+
+* The status bar now displays long paths properly and displays the correct path when opening a project that's a clone of another.
 
 ### 2024-10-09
 
@@ -122,4 +130,4 @@ endwith
 endproc &&GetRegisterWithThor
 
 
-*created by VFPX Deployment, 10/09/2024 8:31:57 AM
+*created by VFPX Deployment, 12/24/2025 11:00:58 AM

@@ -4,6 +4,14 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
+### 2025-12-24
+
+* Issues with cloning a task were fixed.
+
+* When a new project is created, the first task is active by default.
+
+* The status bar now displays long paths properly and displays the correct path when opening a project that's a clone of another.
+
 ### 2024-10-09
 
 * UploadFile and DownloadFile tasks no longer output the user name and password to the log file.

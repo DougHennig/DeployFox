@@ -602,7 +602,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		if llOpened
 			This.grdTasks.RecordSource = 'curProject'
 			This.SetupGrid()
-			This.DisplayTask()
+			This.DisplayTask(.F., .T.)
 		else
 			messagebox(This.oEngine.cErrorMessage, MB_ICONSTOP, 'DeployFox')
 		endif llOpened
@@ -751,9 +751,10 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		scatter memo name loRecord
 		calculate max(Order) to lnOrder
 		loRecord.Order = lnOrder + Thisform.oEngine.TaskIncrement
+		loRecord.ID    = ''
 		insert into curProject from name loRecord
 		Thisform.grdTasks.Refresh()
-		Thisform.DisplayTask(.T.)
+		Thisform.DisplayTask()
 		Thisform.cboTaskType.SetFocus()
 		
 	ENDPROC
@@ -1032,9 +1033,21 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	ENDPROC
 
 	PROCEDURE lblProject.Refresh
-		This.Caption = iif(empty(Thisform.oEngine.cProjectFile), '', ;
-			'Project: ' + strtran(Thisform.oEngine.cProjectFile, '.dbf', '', -1, -1, 1))
-		
+		local lcProject, ;
+			loMeasure, ;
+			lnWidth
+		if empty(Thisform.oEngine.cProjectFile)
+			This.Caption = ''
+		else
+			lcProject = Thisform.oEngine.cProjectFile
+			loMeasure = newobject('SFGDIMeasureString', 'SFGDIMeasureString.prg')
+			lnWidth   = loMeasure.GetWidth(lcProject, This.FontName, This.FontSize)
+			if This.Left + lnWidth >= Thisform.shpIncomplete.Left - 10
+				lcProject = displaypath(Thisform.oEngine.cProjectFile, 80)
+			endif This.Left + lnWidth >= Thisform.shpIncomplete.Left - 10
+			This.Caption = 'Project: ' + lcProject
+		endif empty(Thisform.oEngine.cProjectFile)
+		 
 	ENDPROC
 
 	PROCEDURE txtName.InteractiveChange

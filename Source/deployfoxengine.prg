@@ -212,7 +212,7 @@ define class DeployFoxEngine as Custom
 
 	function NewProject(tcPath)
 		This.CreateProject(tcPath)
-		insert into (tcPath) (Order) values (1)
+		insert into (tcPath) (Order, Active) values (1, .T.)
 		use
 	endfunc
 
