@@ -4,6 +4,10 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
+### 2026-01-08
+
+* Added a checkbox to toggle all tasks Active/Inactive to easily allow the user to run just a few selected tasks.
+
 ### 2025-12-24
 
 * Issues with cloning a task were fixed.

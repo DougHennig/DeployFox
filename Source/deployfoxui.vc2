@@ -50,6 +50,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	*< OBJECTDATA: ObjPath="lblOrder" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblHomePage" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdCloneTask" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdToggleAllActive" UniqueID="" Timestamp="" />
 
 	#INCLUDE "deployfox.h"
 	*<DefinedPropArrayMethod>
@@ -238,6 +239,20 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		TabIndex = 10, ;
 		ToolTipText = "Options", ;
 		Top = 10
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdToggleAllActive' AS vfpxbasetoolbarbutton WITH ;
+		BackColor = 255,255,255, ;
+		Caption = "", ;
+		DisabledBackColor = 255,255,255, ;
+		Height = 24, ;
+		Left = 400, ;
+		Name = "cmdToggleAllActive", ;
+		Picture = ..\doc\toggle.jpg, ;
+		TabIndex = 11, ;
+		ToolTipText = "Toggle all active flags", ;
+		Top = 10, ;
+		Width = 24
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdUp' AS vfpxbasetoolbarbutton WITH ;
@@ -986,6 +1001,53 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		local loForm
 		loForm = newobject('DeployFoxSettings', 'DeployFoxUI.vcx', '', Thisform.oEngine)
 		loForm.Show()
+		
+	ENDPROC
+
+	PROCEDURE cmdToggleAllActive.Click
+		local lnRecno, ;
+			llAllActive, ;
+			llNewValue
+		select curProject
+		lnRecno = recno()
+		
+		* Check if all tasks are active
+		llAllActive = .T.
+		scan
+			if not Active
+				llAllActive = .F.
+				exit
+			endif not Active
+		endscan
+		
+		* Toggle: if all are active, set all to false; otherwise set all to true
+		llNewValue = not llAllActive
+		
+		* Update all records
+		scan
+			replace Active with llNewValue
+			Thisform.UpdateProject()
+		endscan
+		
+		* Restore record position
+		if between(lnRecno, 1, reccount())
+			go lnRecno
+		endif between(lnRecno, 1, reccount())
+		
+		Thisform.grdTasks.Refresh()
+		Thisform.Refresh()
+		
+		
+	ENDPROC
+
+	PROCEDURE cmdToggleAllActive.Refresh
+		select count(*) as Cnt ;
+			from curProject ;
+			into cursor curTasks
+		This.Enabled = not empty(Thisform.oEngine.cProjectFile) and curTasks.Cnt > 0
+		use in curTasks
+		select curProject
+		
 		
 	ENDPROC
 
