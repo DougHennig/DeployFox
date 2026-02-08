@@ -4,6 +4,12 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
+### 2026-02-08
+
+* DeployFox now supports newer digital certificates stored on a physical device rather than a PFX file. You also need to change your Digital Signing Command setting in the Settings dialog and remove the /F and /P parameters if they exist.
+
+* Toggle.jpg was moved from the Doc folder to the Source folder.
+
 ### 2026-01-08
 
 * Added a checkbox to toggle all tasks Active/Inactive to easily allow the user to run just a few selected tasks.

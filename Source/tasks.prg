@@ -519,7 +519,7 @@ define class RunEXE as TaskBase
 						'"' $ lcParameters, ' ' + lcParameters, ;
 						' "' + lcParameters + '"')
 				lcMessage = ExecuteCommand(lcCommand, justpath(fullpath(lcSource)), ;
-					iif(This.lDebugMode, 'NOR', 'HID'), not This.lWaitUntilDone)
+					iif(This.lDebugMode, 'NOR', This.cWindowMode), not This.lWaitUntilDone)
 				llResult  = empty(lcMessage)
 				if llResult
 					This.Log(Format('The command executed successfully\r\n\r\n{0}\r\n\r\n', lcCommand))
@@ -538,6 +538,9 @@ define class SignTool as RunEXE
 		&& the description for the EXE
 	cTarget      = ''
 		&& the EXE to sign
+	cWindowMode    = 'NOR'
+		&& the window mode must be NOR or else the dialog asking for the certificate
+		&& password won't appear
 
 	function GetSettings(tcSettings, tlNoExpandVariables)
 		local llReturn, ;

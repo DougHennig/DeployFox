@@ -3,8 +3,8 @@ lparameters toUpdateObject
 * Set the properties of the passed updater object.
 
 with toUpdateObject
-	.VersionNumber    = '1.0 - 20251224'
-	.AvailableVersion = 'DeployFox-1.0-update-20251224'
+	.VersionNumber    = '1.0 - 20260208'
+	.AvailableVersion = 'DeployFox-1.0-update-20260208'
 	.Notes            = GetNotes()
 	.RegisterWithThor = GetRegisterWithThor()
 endwith
@@ -20,6 +20,16 @@ text to lcNotes noshow
 DeployFox automates the steps required to deploy your applications by providing a customizable list of tasks: copy files, rename files, build a project into an EXE, digitally sign an EXE, run an Inno Setup script to create an installer, upload files to an FTP site, and so on.
 
 ## Releases
+
+### 2026-02-08
+
+* DeployFox now supports newer digital certificates stored on a physical device rather than a PFX file. You also need to change your Digital Signing Command setting in the Settings dialog and remove the /F and /P parameters if they exist.
+
+* Toggle.jpg was moved from the Doc folder to the Source folder.
+
+### 2026-01-08
+
+* Added a checkbox to toggle all tasks Active/Inactive to easily allow the user to run just a few selected tasks.
 
 ### 2025-12-24
 
@@ -130,4 +140,4 @@ endwith
 endproc &&GetRegisterWithThor
 
 
-*created by VFPX Deployment, 12/24/2025 11:00:58 AM
+*created by VFPX Deployment, 02/08/2026 2:19:55 PM

@@ -248,7 +248,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Height = 24, ;
 		Left = 400, ;
 		Name = "cmdToggleAllActive", ;
-		Picture = ..\doc\toggle.jpg, ;
+		Picture = toggle.jpg, ;
 		TabIndex = 11, ;
 		ToolTipText = "Toggle all active flags", ;
 		Top = 10, ;
@@ -1124,13 +1124,8 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
  	*< CLASSDATA: Baseclass="form" Timestamp="" Scale="Pixels" Uniqueid="" />
 
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
-	*< OBJECTDATA: ObjPath="shpCert" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblCert" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblSignCommand" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="lblIncrement" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="lblCertPassword" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="txtCertPassword" UniqueID="" Timestamp="" />
-	*< OBJECTDATA: ObjPath="oCertPath" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdSave" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdCancel" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="spnIncrement" UniqueID="" Timestamp="" />
@@ -1138,15 +1133,14 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 
 	*<PropValue>
 		BindControls = .F.
+		BorderStyle = 2
 		Caption = "DeployFox Settings"
 		DataSession = 2
 		DoCreate = .T.
-		Height = 249
+		Height = 160
 		Icon = options.ico
-		MinHeight = 249
-		MinWidth = 300
 		Name = "deployfoxsettings"
-		Width = 382
+		Width = 380
 		WindowType = 1
 	*</PropValue>
 
@@ -1156,7 +1150,7 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 		Left = 191, ;
 		Name = "cmdCancel", ;
 		TabIndex = 10, ;
-		Top = 215
+		Top = 125
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdSave' AS vfpxbasecommandbutton WITH ;
@@ -1164,88 +1158,38 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 		Left = 106, ;
 		Name = "cmdSave", ;
 		TabIndex = 9, ;
-		Top = 215
+		Top = 125
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'edtSignCommand' AS vfpxbaseeditbox WITH ;
 		ControlSource = "Thisform.SignCommand", ;
 		Height = 53, ;
-		Left = 110, ;
+		Left = 10, ;
 		Name = "edtSignCommand", ;
 		TabIndex = 3, ;
 		ToolTipText = "The command to sign an EXE; stored in $SignCommand", ;
-		Top = 34, ;
-		Width = 255
+		Top = 30, ;
+		Width = 360
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
-
-	ADD OBJECT 'lblCert' AS vfpxbaselabel WITH ;
-		BackStyle = 1, ;
-		Caption = " Digital Signing ", ;
-		Left = 20, ;
-		Name = "lblCert", ;
-		Style = 3, ;
-		TabIndex = 1, ;
-		Top = 10, ;
-		ZOrderSet = 1
-		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'lblCertPassword' AS vfpxbaselabel WITH ;
-		Caption = "Password", ;
-		Left = 20, ;
-		Name = "lblCertPassword", ;
-		TabIndex = 5, ;
-		ToolTipText = "The password for the PFX file; stored in $CertPassword", ;
-		Top = 122, ;
-		ZOrderSet = 2
-		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblIncrement' AS vfpxbaselabel WITH ;
 		Caption = "Task increment", ;
 		Left = 10, ;
 		Name = "lblIncrement", ;
 		TabIndex = 7, ;
-		Top = 173, ;
+		Top = 96, ;
 		ZOrderSet = 2
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblSignCommand' AS vfpxbaselabel WITH ;
-		Caption = "Sign command", ;
-		Left = 20, ;
+		Caption = "Digitial signing command", ;
+		Left = 10, ;
 		Name = "lblSignCommand", ;
 		TabIndex = 2, ;
 		ToolTipText = "The command to sign an EXE; stored in $SignCommand", ;
-		Top = 35, ;
+		Top = 10, ;
 		ZOrderSet = 2
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
-
-	ADD OBJECT 'oCertPath' AS vfpxfile WITH ;
-		ccontrolsource = Thisform.CertPath, ;
-		Left = 20, ;
-		Name = "oCertPath", ;
-		TabIndex = 4, ;
-		ToolTipText = "The location of the PFX file to use; stored in $CertPath", ;
-		Top = 91, ;
-		ZOrderSet = 4, ;
-		lblFile.Caption = "PFX file", ;
-		lblFile.Name = "lblFile", ;
-		txtFile.Height = 23, ;
-		txtFile.Left = 90, ;
-		txtFile.Name = "txtFile", ;
-		txtFile.Top = 0, ;
-		txtFile.Width = 230, ;
-		cmdGetFile.Left = 320, ;
-		cmdGetFile.Name = "cmdGetFile"
-		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxfilectrls.vcx" BaseClass="container" />
-
-	ADD OBJECT 'shpCert' AS vfpxbaseshape WITH ;
-		Anchor = 15, ;
-		Height = 142, ;
-		Left = 10, ;
-		Name = "shpCert", ;
-		Top = 18, ;
-		Width = 365, ;
-		ZOrderSet = 0
-		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="shape" />
 
 	ADD OBJECT 'spnIncrement' AS vfpxbasespinner WITH ;
 		ControlSource = "Thisform.TaskIncrement", ;
@@ -1256,21 +1200,8 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 		SpinnerHighValue = 100.00, ;
 		SpinnerLowValue =   1.00, ;
 		TabIndex = 8, ;
-		Top = 169
+		Top = 92
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="spinner" />
-
-	ADD OBJECT 'txtCertPassword' AS vfpxbasetextbox WITH ;
-		ControlSource = "Thisform.CertPassword", ;
-		Height = 23, ;
-		Left = 110, ;
-		Name = "txtCertPassword", ;
-		PasswordChar = "*", ;
-		TabIndex = 6, ;
-		ToolTipText = "The password for the PFX file; stored in $CertPassword", ;
-		Top = 117, ;
-		Width = 255, ;
-		ZOrderSet = 3
-		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
 	
 	PROCEDURE Init
 		lparameters toEngine

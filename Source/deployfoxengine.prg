@@ -74,9 +74,7 @@ define class DeployFoxEngine as Custom
 
 			lcSignEXE     = '{$AppPath}signtool.exe'
 			lcSignCommand = '"{$SignEXE}" sign /fd SHA256 ' + ;
-				'/tr http://timestamp.digicert.com /td SHA256 ' + ;
-				'/f "{$CertPath}" ' + ;
-				'/p {$CertPassword}'
+				'/tr http://timestamp.digicert.com /td SHA256'
 
 * Create the DeployFoxSettings table.
 
@@ -87,10 +85,6 @@ define class DeployFoxEngine as Custom
 			insert into DeployFoxSettings values ('SignCommand',      lcSignCommand, ;
 				.F., 'C', .T.)
 			insert into DeployFoxSettings values ('BuildEXEWithInno', lcInnoCompiler, ;
-				.F., 'C', .T.)
-			insert into DeployFoxSettings values ('CertPassword',     '', ;
-				.T., 'C', .T.)
-			insert into DeployFoxSettings values ('CertPath',         '', ;
 				.F., 'C', .T.)
 			insert into DeployFoxSettings values ('TaskIncrement',    '1', ;
 				.F., 'I', .F.)
