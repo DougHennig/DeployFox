@@ -4,6 +4,10 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
+### 2026-06-19
+
+* Fixed "File 'system.prg' does not exist" error (issue #6).
+
 ### 2026-02-08
 
 * DeployFox now supports newer digital certificates stored on a physical device rather than a PFX file. You also need to change your Digital Signing Command setting in the Settings dialog and remove the /F and /P parameters if they exist.
