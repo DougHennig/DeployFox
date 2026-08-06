@@ -1536,6 +1536,10 @@ DEFINE CLASS deployfoxtemplate AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 			order by Order ;
 			into array This.lstProject.aItems
 		This.lstProject.Requery()
+		if _tally = 0
+			dimension This.lstProject.aItems[1, 3]
+			This.lstProject.aItems[1, 1] = ''
+		endif _tally = 0
 		
 		* Get the tasks from the template that aren't in the project.
 		
@@ -1553,8 +1557,13 @@ DEFINE CLASS deployfoxtemplate AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 				lnItems = lnItems - 1
 			endif lnPos > 0
 		next lnI
-		dimension laItems(lnItems, 3)
-		acopy(laItems, This.lstTemplate.aItems)
+		if lnItems > 0
+			dimension laItems[lnItems, 3]
+			acopy(laItems, This.lstTemplate.aItems)
+		else
+			dimension This.lstTemplate.aItems[1, 3]
+			This.lstTemplate.aItems[1, 1] = ''
+		endif lnItems > 0
 		This.lstTemplate.Requery()
 		This.lstTemplate.ListIndex = 1
 		This.lstProject.ListIndex = 1

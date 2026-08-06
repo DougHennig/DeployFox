@@ -21,7 +21,7 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
-### WHEN
+### 2026-08-06
 
 * You can now add tasks from another DeployFox project, which acts as a template, allowing you to create multiple projects with similar tasks and edit them in one place.
 
@@ -158,4 +158,4 @@ endwith
 endproc &&GetRegisterWithThor
 
 
-*created by VFPX Deployment, 08/06/2026 12:13:53 PM
+*created by VFPX Deployment, 08/06/2026 12:51:18 PM
