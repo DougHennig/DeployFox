@@ -156,6 +156,26 @@ define class DeployFoxEngine as Custom
 			endtry
 			if used('ProjectFile')
 
+* Add a Source column if it's missing.
+
+				if type('ProjectFile.Source') <> 'C'
+					use in ProjectFile
+					try
+						use (tcPath) alias ProjectFile exclusive in 0
+					catch to loException
+						This.cErrorMessage = 'Error opening ' + tcPath + ' exclusively: ' + ;
+							loException.Message
+					endtry
+					if used('ProjectFile')
+						alter table ProjectFile ;
+							add column Source C(240)
+						use in ProjectFile
+						use (tcPath) alias ProjectFile in 0
+					else
+						return .F.
+					endif used('ProjectFile')
+				endif type('ProjectFile.Source') <> 'C'
+
 * Ensure it's a valid project file.
 
 				This.CreateProject('curTestStructure', .T.)
@@ -179,6 +199,35 @@ define class DeployFoxEngine as Custom
 						into cursor curProject readwrite
 					index on Order tag Order
 
+* Handle template tasks.
+
+					select Source ;
+						from curProject ;
+						where not empty(Source) ;
+						group by Source ;
+						into cursor curSource
+					scan
+						lcSource = trim(Source)
+						use (lcSource) alias Source again shared in 0
+						select curProject
+						scan for Source = curSource.Source
+							select Source
+							locate for ID = curProject.ID
+							scatter memo name loSource
+							select curProject
+							replace Task with loSource.Task, ;
+									Name with loSource.Name, ;
+									Incomplete with loSource.Incomplete, ;
+									AlwaysRun with loSource.AlwaysRun, ;
+									Settings with loSource.Settings, ;
+									Comments with loSource.Comments ;
+								in curProject
+						endscan for Source = curSource.Source
+						use in Source
+					endscan for not empty(Source)
+					use
+					go top in curProject
+
 * Erase the log file for the project.
 
 					This.cLogFile = forcepath('DeployFoxLog.txt', justpath(tcPath))
@@ -199,6 +248,7 @@ define class DeployFoxEngine as Custom
 		else
 			This.cErrorMessage = tcPath + ' does not exist.'
 		endif file(tcPath)
+		use in curTestStructure
 		return llReturn
 	endfunc
 
@@ -216,7 +266,7 @@ define class DeployFoxEngine as Custom
 		text to lcCommand noshow textmerge pretext 2
 		create <<iif(tlCursor, 'cursor', 'table')>> (tcPath) (ID C(10), 
 			Order I, Task C(20), Name C(80), Active L, Incomplete L,
-			AlwaysRun L, Settings M, Comments M)
+			AlwaysRun L, Settings M, Comments M, Source C(240))
 		endtext
 		lcCommand = chrtran(lcCommand, ccCRLF, '')
 		&lcCommand
@@ -262,6 +312,7 @@ define class DeployFoxEngine as Custom
 				taArray[lnVariables] = loVariable.Name
 			endif tlIncludeBuiltIn ....,
 		next lnI
+		asort(taArray)
 		select (lnSelect)
 		return lnVariables
 	endfunc
@@ -374,7 +425,8 @@ enddefine
 
 define class DeployFoxVariables as Collection
 	function AddVariable(tcName, tuValue, tlBuiltIn)
-		local loVariable
+		local lcName, ;
+			loVariable
 		lcName = upper(tcName)
 		if This.GetKey(lcName) = 0
 			loVariable = newobject('DeployFoxVariable', 'DeployFoxEngine.prg')
@@ -382,7 +434,11 @@ define class DeployFoxVariables as Collection
 			loVariable.Value   = tuValue
 			loVariable.BuiltIn = tlBuiltIn
 			This.Add(loVariable, lcName)
+		else
+			loVariable       = This.Item(tcName)
+			loVariable.Value = tuValue
 		endif This.GetKey(lcName) = 0
+		return loVariable
 	endfunc
 
 * Case-insensitive Item method (keys are upper-cased).

@@ -9,6 +9,14 @@ if justext(laStack[lnStack, 2]) <> 'app'
 		additive
 endif justext(laStack[lnStack, 2]) <> 'app'
 
+* Run System.app so things using GDI+ have access to it.
+
+if file('System.app')
+	do System.app
+else
+	do (addbs(justpath(sys(16))) + 'System.app')
+endif file('System.app')
+
 * Create and display the DeployFoxForm form.
 
 public poDeployFoxForm

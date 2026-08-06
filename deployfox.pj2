@@ -80,6 +80,8 @@ WITH loProject.FILES
 	.ADD('packages\vfpxframework\vfpxregistry.vcx')		&& *< FileMetadata: Type="V" Cpid="0" Timestamp="0" ID="0" User="" />
 	.ADD('packages\vfpxframework\vfpxzip.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('packages\vfpxframework\writeini.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" User="" />
+	.ADD('source\add.png')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
+	.ADD('source\addall.png')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\clone.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\clone.msk')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\deployfox.h')		&& *< FileMetadata: Type="T" Cpid="1252" Timestamp="0" ID="0" User="" />
@@ -99,6 +101,8 @@ WITH loProject.FILES
 	.ADD('source\openproject.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\options.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\options.ico')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
+	.ADD('source\remove.png')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
+	.ADD('source\removeall.png')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\removetask.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\run.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\run.msk')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
@@ -107,7 +111,8 @@ WITH loProject.FILES
 	.ADD('source\tasks.prg')		&& *< FileMetadata: Type="P" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\tasktypes.dbf')		&& *< FileMetadata: Type="D" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\taskui.vcx')		&& *< FileMetadata: Type="V" Cpid="1252" Timestamp="0" ID="0" User="" />
-	.ADD('source\toggle.jpg')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
+	.ADD('source\template.png')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
+	.ADD('source\toggle.png')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	.ADD('source\up.bmp')		&& *< FileMetadata: Type="x" Cpid="1252" Timestamp="0" ID="0" User="" />
 	*</BuildProj>
 

@@ -26,7 +26,11 @@ The toolbar has the following functions:
 
 - ![](up.bmp) and ![](down.bmp): moves the selected task up and down in the list and renumbers the steps accordingly.
 
+- ![](template.png): allows you to select an existing DeployFox project and use it as a template by selecting which tasks to use in this project. Tasks from a template cannot be edited except for the Active and Order settings.
+
 - ![](options.bmp): displays the Settings dialog.
+
+- ![](toggle.png): toggles the Active setting for all tasks.
 
 The list of tasks shows the order (step number), task name, task type, whether it's active, and the status of the last run (success or failure). You can make a task active or inactive by clicking the checkbox in the grid or in the properties for the selected task at the right (in the latter case, you have to click Save to save the change).
 
@@ -99,13 +103,13 @@ Executes a PowerShell script (PS1) file. The settings are the path for the PS1 f
 Executes VFP code. The settings are the code to execute.
 
 ### ReadFromINI
-Reads a value from an INI file into a variable. The settings are the path of the INI file, the section and item to read from, and the name of the variable to store the value to.
+Reads a value from an INI file into a variable. The settings are the path of the INI file, the section and item to read from, and the name of the variable to store the value to. If the variable doesn't exist, it's created.
 
 ### WriteToINI
 Writes a value to an INI file. The settings are the path of the INI file, the section and item to write to, and the value to write.
 
 ### ReadFromRegistry
-Reads a value from the Windows Registry into a variable. The settings are the hive (such as HKEY_CURRENT_USER), key, and setting of the Registry entry and the name of the variable to store the value to.
+Reads a value from the Windows Registry into a variable. The settings are the hive (such as HKEY_CURRENT_USER), key, and setting of the Registry entry and the name of the variable to store the value to. If the variable doesn't exist, it's created.
 
 ### WriteToRegistry
 Writes a value to the Windows Registry. The settings are the hive (such as HKEY_CURRENT_USER), key, and setting of the Registry entry, the value to write, and the value type (String, String with Unexpanded Environment Variables, and 32-bit Number)
@@ -125,7 +129,7 @@ Builds a setup executable from an Inno Setup script file. The settings are the p
 ## Expressions and variables
 Most settings can either be a literal value (such as "C:\SomePath\SomeFile.png") or an expression. To distinguish them, an expression is surrounded with curly braces; for example, "{fullpath('SomeFile.png')}."
 
-DeployFox also allows you to define variables using a SetVariable task or the SetVariable function in a script executed with an ExecuteScript task. For example, if your DeployFox project has several tasks to upload files, you likely don't want to hard-code the server, username, and password in every task, so you can define variables to contain those values and then use the variables in the tasks. Here are three tasks that define such variables:
+DeployFox also allows you to define variables using a SetVariable task or the SetVariable function in a script executed with an ExecuteScript task. ReadFromINI and ReadFromRegistry tasks also create variables if they don't exist. For example, if your DeployFox project has several tasks to upload files, you likely don't want to hard-code the server, username, and password in every task, so you can define variables to contain those values and then use the variables in the tasks. Here are three tasks that define such variables:
 
 |Task Name       |Variable Name |Value      |Encrypted|
 |----------------|--------------|-----------|--------|
@@ -149,17 +153,13 @@ This task uses the FormerVersion variable to upload the former version of an ins
  
 ![](formerversion.png)
 
-Typically, you'll turn on Always run when single-stepping for tasks that assign values to variables so those variables exist and contain values when tasks that depend on them are run.
+Typically, you'll turn on *Always run when single-stepping* for tasks that assign values to variables so those variables exist and contain values when tasks that depend on them are run.
 
 There are several built-in variables:
 
 - $AppPath: the DeployFox folder (including trailing backslash).
 
 - $BuildEXEWithInno: the command line to build a setup executable using Inno Setup.
-
-- $CertPath: the path to the digital certificate (comes from the *PFX file* setting; see the next section).
-
-- $CertPassword: the password for the digital certificate used to sign an EXE (comes from the *Password* setting; see the next section).
 
 - $ProjectPath: the folder for the open project (including trailing backslash).
 
@@ -172,26 +172,11 @@ Click the Settings button in the toolbar to display the DeployFox Settings dialo
 
 ![](settings.png)
 
-There are three settings related to digitally signing an EXE:
-
-- *Sign command*: the command used to sign an EXE. The default uses SignTool (the path to which is in the $SignEXE variable) to sign the EXE using the digital certificate specified in the PFX file setting (stored in the $CertPath variable with $CertPassword containing the password).
-
-    ```
-    "{$SignEXE}" sign /fd SHA256 /tr http://timestamp.digicert.com
-        /td SHA256 /f "{$CertPath}" /p {$CertPassword}
-    ```
-
-    To specify a hardware key, change the command to:
+*Digital signing command* is the command used to sign an EXE. The default uses SignTool (the path to which is in the $SignEXE variable) to sign the EXE using the digital certificate stored on a hardware key:
 
     ```
     "{$SignEXE}" sign /fd SHA256 /tr http://timestamp.digicert.com
         /td SHA256 /a
     ```
-
-- *PFX file*: the path to the digital certificate.
-
-- *Password*: the password for the digital certificate.
-
-Note: the mechanism used for digital signing requires a local PFX file and currently doesn’t support the new mechanism that uses a dongle.
 
 *Task increment* specifies how much to increment or decrement a task order by when you click the up and down buttons.

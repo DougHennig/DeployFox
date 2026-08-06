@@ -51,6 +51,9 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	*< OBJECTDATA: ObjPath="lblHomePage" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdCloneTask" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="cmdToggleAllActive" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="shpTemplate" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblTemplate" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdTemplate" UniqueID="" Timestamp="" />
 
 	#INCLUDE "deployfox.h"
 	*<DefinedPropArrayMethod>
@@ -105,7 +108,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 760, ;
 		lrequeryoninit = .F., ;
 		Name = "cboTaskType", ;
-		TabIndex = 12, ;
+		TabIndex = 15, ;
 		Top = 45, ;
 		Width = 209
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="combobox" />
@@ -116,7 +119,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		ControlSource = "curProject.Active", ;
 		Left = 695, ;
 		Name = "chkActive", ;
-		TabIndex = 16, ;
+		TabIndex = 19, ;
 		Top = 105
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
@@ -126,7 +129,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		ControlSource = "curProject.AlwaysRun", ;
 		Left = 870, ;
 		Name = "chkAlwaysRun", ;
-		TabIndex = 18, ;
+		TabIndex = 21, ;
 		Top = 105
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
@@ -136,7 +139,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		ControlSource = "curProject.Incomplete", ;
 		Left = 777, ;
 		Name = "chkIncomplete", ;
-		TabIndex = 17, ;
+		TabIndex = 20, ;
 		Top = 105
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
 
@@ -171,7 +174,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 250, ;
 		Name = "cmdDeleteTask", ;
 		Picture = removetask.bmp, ;
-		TabIndex = 7, ;
+		TabIndex = 8, ;
 		ToolTipText = "Remove the selected task", ;
 		Top = 10
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -180,7 +183,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 300, ;
 		Name = "cmdDown", ;
 		Picture = down.bmp, ;
-		TabIndex = 9, ;
+		TabIndex = 10, ;
 		ToolTipText = "Move the task down", ;
 		Top = 10
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -198,7 +201,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 200, ;
 		Name = "cmdNewTask", ;
 		Picture = newtask.bmp, ;
-		TabIndex = 6, ;
+		TabIndex = 7, ;
 		ToolTipText = "Add a task", ;
 		Top = 10
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -227,17 +230,26 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 1038, ;
 		Name = "cmdSave", ;
 		Picture = save.bmp, ;
-		TabIndex = 23, ;
+		TabIndex = 26, ;
 		ToolTipText = "Save the settings", ;
 		Top = 45
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
 	ADD OBJECT 'cmdSettings' AS vfpxbasetoolbarbutton WITH ;
-		Left = 350, ;
+		Left = 405, ;
 		Name = "cmdSettings", ;
 		Picture = options.bmp, ;
-		TabIndex = 10, ;
+		TabIndex = 11, ;
 		ToolTipText = "Options", ;
+		Top = 10
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdTemplate' AS vfpxbasetoolbarbutton WITH ;
+		Left = 325, ;
+		Name = "cmdTemplate", ;
+		Picture = template.png, ;
+		TabIndex = 12, ;
+		ToolTipText = "Get tasks from a template", ;
 		Top = 10
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
 
@@ -246,10 +258,10 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Caption = "", ;
 		DisabledBackColor = 255,255,255, ;
 		Height = 24, ;
-		Left = 400, ;
+		Left = 557, ;
 		Name = "cmdToggleAllActive", ;
-		Picture = toggle.jpg, ;
-		TabIndex = 11, ;
+		Picture = toggle.png, ;
+		TabIndex = 14, ;
 		ToolTipText = "Toggle all active flags", ;
 		Top = 10, ;
 		Width = 24
@@ -259,7 +271,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 275, ;
 		Name = "cmdUp", ;
 		Picture = up.bmp, ;
-		TabIndex = 8, ;
+		TabIndex = 9, ;
 		ToolTipText = "Move the task up", ;
 		Top = 10
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
@@ -270,7 +282,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Height = 83, ;
 		Left = 760, ;
 		Name = "edtComments", ;
-		TabIndex = 22, ;
+		TabIndex = 25, ;
 		Top = 160, ;
 		Width = 300
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="editbox" />
@@ -284,7 +296,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Name = "grdTasks", ;
 		Panel = 1, ;
 		ScrollBars = 2, ;
-		TabIndex = 11, ;
+		TabIndex = 13, ;
 		Top = 45, ;
 		Width = 678, ;
 		Column1.ControlSource = "curProject.Order", ;
@@ -400,9 +412,9 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	ADD OBJECT 'lblAlwaysRun' AS vfpxbaselabel WITH ;
 		Anchor = 4, ;
 		Caption = "Always run", ;
-		Left = 626, ;
+		Left = 744, ;
 		Name = "lblAlwaysRun", ;
-		TabIndex = 27, ;
+		TabIndex = 31, ;
 		Top = 435
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -410,7 +422,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Caption = "Comments", ;
 		Left = 695, ;
 		Name = "lblComments", ;
-		TabIndex = 21, ;
+		TabIndex = 24, ;
 		Top = 162
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -422,15 +434,16 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 995, ;
 		MousePointer = 15, ;
 		Name = "lblHomePage", ;
+		TabIndex = 32, ;
 		Top = 435
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'lblIncomplete' AS vfpxbaselabel WITH ;
 		Anchor = 4, ;
 		Caption = "Incomplete", ;
-		Left = 511, ;
+		Left = 629, ;
 		Name = "lblIncomplete", ;
-		TabIndex = 26, ;
+		TabIndex = 30, ;
 		Top = 435
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -438,7 +451,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Caption = "Name", ;
 		Left = 695, ;
 		Name = "lblName", ;
-		TabIndex = 15, ;
+		TabIndex = 18, ;
 		Top = 78
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -446,7 +459,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Caption = "Order", ;
 		Left = 695, ;
 		Name = "lblOrder", ;
-		TabIndex = 19, ;
+		TabIndex = 22, ;
 		Top = 135
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -455,7 +468,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Caption = "Project", ;
 		Left = 10, ;
 		Name = "lblProject", ;
-		TabIndex = 25, ;
+		TabIndex = 28, ;
 		Top = 435
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -465,7 +478,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Left = 705, ;
 		Name = "lblSettings", ;
 		Style = 3, ;
-		TabIndex = 24, ;
+		TabIndex = 27, ;
 		Top = 248
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
@@ -473,8 +486,17 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Caption = "Task type", ;
 		Left = 695, ;
 		Name = "lblTaskType", ;
-		TabIndex = 13, ;
+		TabIndex = 16, ;
 		Top = 49
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
+
+	ADD OBJECT 'lblTemplate' AS vfpxbaselabel WITH ;
+		Anchor = 4, ;
+		Caption = "From Template", ;
+		Left = 859, ;
+		Name = "lblTemplate", ;
+		TabIndex = 29, ;
+		Top = 435
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'shpAlwaysRuns' AS vfpxbaseshape WITH ;
@@ -483,7 +505,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		BorderWidth = 0, ;
 		FillColor = 255,248,220, ;
 		FillStyle = 0, ;
-		Left = 581, ;
+		Left = 699, ;
 		Name = "shpAlwaysRuns", ;
 		Top = 435, ;
 		Width = 40
@@ -495,7 +517,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		BorderWidth = 0, ;
 		FillColor = 255,128,0, ;
 		FillStyle = 0, ;
-		Left = 466, ;
+		Left = 584, ;
 		Name = "shpIncomplete", ;
 		Top = 435, ;
 		Width = 40
@@ -510,13 +532,25 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Width = 365
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="shape" />
 
+	ADD OBJECT 'shpTemplate' AS vfpxbaseshape WITH ;
+		Anchor = 4, ;
+		BorderStyle = 0, ;
+		BorderWidth = 0, ;
+		FillColor = 128,255,0, ;
+		FillStyle = 0, ;
+		Left = 814, ;
+		Name = "shpTemplate", ;
+		Top = 435, ;
+		Width = 40
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="shape" />
+
 	ADD OBJECT 'spnOrder' AS vfpxbasespinner WITH ;
 		ControlSource = "curProject.Order", ;
 		KeyboardLowValue = 1, ;
 		Left = 760, ;
 		Name = "spnOrder", ;
 		SpinnerLowValue =   1.00, ;
-		TabIndex = 20, ;
+		TabIndex = 23, ;
 		Top = 131
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="spinner" />
 
@@ -526,7 +560,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		Height = 23, ;
 		Left = 760, ;
 		Name = "txtName", ;
-		TabIndex = 14, ;
+		TabIndex = 17, ;
 		Top = 75, ;
 		Width = 300
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="textbox" />
@@ -577,6 +611,15 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 				endwith
 			endif not empty(This.cTaskType)
 			This.Refresh()
+		
+		* Disable most controls if this is a template task.
+		
+			store empty(curProject.Source) to This.cboTaskType.Enabled, ;
+				This.txtName.Enabled, ;
+				This.chkIncomplete.Enabled, ;
+				This.chkAlwaysRun.Enabled, ;
+				This.edtComments.Enabled, ;
+				&lcControl..Enabled
 		endif This.cTaskID <> curProject.ID ...
 		
 	ENDPROC
@@ -633,6 +676,9 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 			case empty(curProject.Name) and not tlQuiet
 				messagebox('Please enter the name of the task.', MB_ICONEXCLAMATION, ;
 					'DeployFox')
+			case not empty(curProject.Source)
+				&& handle template task
+				This.UpdateProject()
 			case &lcControl..Validate()
 				&lcControl..SaveSettings()
 				lcSettings = evaluate(lcControl + '.oTask.SaveSettings()')
@@ -647,6 +693,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	PROCEDURE setupgrid		&& Sets up the grid
 		with This.grdTasks
 			.Column1.ControlSource    = 'curProject.Order'
+			.Column1.DynamicBackColor = 'iif(not empty(Source), rgb(128, 255, 0), rgb(255, 255, 255))'
 			.Column2.ControlSource    = 'curProject.Name'
 			.Column2.DynamicBackColor = 'icase(Incomplete, rgb(255, 128, 0), AlwaysRun, rgb(255, 248, 220), rgb(255, 255, 255))'
 			.Column2.DynamicForeColor = "iif(Incomplete, rgb(255, 255, 255), rgb(0, 0, 0))"
@@ -676,6 +723,14 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 			replace ID with lcID in ProjectFile
 		endif llNew
 		scatter name loRecord memo
+		
+		* Blank most things for template tasks.
+		
+		if not empty(curProject.Source)
+			store '' to loRecord.Task, loRecord.Name, loRecord.Comments, loRecord.Settings
+			store .F. to loRecord.Incomplete, loRecord.AlwaysRun
+		endif not empty(curProject.Source)
+		
 		select ProjectFile
 		locate for ID = loRecord.ID
 		lnOldOrder = Order
@@ -858,7 +913,7 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 			if not found()
 				go bottom
 			endif not found()
-			Thisform.DisplayTask(.T.)
+			Thisform.DisplayTask(.F., .T.)
 		endif messagebox...
 		
 	ENDPROC
@@ -912,11 +967,12 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 	PROCEDURE cmdNewTask.Click
 		select curProject
 		calculate max(Order) to lnOrder
-		append blank
+		append blank in curProject
 		replace Order with lnOrder + Thisform.oEngine.TaskIncrement, ;
-			Task with 'SetVariable', ;
-			Active with .T.
-		Thisform.DisplayTask(.T.)
+				Task with 'SetVariable', ;
+				Active with .T. ;
+			in curProject
+		Thisform.DisplayTask(.T., .T.)
 		Thisform.cboTaskType.SetFocus()
 		
 	ENDPROC
@@ -1004,6 +1060,108 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		
 	ENDPROC
 
+	PROCEDURE cmdTemplate.Click
+		lcFileName = GetFileName('DBF', '', 'Select Template')
+		if empty(lcFileName)
+			return
+		endif empty(lcFileName)
+		try
+			use (lcFileName) alias Template in 0
+		catch to loException
+			lcMessage = 'Error opening ' + lcFileName + ': ' + ;
+				loException.Message
+		endtry
+		
+		* Ensure the user selected a DeployFox table.
+		
+		if used('Template')
+			lnFields     = afields(laFields,     'ProjectFile')
+			lnTestFields = afields(laTestFields, 'Template')
+			llOK = lnFields = lnTestFields
+			if llOK
+				for lnI = 1 to lnFields
+					llOK = laFields[lnI, 1] == laTestFields[lnI, 1] and ;
+						laFields[lnI, 2] = laTestFields[lnI, 2]
+					if not llOK
+						exit
+					endif not llOK
+				next lnI
+			endif llOK
+		
+		* Display the template form.
+		
+			if llOK
+				loForm = newobject('DeployFoxTemplate', 'DeployFoxUI.vcx')
+				loForm.Show()
+				if used('TemplateTasks')
+		
+		* Add selected tasks to the project.
+		
+					select TemplateTasks
+					scan
+						lcID = TemplateTasks.ID
+						select curProject
+						locate for ID = lcID
+						if not found()
+							select Template
+							locate for ID = lcID
+							append blank in curProject
+							replace ID with lcID, ;
+									Task with Template.Task, ;
+									Name with Template.Name, ;
+									Incomplete with Template.Incomplete, ;
+									AlwaysRun with Template.AlwaysRun, ;
+									Settings with Template.Settings, ;
+									Comments with Template.Comments, ;
+									Order with Template.Order, ;
+									Active with .T., ;
+									Source with lcFileName ;
+								in curProject
+							append blank in ProjectFile
+							replace ID with lcID in ProjectFile
+							Thisform.UpdateProject()
+						endif not found()
+					endscan
+		
+		* Remove removed template tasks from the project.
+		
+					select curProject
+					scan for not empty(Source)
+						select TemplateTasks
+						locate for ID = curProject.ID
+						if not found()
+							delete in curProject
+							select ProjectFile
+							locate for ID = curProject.ID
+							delete
+						endif not found()
+					endscan for not empty(Source)
+					use in TemplateTasks
+					go top in curProject
+		
+		* Renumber tasks and display the first one.
+		
+		replace Order with 0 in curProject
+		Thisform.UpdateProject()
+					Thisform.DisplayTask(.F., .T.)
+					Thisform.cboTaskType.SetFocus()
+				endif used('TemplateTasks')
+			else
+				messagebox(lcFileName + ' is not DeployFox project file.', 16, 'DeployFox')
+				return .F.
+			endif llOK
+		else
+			messagebox(lcMessage, 16, 'DeployFox')
+			return .F.
+		endif used('Template')
+		
+	ENDPROC
+
+	PROCEDURE cmdTemplate.Refresh
+		This.Enabled = not empty(Thisform.oEngine.cProjectFile)
+		
+	ENDPROC
+
 	PROCEDURE cmdToggleAllActive.Click
 		local lnRecno, ;
 			llAllActive, ;
@@ -1036,7 +1194,6 @@ DEFINE CLASS deployfoxform AS vfpxpersistentform OF "..\packages\vfpxframework\v
 		
 		Thisform.grdTasks.Refresh()
 		Thisform.Refresh()
-		
 		
 	ENDPROC
 
@@ -1260,6 +1417,268 @@ DEFINE CLASS deployfoxsettings AS vfpxbaseform OF "..\packages\vfpxframework\vfp
 		endscan
 		use
 		Thisform.Release()
+		
+	ENDPROC
+
+ENDDEFINE
+
+DEFINE CLASS deployfoxtemplate AS vfpxbaseform OF "..\packages\vfpxframework\vfpxbaselibrary.vcx" 
+ 	*< CLASSDATA: Baseclass="form" Timestamp="" Scale="Pixels" Uniqueid="" />
+
+	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
+	*< OBJECTDATA: ObjPath="lstTemplate" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdAddOne" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lstProject" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdAddAll" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdRemoveOne" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdRemoveAll" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdOK" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="cmdCancel" UniqueID="" Timestamp="" />
+
+	*<PropValue>
+		Caption = "Get Tasks From Template"
+		DoCreate = .T.
+		Height = 294
+		Icon = deployfox.ico
+		Name = "deployfoxtemplate"
+		Width = 580
+		WindowType = 1
+	*</PropValue>
+
+	ADD OBJECT 'cmdAddAll' AS vfpxbasecommandbutton WITH ;
+		Anchor = 128, ;
+		Caption = "", ;
+		Height = 24, ;
+		Left = 280, ;
+		Name = "cmdAddAll", ;
+		Picture = addall.png, ;
+		Top = 63, ;
+		Width = 24
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdAddOne' AS vfpxbasecommandbutton WITH ;
+		Anchor = 128, ;
+		Caption = "", ;
+		Height = 24, ;
+		Left = 280, ;
+		Name = "cmdAddOne", ;
+		Picture = add.png, ;
+		Top = 35, ;
+		Width = 24
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdCancel' AS vfpxbasecommandbutton WITH ;
+		Anchor = 36, ;
+		Cancel = .T., ;
+		Caption = "Cancel", ;
+		Left = 293, ;
+		Name = "cmdCancel", ;
+		Top = 252
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdOK' AS vfpxbasecommandbutton WITH ;
+		Anchor = 132, ;
+		Caption = "OK", ;
+		Default = .F., ;
+		Left = 202, ;
+		Name = "cmdOK", ;
+		Top = 252
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdRemoveAll' AS vfpxbasecommandbutton WITH ;
+		Anchor = 128, ;
+		Caption = "", ;
+		Height = 24, ;
+		Left = 280, ;
+		Name = "cmdRemoveAll", ;
+		Picture = removeall.png, ;
+		Top = 144, ;
+		Width = 24
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'cmdRemoveOne' AS vfpxbasecommandbutton WITH ;
+		Anchor = 128, ;
+		Caption = "", ;
+		Height = 24, ;
+		Left = 280, ;
+		Name = "cmdRemoveOne", ;
+		Picture = remove.png, ;
+		Top = 116, ;
+		Width = 24
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="commandbutton" />
+
+	ADD OBJECT 'lstProject' AS vfpxbaselistbox WITH ;
+		Anchor = 45, ;
+		Height = 219, ;
+		Left = 320, ;
+		Name = "lstProject", ;
+		Top = 20, ;
+		Width = 250
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="listbox" />
+
+	ADD OBJECT 'lstTemplate' AS vfpxbaselistbox WITH ;
+		Anchor = 135, ;
+		Height = 219, ;
+		Left = 10, ;
+		Name = "lstTemplate", ;
+		Top = 21, ;
+		Width = 250
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="listbox" />
+	
+	PROCEDURE Init
+		* Get the tasks in the current project that are from templates.
+		
+		select Name, ;
+				ID, ;
+				Order ;
+			from curProject ;
+			where not empty(Source) ;
+			order by Order ;
+			into array This.lstProject.aItems
+		This.lstProject.Requery()
+		
+		* Get the tasks from the template that aren't in the project.
+		
+		select Name, ;
+				ID, ;
+				Order ;
+			from Template ;
+			order by Order ;
+			into array laItems
+		lnItems = _tally
+		for lnI = alen(This.lstProject.aItems, 1) to 1 step -1
+			lnPos = ascan(laItems, This.lstProject.aItems[lnI, 2], -1, -1, 2, 8)
+			if lnPos > 0
+				adel(laItems, lnPos)
+				lnItems = lnItems - 1
+			endif lnPos > 0
+		next lnI
+		dimension laItems(lnItems, 3)
+		acopy(laItems, This.lstTemplate.aItems)
+		This.lstTemplate.Requery()
+		This.lstTemplate.ListIndex = 1
+		This.lstProject.ListIndex = 1
+		
+		This.MinWidth  = This.Width
+		This.MinHeight = This.Height
+		
+	ENDPROC
+
+	PROCEDURE cmdAddAll.Click
+		lnItems = iif(empty(Thisform.lstProject.aItems[1, 1]), 0, alen(Thisform.lstProject.aItems, 1))
+		for lnI = 1 to alen(Thisform.lstTemplate.aItems, 1)
+			lnItems = lnItems + 1
+			dimension Thisform.lstProject.aItems[lnItems, 3]
+			Thisform.lstProject.aItems[lnItems, 1] = Thisform.lstTemplate.aItems[lnI, 1]
+			Thisform.lstProject.aItems[lnItems, 2] = Thisform.lstTemplate.aItems[lnI, 2]
+			Thisform.lstProject.aItems[lnItems, 3] = Thisform.lstTemplate.aItems[lnI, 3]
+		next lnI
+		asort(Thisform.lstProject.aItems, 3)
+		dimension Thisform.lstTemplate.aItems[1, 3]
+		Thisform.lstTemplate.aItems[1, 1] = ''
+		Thisform.lstTemplate.aItems[1, 2] = ''
+		Thisform.lstTemplate.aItems[1, 3] = 0
+		Thisform.lstTemplate.Requery()
+		Thisform.lstProject.Requery()
+		Thisform.Refresh()
+		
+	ENDPROC
+
+	PROCEDURE cmdAddAll.Refresh
+		This.Enabled = not empty(Thisform.lstTemplate.aItems[1, 1])
+		
+	ENDPROC
+
+	PROCEDURE cmdAddOne.Click
+		lnIndex = Thisform.lstTemplate.ListIndex
+		lnItems = iif(empty(Thisform.lstProject.aItems[1, 1]), 1, alen(Thisform.lstProject.aItems, 1) + 1)
+		dimension Thisform.lstProject.aItems[lnItems, 3]
+		Thisform.lstProject.aItems[lnItems, 1] = Thisform.lstTemplate.aItems[lnIndex, 1]
+		Thisform.lstProject.aItems[lnItems, 2] = Thisform.lstTemplate.aItems[lnIndex, 2]
+		Thisform.lstProject.aItems[lnItems, 3] = Thisform.lstTemplate.aItems[lnIndex, 3]
+		asort(Thisform.lstProject.aItems, 3)
+		adel(Thisform.lstTemplate.aItems, lnIndex)
+		lnItems = alen(Thisform.lstTemplate.aItems, 1) - 1
+		if lnItems = 0
+			Thisform.lstTemplate.aItems[1, 1] = ''
+			lnItems = 1
+		endif lnItems = 0
+		dimension Thisform.lstTemplate.aItems[lnItems, 3]
+		Thisform.lstTemplate.Requery()
+		Thisform.lstProject.Requery()
+		Thisform.Refresh()
+		
+	ENDPROC
+
+	PROCEDURE cmdAddOne.Refresh
+		lnIndex = Thisform.lstTemplate.ListIndex
+		This.Enabled = lnIndex > 0 and not empty(Thisform.lstTemplate.aItems[lnIndex, 1])
+		
+	ENDPROC
+
+	PROCEDURE cmdCancel.Click
+		Thisform.Release()
+		
+	ENDPROC
+
+	PROCEDURE cmdOK.Click
+		create cursor TemplateTasks (ID C(10))
+		for lnI = 1 to alen(Thisform.lstProject.aItems, 1)
+			insert into TemplateTasks values (Thisform.lstProject.aItems[lnI, 2])
+		next lnI
+		Thisform.Release()
+		
+	ENDPROC
+
+	PROCEDURE cmdRemoveAll.Click
+		lnItems = iif(empty(Thisform.lstTemplate.aItems[1, 1]), 0, alen(Thisform.lstTemplate.aItems, 1))
+		for lnI = 1 to alen(Thisform.lstProject.aItems, 1)
+			lnItems = lnItems + 1
+			dimension Thisform.lstTemplate.aItems[lnItems, 3]
+			Thisform.lstTemplate.aItems[lnItems, 1] = Thisform.lstProject.aItems[lnI, 1]
+			Thisform.lstTemplate.aItems[lnItems, 2] = Thisform.lstProject.aItems[lnI, 2]
+			Thisform.lstTemplate.aItems[lnItems, 3] = Thisform.lstProject.aItems[lnI, 3]
+		next lnI
+		asort(Thisform.lstTemplate.aItems, 3)
+		dimension Thisform.lstProject.aItems[1, 3]
+		Thisform.lstProject.aItems[1, 1] = ''
+		Thisform.lstProject.aItems[1, 2] = ''
+		Thisform.lstProject.aItems[1, 3] = 0
+		Thisform.lstTemplate.Requery()
+		Thisform.lstProject.Requery()
+		Thisform.Refresh()
+		
+	ENDPROC
+
+	PROCEDURE cmdRemoveAll.Refresh
+		This.Enabled = not empty(Thisform.lstProject.aItems[1, 1])
+		
+	ENDPROC
+
+	PROCEDURE cmdRemoveOne.Click
+		lnIndex = Thisform.lstProject.ListIndex
+		lnItems = iif(empty(Thisform.lstTemplate.aItems[1, 1]), 1, alen(Thisform.lstTemplate.aItems, 1) + 1)
+		dimension Thisform.lstTemplate.aItems[lnItems, 3]
+		Thisform.lstTemplate.aItems[lnItems, 1] = Thisform.lstProject.aItems[lnIndex, 1]
+		Thisform.lstTemplate.aItems[lnItems, 2] = Thisform.lstProject.aItems[lnIndex, 2]
+		Thisform.lstTemplate.aItems[lnItems, 3] = Thisform.lstProject.aItems[lnIndex, 3]
+		asort(Thisform.lstTemplate.aItems, 3)
+		adel(Thisform.lstProject.aItems, lnIndex)
+		lnItems = alen(Thisform.lstProject.aItems, 1) - 1
+		if lnItems = 0
+			Thisform.lstProject.aItems[1, 1] = ''
+			lnItems = 1
+		endif lnItems = 0
+		dimension Thisform.lstProject.aItems[lnItems, 3]
+		Thisform.lstTemplate.Requery()
+		Thisform.lstProject.Requery()
+		Thisform.Refresh()
+		
+	ENDPROC
+
+	PROCEDURE cmdRemoveOne.Refresh
+		lnIndex = Thisform.lstProject.ListIndex
+		This.Enabled = lnIndex > 0 and not empty(Thisform.lstProject.aItems[lnIndex, 1])
 		
 	ENDPROC
 

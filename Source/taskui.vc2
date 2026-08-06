@@ -289,6 +289,7 @@ DEFINE CLASS executepsscriptui AS taskuibase OF "taskui.vcx"
 	*-- OBJECTDATA items order determines ZOrder / El orden de los items OBJECTDATA determina el ZOrder 
 	*< OBJECTDATA: ObjPath="oScriptFile" UniqueID="" Timestamp="" />
 	*< OBJECTDATA: ObjPath="chkWaitUntilDone" UniqueID="" Timestamp="" />
+	*< OBJECTDATA: ObjPath="lblInfo" UniqueID="" Timestamp="" />
 
 	*<PropValue>
 		Name = "executepsscriptui"
@@ -302,6 +303,19 @@ DEFINE CLASS executepsscriptui AS taskuibase OF "taskui.vcx"
 		TabIndex = 6, ;
 		Top = 30
 		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="checkbox" />
+
+	ADD OBJECT 'lblInfo' AS vfpxbaselabel WITH ;
+		Anchor = 10, ;
+		AutoSize = .F., ;
+		Caption = "Note: put quotes around parameters containing spaces or other illegal command line characters", ;
+		Height = 50, ;
+		Left = 0, ;
+		Name = "lblInfo", ;
+		TabIndex = 7, ;
+		Top = 55, ;
+		Width = 340, ;
+		WordWrap = .T.
+		*< END OBJECT: ClassLib="..\packages\vfpxframework\vfpxbaselibrary.vcx" BaseClass="label" />
 
 	ADD OBJECT 'oScriptFile' AS vfpxfile WITH ;
 		ccontrolsource = This.Parent.oTask.cScriptFile, ;
@@ -660,6 +674,13 @@ DEFINE CLASS readfrominiui AS inibase OF "taskui.vcx"
 			if lnVariables > 0
 				dimension This.cboVariable.aItems[lnVariables]
 				acopy(laVariables, This.cboVariable.aItems)
+				if not empty(This.oTask.cVariable) and ;
+					ascan(laVariables, This.oTask.cVariable) = 0
+					dimension This.cboVariable.aItems[lnVariables + 1]
+					This.cboVariable.aItems[lnVariables + 1] = This.oTask.cVariable
+					asort(This.cboVariable.aItems)
+					SetVariable(This.oTask.cVariable)
+				endif not empty(This.oTask.cVariable) ...
 				This.cboVariable.Requery()
 			endif lnVariables > 0
 		endif This.Visible
@@ -671,6 +692,22 @@ DEFINE CLASS readfrominiui AS inibase OF "taskui.vcx"
 		llReturn = dodefault()
 		llReturn = llReturn and not empty(This.oTask.cVariable)
 		return llReturn
+		
+	ENDPROC
+
+	PROCEDURE cboVariable.Valid
+		local lcVariable, ;
+			lnVariables
+		lcVariable = This.DisplayValue
+		if ascan(This.aItems, lcVariable) = 0
+			lnVariables = alen(This.aItems) + 1
+			dimension This.aItems[lnVariables]
+			This.aItems[lnVariables] = lcVariable
+			asort(This.aItems)
+			This.Requery()
+			This.Value = lcVariable
+			SetVariable(lcVariable)
+		endif ascan(This.aItems, This.DisplayValue) = 0
 		
 	ENDPROC
 
@@ -732,6 +769,13 @@ DEFINE CLASS readfromregistryui AS registrybase OF "taskui.vcx"
 			if lnVariables > 0
 				dimension This.cboVariable.aItems[lnVariables]
 				acopy(laVariables, This.cboVariable.aItems)
+				if not empty(This.oTask.cVariable) and ;
+					ascan(laVariables, This.oTask.cVariable) = 0
+					dimension This.cboVariable.aItems[lnVariables + 1]
+					This.cboVariable.aItems[lnVariables + 1] = This.oTask.cVariable
+					asort(This.cboVariable.aItems)
+					SetVariable(This.oTask.cVariable)
+				endif not empty(This.oTask.cVariable) ...
 				This.cboVariable.Requery()
 			endif lnVariables > 0
 		endif This.Visible
@@ -743,6 +787,22 @@ DEFINE CLASS readfromregistryui AS registrybase OF "taskui.vcx"
 		llReturn = dodefault()
 		llReturn = llReturn and not empty(This.oTask.cVariable)
 		return llReturn
+		
+	ENDPROC
+
+	PROCEDURE cboVariable.Valid
+		local lcVariable, ;
+			lnVariables
+		lcVariable = This.DisplayValue
+		if ascan(This.aItems, lcVariable) = 0
+			lnVariables = alen(This.aItems) + 1
+			dimension This.aItems[lnVariables]
+			This.aItems[lnVariables] = lcVariable
+			asort(This.aItems)
+			This.Requery()
+			This.Value = lcVariable
+			SetVariable(lcVariable)
+		endif ascan(This.aItems, This.DisplayValue) = 0
 		
 	ENDPROC
 

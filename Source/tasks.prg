@@ -254,7 +254,11 @@ define class ReadFromRegistry as RegistryBaseTask
 		lcKey      = This.GetMainKeyName() + '\' + This.cKey
 		if llReturn
 			loVariable = This.oVariables.Item(This.cVariable)
-			loVariable.Value = luValue
+			if vartype(loVariable) = 'O'
+				loVariable.Value = luValue
+			else
+				loVariable = This.oVariables.AddVariable(This.cVariable, luValue)
+			endif vartype(loVariable) = 'O'
 			This.Log(Format('"{0}" read from Windows Registry at {1} of {2}', ;
 				luValue, This.cSetting, lcKey))
 		else
@@ -301,12 +305,18 @@ define class ReadFromINI as TaskBase
 		&& the name of the variable to save the value to
 
 	function Execute
-		local loVariable, ;
+		local luValue, ;
+			loVariable, ;
 			llReturn
 		if file(This.cSource)
 *** TODO FUTURE: option to support decryption: need to specify key
+			luValue    = ReadINI(This.cSource, This.cSection, This.cItem)
 			loVariable = This.oVariables.Item(This.cVariable)
-			loVariable.Value = ReadINI(This.cSource, This.cSection, This.cItem)
+			if vartype(loVariable) = 'O'
+				loVariable.Value = luValue
+			else
+				loVariable = This.oVariables.AddVariable(This.cVariable, luValue)
+			endif vartype(loVariable) = 'O'
 			llReturn = .T.
 			This.Log(Format('"{0}" read from {1} of [{2}] of {3}', ;
 				loVariable.Value, This.cItem, This.cSection, This.cSource))
@@ -831,7 +841,7 @@ define class ExecutePSScript as RunExe
 		local llReturn
 		llReturn = dodefault(tcSettings, tlNoExpandVariables)
 		if llReturn
-			This.cParameters = '/c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -File "' + This.cScriptFile + '"'
+			This.cParameters = '/c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -File ' + This.cScriptFile
 		endif llReturn
 		return llReturn
 enddefine

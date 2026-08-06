@@ -4,6 +4,20 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ## Releases
 
+### 2026-08-06
+
+* You can now add tasks from another DeployFox project, which acts as a template, allowing you to create multiple projects with similar tasks and edit them in one place.
+
+* DeployFox now runs System.app from the application folder in case it isn't in the current directory.
+
+* ExecutePSScript tasks no longer add quotes around the script setting. This allows you to pass parameters to the script.
+
+* Variables now appear in alphabetical order in comboboxes (e.g. ReadFromINI tasks).
+
+* ReadFromINI and ReadFromRegistry tasks now create the specified variable if it doesn't exist so there's no need to have a SetVariable task to create the variable unless that's desired.
+
+* The picture for the active toggle button was changed to a better image and the button was moved above the Active column in the grid.
+
 ### 2026-06-19
 
 * Fixed "File 'system.prg' does not exist" error (issue #6).
@@ -16,7 +30,7 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 ### 2026-01-08
 
-* Added a checkbox to toggle all tasks Active/Inactive to easily allow the user to run just a few selected tasks.
+* Added a button to toggle all tasks Active/Inactive to easily allow the user to run just a few selected tasks.
 
 ### 2025-12-24
 
@@ -58,7 +72,7 @@ DeployFox automates the steps required to deploy your applications by providing 
 
 * Added the $ProjectPath built-in variable.
 
-* Fixed issues with the BuildSetupInno task.
+* Fixed issues with BuildSetupInno tasks.
 
 * Added the Test Project folder with a test project.
 
